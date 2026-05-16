@@ -1,6 +1,8 @@
 import { updatePortfolioRow } from "@/actions/cms/tables";
+import { CmsEmptyState } from "@/components/dashboard/cms-empty-state";
 import { DashboardPageHeader } from "@/components/dashboard/page-header";
 import { getPortfolioEntries } from "@/lib/dashboard/cms-portfolio";
+import { seedStatusFromSearch } from "@/lib/dashboard/seed-search-params";
 
 const inputClass =
   "mt-1 w-full rounded-xl border border-[var(--border)] bg-[color-mix(in_oklab,var(--surface)_92%,black)] px-3 py-2 text-sm text-[var(--foreground)] outline-none focus:border-[color-mix(in_oklab,var(--accent)_45%,var(--border))]";
@@ -8,8 +10,14 @@ const labelClass = "block text-xs font-medium text-[var(--muted)]";
 const btnClass =
   "inline-flex h-9 items-center justify-center rounded-full border border-[var(--border-strong)] bg-[var(--surface-elevated)] px-4 text-xs font-semibold uppercase tracking-wider text-[var(--foreground)]";
 
-export default async function DashboardPortfolioPage() {
+export default async function DashboardPortfolioPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  const params = await searchParams;
   const rows = await getPortfolioEntries();
+  const seedStatus = seedStatusFromSearch(params);
 
   return (
     <>
@@ -20,9 +28,11 @@ export default async function DashboardPortfolioPage() {
 
       <div className="space-y-8 px-4 pb-16 pt-2 sm:px-8 lg:px-10">
         {rows.length === 0 ? (
-          <p className="rounded-2xl border border-[var(--border)] bg-[color-mix(in_oklab,var(--surface-elevated)_85%,transparent)] px-4 py-8 text-sm text-[var(--muted)]">
-            Keine Einträge oder Service-Role nicht konfiguriert.
-          </p>
+          <CmsEmptyState
+            returnTo="/dashboard/portfolio"
+            tableLabel="portfolio_entries"
+            seedStatus={seedStatus}
+          />
         ) : (
           rows.map((p) => (
             <div
