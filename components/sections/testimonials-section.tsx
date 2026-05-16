@@ -15,6 +15,10 @@ export function TestimonialsSection({
   section,
   items,
 }: TestimonialsSectionProps) {
+  if (items.length === 0) {
+    return null;
+  }
+
   return (
     <section
       id="referenzen"

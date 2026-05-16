@@ -28,3 +28,5 @@ export const testimonialRowSchema = z.object({
   sort_order: z.number().int().min(-9999).max(9999),
   published: z.boolean(),
 });
+
+export const testimonialCreateSchema = testimonialRowSchema.omit({ id: true });

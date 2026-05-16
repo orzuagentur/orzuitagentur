@@ -163,7 +163,8 @@ export const getTestimonialCards = cache(
         .select("id,quote_de,author_de,role_de,org_de,sort_order")
         .eq("published", true)
         .order("sort_order", { ascending: true });
-      if (error || !data?.length) return DEFAULT_TESTIMONIALS_CARDS;
+      if (error) return DEFAULT_TESTIMONIALS_CARDS;
+      if (!data?.length) return [];
       return data.map((row) => ({
         key: String(row.id),
         quote: row.quote_de,

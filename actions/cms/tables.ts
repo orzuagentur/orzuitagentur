@@ -5,6 +5,7 @@ import { DashboardAuthError, requireDashboardUser } from "@/lib/auth/dashboard-u
 import {
   portfolioRowSchema,
   serviceRowSchema,
+  testimonialCreateSchema,
   testimonialRowSchema,
 } from "@/lib/validations/cms-row";
 import {
@@ -122,6 +123,65 @@ export async function updatePortfolioRow(formData: FormData): Promise<void> {
     revalidatePath("/dashboard/portfolio");
   } catch (e) {
     logCmsError("updatePortfolioRow", e);
+  }
+}
+
+export async function createTestimonialRow(formData: FormData): Promise<void> {
+  try {
+    await guard();
+
+    const parsed = testimonialCreateSchema.safeParse({
+      quote_de: str(formData, "quote_de", 4000),
+      author_de: str(formData, "author_de", 200),
+      role_de: str(formData, "role_de", 200) || null,
+      org_de: str(formData, "org_de", 200) || null,
+      sort_order: parseIntSafe(str(formData, "sort_order", 12), 0),
+      published: readPublished(formData),
+    });
+    if (!parsed.success) {
+      console.warn("[cms:createTestimonialRow] Validierung fehlgeschlagen.");
+      return;
+    }
+
+    const row = parsed.data;
+    const supabase = createServiceRoleClient();
+    const { error } = await supabase.from("testimonials").insert({
+      quote_de: row.quote_de,
+      author_de: row.author_de,
+      role_de: row.role_de,
+      org_de: row.org_de,
+      sort_order: row.sort_order,
+      published: row.published,
+    });
+
+    if (error) {
+      console.error("[cms:createTestimonialRow]", error);
+      return;
+    }
+    revalidatePath("/");
+    revalidatePath("/dashboard/testimonials");
+  } catch (e) {
+    logCmsError("createTestimonialRow", e);
+  }
+}
+
+export async function deleteTestimonialRow(formData: FormData): Promise<void> {
+  try {
+    await guard();
+    const id = str(formData, "id", 64);
+    if (!id) return;
+
+    const supabase = createServiceRoleClient();
+    const { error } = await supabase.from("testimonials").delete().eq("id", id);
+
+    if (error) {
+      console.error("[cms:deleteTestimonialRow]", error);
+      return;
+    }
+    revalidatePath("/");
+    revalidatePath("/dashboard/testimonials");
+  } catch (e) {
+    logCmsError("deleteTestimonialRow", e);
   }
 }
 

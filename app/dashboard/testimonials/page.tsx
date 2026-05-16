@@ -1,5 +1,9 @@
-import { updateTestimonialRow } from "@/actions/cms/tables";
+import {
+  createTestimonialRow,
+  updateTestimonialRow,
+} from "@/actions/cms/tables";
 import { CmsEmptyState } from "@/components/dashboard/cms-empty-state";
+import { DeleteTestimonialButton } from "@/components/dashboard/delete-testimonial-button";
 import { DashboardPageHeader } from "@/components/dashboard/page-header";
 import { getTestimonials } from "@/lib/dashboard/cms-testimonials";
 import { seedStatusFromSearch } from "@/lib/dashboard/seed-search-params";
@@ -18,15 +22,106 @@ export default async function DashboardTestimonialsPage({
   const params = await searchParams;
   const rows = await getTestimonials();
   const seedStatus = seedStatusFromSearch(params);
+  const nextSort =
+    rows.length > 0
+      ? Math.max(...rows.map((r) => r.sort_order), 0) + 1
+      : 1;
 
   return (
     <>
       <DashboardPageHeader
         title="Referenzen"
-        description="Einträge aus testimonials — erscheinen im Referenzen-Block der Startseite."
+        description="Echte Kundenstimmen für den Block „Referenzen“ auf der Startseite. Nur Einträge mit „Veröffentlicht“ sind öffentlich sichtbar. Demo-Texte können Sie löschen oder deaktivieren."
       />
 
       <div className="space-y-8 px-4 pb-16 pt-2 sm:px-8 lg:px-10">
+        <section className="max-w-2xl rounded-2xl border border-dashed border-[var(--border-strong)] bg-[color-mix(in_oklab,var(--surface-elevated)_70%,transparent)] p-6">
+          <h2 className="text-base font-semibold text-[var(--foreground)]">
+            Neue Referenz hinzufügen
+          </h2>
+          <p className="mt-1 text-sm text-[var(--muted)]">
+            Nach dem Speichern erscheint das Zitat auf der Startseite unter
+            #referenzen (wenn „Veröffentlicht“ aktiv ist).
+          </p>
+          <form action={createTestimonialRow} className="mt-4 space-y-3">
+            <div>
+              <label className={labelClass} htmlFor="new-quote">
+                Zitat des Kunden
+              </label>
+              <textarea
+                className={`${inputClass} min-h-[120px]`}
+                id="new-quote"
+                name="quote_de"
+                required
+                placeholder="Was hat der Kunde über die Zusammenarbeit gesagt?"
+              />
+            </div>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div>
+                <label className={labelClass} htmlFor="new-author">
+                  Name
+                </label>
+                <input
+                  className={inputClass}
+                  id="new-author"
+                  name="author_de"
+                  required
+                  placeholder="Max Mustermann"
+                />
+              </div>
+              <div>
+                <label className={labelClass} htmlFor="new-role">
+                  Rolle
+                </label>
+                <input
+                  className={inputClass}
+                  id="new-role"
+                  name="role_de"
+                  placeholder="Geschäftsführer"
+                />
+              </div>
+            </div>
+            <div>
+              <label className={labelClass} htmlFor="new-org">
+                Unternehmen
+              </label>
+              <input
+                className={inputClass}
+                id="new-org"
+                name="org_de"
+                placeholder="Firma GmbH"
+              />
+            </div>
+            <div className="flex flex-wrap items-end gap-4">
+              <div>
+                <label className={labelClass} htmlFor="new-sort">
+                  Reihenfolge
+                </label>
+                <input
+                  className={`${inputClass} w-28`}
+                  id="new-sort"
+                  name="sort_order"
+                  type="number"
+                  defaultValue={nextSort}
+                />
+              </div>
+              <label className="flex cursor-pointer items-center gap-2 text-sm text-[var(--foreground)]">
+                <input
+                  type="checkbox"
+                  name="published"
+                  value="true"
+                  defaultChecked
+                  className="h-4 w-4 rounded border-[var(--border-strong)]"
+                />
+                Veröffentlicht
+              </label>
+            </div>
+            <button type="submit" className={btnClass}>
+              Referenz anlegen
+            </button>
+          </form>
+        </section>
+
         {rows.length === 0 ? (
           <CmsEmptyState
             returnTo="/dashboard/testimonials"
@@ -39,7 +134,10 @@ export default async function DashboardTestimonialsPage({
               key={t.id}
               className="max-w-2xl rounded-2xl border border-[var(--border)] bg-[color-mix(in_oklab,var(--surface-elevated)_85%,transparent)] p-6"
             >
-              <p className="font-mono text-xs text-[var(--muted)]">ID {t.id}</p>
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <p className="font-mono text-xs text-[var(--muted)]">ID {t.id}</p>
+                <DeleteTestimonialButton id={t.id} authorLabel={t.author_de} />
+              </div>
               <form action={updateTestimonialRow} className="mt-4 space-y-3">
                 <input type="hidden" name="id" value={t.id} />
                 <div>
