@@ -10,5 +10,9 @@ export function getIntegrationFlags() {
     ),
     siteUrl: Boolean(process.env.NEXT_PUBLIC_SITE_URL),
     adminEmails: Boolean(process.env.ADMIN_EMAILS),
+    vercelApi: Boolean(
+      process.env.VERCEL_ACCESS_TOKEN && process.env.VERCEL_PROJECT_ID,
+    ),
+    vercelHook: Boolean(process.env.VERCEL_DEPLOY_HOOK_URL),
   };
 }

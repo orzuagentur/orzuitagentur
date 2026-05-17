@@ -37,4 +37,9 @@ export const DASHBOARD_NAV = [
     label: "Integrationen",
     description: "Resend, Telegram, API",
   },
+  {
+    href: "/dashboard/deploy",
+    label: "Deploy",
+    description: "Vercel · Redeploy · Env",
+  },
 ] as const;

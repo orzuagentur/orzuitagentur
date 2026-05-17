@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { DashboardPageHeader } from "@/components/dashboard/page-header";
 import { getIntegrationFlags } from "@/lib/dashboard/integrations";
 
@@ -53,6 +54,20 @@ export default function DashboardIntegrationsPage() {
             Telegram
           </h2>
           <Flag ok={flags.telegram} label="TELEGRAM_BOT_TOKEN + TELEGRAM_CHAT_ID" />
+        </div>
+
+        <div className="space-y-2">
+          <h2 className="text-xs font-semibold uppercase tracking-[0.22em] text-[var(--muted)]">
+            Vercel
+          </h2>
+          <Flag ok={flags.vercelApi} label="VERCEL_ACCESS_TOKEN + VERCEL_PROJECT_ID" />
+          <Flag ok={flags.vercelHook} label="VERCEL_DEPLOY_HOOK_URL" />
+          <Link
+            href="/dashboard/deploy"
+            className="inline-block text-sm font-medium text-[var(--accent)] underline-offset-2 hover:underline"
+          >
+            Deploy &amp; Vercel Control Center →
+          </Link>
         </div>
 
         <p className="text-xs leading-relaxed text-[var(--muted)]">
