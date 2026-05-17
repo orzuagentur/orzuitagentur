@@ -5,13 +5,12 @@ import {
   saveSectionIntros,
   saveTechnologiesSection,
 } from "@/actions/cms/marketing";
+import { DashboardSubmitButton } from "@/components/dashboard/dashboard-submit-button";
 import type { MarketingContent } from "@/lib/cms/types";
 
 const inputClass =
   "mt-1 w-full rounded-xl border border-[var(--border)] bg-[color-mix(in_oklab,var(--surface)_92%,black)] px-3 py-2 text-sm text-[var(--foreground)] outline-none focus:border-[color-mix(in_oklab,var(--accent)_45%,var(--border))]";
 const labelClass = "block text-xs font-medium text-[var(--muted)]";
-const btnClass =
-  "inline-flex h-10 items-center justify-center rounded-full border border-[var(--border-strong)] bg-[var(--surface-elevated)] px-5 text-xs font-semibold uppercase tracking-wider text-[var(--foreground)]";
 
 type MarketingFormsProps = {
   marketing: MarketingContent;
@@ -91,9 +90,9 @@ export function MarketingForms({ marketing }: MarketingFormsProps) {
             ))}
           </div>
 
-          <button type="submit" className={btnClass}>
+          <DashboardSubmitButton size="md" pendingLabel="Gespeichert">
             Hero speichern
-          </button>
+          </DashboardSubmitButton>
         </form>
       </section>
 
@@ -171,9 +170,9 @@ export function MarketingForms({ marketing }: MarketingFormsProps) {
               <input className={inputClass} id="footer_privacyLabel" name="footer_privacyLabel" defaultValue={marketing.footer.privacyLabel} />
             </div>
           </div>
-          <button type="submit" className={btnClass}>
+          <DashboardSubmitButton size="md" pendingLabel="Gespeichert">
             Navigation &amp; Footer speichern
-          </button>
+          </DashboardSubmitButton>
         </form>
       </section>
 
@@ -222,9 +221,9 @@ export function MarketingForms({ marketing }: MarketingFormsProps) {
             <label className={labelClass} htmlFor="contact_successBody">Erfolg · Text vor E-Mail-Link</label>
             <textarea className={`${inputClass} min-h-[80px]`} id="contact_successBody" name="contact_successBody" defaultValue={marketing.contact.successBody} />
           </div>
-          <button type="submit" className={btnClass}>
+          <DashboardSubmitButton size="md" pendingLabel="Gespeichert">
             Kontakt speichern
-          </button>
+          </DashboardSubmitButton>
         </form>
       </section>
 
@@ -258,9 +257,9 @@ export function MarketingForms({ marketing }: MarketingFormsProps) {
             <textarea className={`${inputClass} min-h-[70px]`} name="test_subtitle" defaultValue={marketing.testimonialsSection.subtitle} />
             <textarea className={`${inputClass} min-h-[50px]`} name="test_footnote" defaultValue={marketing.testimonialsSection.footnote} />
           </fieldset>
-          <button type="submit" className={btnClass}>
+          <DashboardSubmitButton size="md" pendingLabel="Gespeichert">
             Sektionen speichern
-          </button>
+          </DashboardSubmitButton>
         </form>
       </section>
 
@@ -296,9 +295,9 @@ export function MarketingForms({ marketing }: MarketingFormsProps) {
             <label className={labelClass} htmlFor="tech_marqueeItems">Marquee-Items (kommagetrennt)</label>
             <textarea className={`${inputClass} min-h-[60px]`} id="tech_marqueeItems" name="tech_marqueeItems" defaultValue={marketing.technologiesSection.marqueeItems.join(", ")} />
           </div>
-          <button type="submit" className={btnClass}>
+          <DashboardSubmitButton size="md" pendingLabel="Gespeichert">
             Technologien speichern
-          </button>
+          </DashboardSubmitButton>
         </form>
       </section>
     </div>

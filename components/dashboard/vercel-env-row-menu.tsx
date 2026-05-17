@@ -6,6 +6,7 @@ import {
   upsertVercelEnvModal,
 } from "@/actions/vercel/env";
 import { DashboardModal } from "@/components/dashboard/dashboard-modal";
+import { DashboardFeedbackButton } from "@/components/dashboard/dashboard-submit-button";
 import { useDashboardToast } from "@/components/dashboard/dashboard-toast-provider";
 import { TOAST_MESSAGES } from "@/lib/dashboard/toast-messages";
 import { useRouter } from "next/navigation";
@@ -239,9 +240,9 @@ export function VercelEnvRowMenu({
             </p>
           ) : null}
           <div className="flex flex-wrap gap-2 pt-1">
-            <button type="submit" disabled={pending} className={btnClass}>
-              {pending ? "Speichern…" : "Speichern"}
-            </button>
+            <DashboardFeedbackButton pending={pending} pendingLabel="Gespeichert">
+              Speichern
+            </DashboardFeedbackButton>
             <button type="button" onClick={closeAll} className={btnClass}>
               Abbrechen
             </button>
@@ -328,14 +329,16 @@ export function VercelEnvRowMenu({
             </p>
           ) : null}
           <div className="flex flex-wrap gap-2 pt-1">
-            <button
+            <DashboardFeedbackButton
               type="button"
-              disabled={confirmCode.length !== 10 || pending}
+              pending={pending}
+              pendingLabel="Gelöscht"
+              disabled={confirmCode.length !== 10}
               onClick={submitDelete}
               className={btnDangerClass}
             >
-              {pending ? "Löschen…" : "Ich bestätige das Löschen"}
-            </button>
+              Ich bestätige das Löschen
+            </DashboardFeedbackButton>
             <button type="button" onClick={closeAll} className={btnClass}>
               Abbrechen
             </button>

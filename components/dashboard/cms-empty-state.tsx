@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { seedCmsContent } from "@/actions/cms/seed";
+import { DashboardSubmitButton } from "@/components/dashboard/dashboard-submit-button";
 import { hasServiceRoleConfig } from "@/lib/supabase/service";
 
 type CmsEmptyStateProps = {
@@ -38,12 +39,9 @@ export function CmsEmptyState({ returnTo, tableLabel }: CmsEmptyStateProps) {
           </p>
           <form action={seedCmsContent}>
             <input type="hidden" name="returnTo" value={returnTo} />
-            <button
-              type="submit"
-              className="inline-flex h-10 items-center justify-center rounded-full border border-[var(--border-strong)] bg-[var(--surface-elevated)] px-5 text-xs font-semibold uppercase tracking-wider text-[var(--foreground)] transition-opacity hover:opacity-90"
-            >
+            <DashboardSubmitButton size="md" pendingLabel="Wird geladen…">
               Standard-Inhalte laden
-            </button>
+            </DashboardSubmitButton>
           </form>
           <p className="text-xs leading-relaxed">
             Alternativ: SQL-Datei{" "}

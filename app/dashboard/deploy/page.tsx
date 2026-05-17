@@ -4,13 +4,12 @@ import { addVercelDomain } from "@/actions/vercel/domains";
 import { upsertVercelEnv } from "@/actions/vercel/env";
 import { VercelEnvRowMenu } from "@/components/dashboard/vercel-env-row-menu";
 import { DashboardPageHeader } from "@/components/dashboard/page-header";
+import { DashboardSubmitButton } from "@/components/dashboard/dashboard-submit-button";
 import { getDeployPanelData } from "@/lib/vercel/panel-data";
 
 const inputClass =
   "mt-1 w-full rounded-xl border border-[var(--border)] bg-[color-mix(in_oklab,var(--surface)_92%,black)] px-3 py-2 text-sm text-[var(--foreground)] outline-none focus:border-[color-mix(in_oklab,var(--accent)_45%,var(--border))]";
 const labelClass = "block text-xs font-medium text-[var(--muted)]";
-const btnClass =
-  "inline-flex h-9 items-center justify-center rounded-full border border-[var(--border-strong)] bg-[var(--surface-elevated)] px-4 text-xs font-semibold uppercase tracking-wider text-[var(--foreground)]";
 const cardClass =
   "rounded-2xl border border-[var(--border)] bg-[color-mix(in_oklab,var(--surface-elevated)_85%,transparent)] p-6";
 
@@ -98,13 +97,12 @@ export default async function DashboardDeployPage() {
             </p>
           ) : null}
           <form action={redeployProduction} className="mt-4">
-            <button
-              type="submit"
+            <DashboardSubmitButton
               disabled={!data.redeployReady}
-              className={`${btnClass} disabled:cursor-not-allowed disabled:opacity-50`}
+              pendingLabel="Wird gestartet…"
             >
               Jetzt redeployen
-            </button>
+            </DashboardSubmitButton>
           </form>
         </section>
 
@@ -179,9 +177,9 @@ export default async function DashboardDeployPage() {
                   required
                 />
               </div>
-              <button type="submit" className={btnClass}>
+              <DashboardSubmitButton pendingLabel="Hinzugefügt">
                 Hinzufügen
-              </button>
+              </DashboardSubmitButton>
             </form>
           </section>
         ) : null}
@@ -294,9 +292,9 @@ export default async function DashboardDeployPage() {
                   Development
                 </label>
               </div>
-              <button type="submit" className={btnClass}>
+              <DashboardSubmitButton pendingLabel="Gespeichert">
                 In Vercel speichern
-              </button>
+              </DashboardSubmitButton>
             </form>
           </section>
         ) : null}

@@ -1,6 +1,7 @@
 "use client";
 
 import { deleteTestimonialRow } from "@/actions/cms/tables";
+import { DashboardSubmitButton } from "@/components/dashboard/dashboard-submit-button";
 import { FormEvent } from "react";
 
 type DeleteTestimonialButtonProps = {
@@ -25,12 +26,12 @@ export function DeleteTestimonialButton({
   return (
     <form action={deleteTestimonialRow} onSubmit={onSubmit} className="inline">
       <input type="hidden" name="id" value={id} />
-      <button
-        type="submit"
-        className="inline-flex h-9 items-center justify-center rounded-full border border-red-500/30 bg-red-500/10 px-4 text-xs font-semibold uppercase tracking-wider text-red-300/90 transition-opacity hover:opacity-90"
+      <DashboardSubmitButton
+        pendingLabel="Gelöscht"
+        className="inline-flex items-center justify-center gap-2 rounded-full border border-red-500/30 bg-red-500/10 px-4 text-xs font-semibold uppercase tracking-wider text-red-300/90 transition-[border-color,background-color,color,box-shadow] duration-200"
       >
         Löschen
-      </button>
+      </DashboardSubmitButton>
     </form>
   );
 }

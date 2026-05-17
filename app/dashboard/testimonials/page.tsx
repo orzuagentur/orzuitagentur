@@ -5,13 +5,12 @@ import {
 import { CmsEmptyState } from "@/components/dashboard/cms-empty-state";
 import { DeleteTestimonialButton } from "@/components/dashboard/delete-testimonial-button";
 import { DashboardPageHeader } from "@/components/dashboard/page-header";
+import { DashboardSubmitButton } from "@/components/dashboard/dashboard-submit-button";
 import { getTestimonials } from "@/lib/dashboard/cms-testimonials";
 
 const inputClass =
   "mt-1 w-full rounded-xl border border-[var(--border)] bg-[color-mix(in_oklab,var(--surface)_92%,black)] px-3 py-2 text-sm text-[var(--foreground)] outline-none focus:border-[color-mix(in_oklab,var(--accent)_45%,var(--border))]";
 const labelClass = "block text-xs font-medium text-[var(--muted)]";
-const btnClass =
-  "inline-flex h-9 items-center justify-center rounded-full border border-[var(--border-strong)] bg-[var(--surface-elevated)] px-4 text-xs font-semibold uppercase tracking-wider text-[var(--foreground)]";
 
 export default async function DashboardTestimonialsPage() {
   const rows = await getTestimonials();
@@ -109,9 +108,9 @@ export default async function DashboardTestimonialsPage() {
                 Veröffentlicht
               </label>
             </div>
-            <button type="submit" className={btnClass}>
+            <DashboardSubmitButton pendingLabel="Hinzugefügt">
               Referenz anlegen
-            </button>
+            </DashboardSubmitButton>
           </form>
         </section>
 
@@ -204,9 +203,9 @@ export default async function DashboardTestimonialsPage() {
                     Veröffentlicht
                   </label>
                 </div>
-                <button type="submit" className={btnClass}>
+                <DashboardSubmitButton pendingLabel="Gespeichert">
                   Speichern
-                </button>
+                </DashboardSubmitButton>
               </form>
             </div>
           ))

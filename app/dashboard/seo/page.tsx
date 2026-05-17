@@ -1,4 +1,5 @@
 import { DashboardPageHeader } from "@/components/dashboard/page-header";
+import { DashboardSubmitButton } from "@/components/dashboard/dashboard-submit-button";
 import { getSeoEntries } from "@/lib/dashboard/cms-seo";
 import { saveHomeSeo } from "@/actions/cms/seo-home";
 import { DEFAULT_HOME_SEO } from "@/lib/cms/defaults";
@@ -6,8 +7,6 @@ import { DEFAULT_HOME_SEO } from "@/lib/cms/defaults";
 const inputClass =
   "mt-1 w-full rounded-xl border border-[var(--border)] bg-[color-mix(in_oklab,var(--surface)_92%,black)] px-3 py-2 text-sm text-[var(--foreground)] outline-none focus:border-[color-mix(in_oklab,var(--accent)_45%,var(--border))]";
 const labelClass = "block text-xs font-medium text-[var(--muted)]";
-const btnClass =
-  "inline-flex h-10 items-center justify-center rounded-full border border-[var(--border-strong)] bg-[var(--surface-elevated)] px-5 text-xs font-semibold uppercase tracking-wider text-[var(--foreground)]";
 
 export default async function DashboardSeoPage() {
   const rows = await getSeoEntries();
@@ -54,9 +53,9 @@ export default async function DashboardSeoPage() {
                 placeholder="https://…"
               />
             </div>
-            <button type="submit" className={btnClass}>
+            <DashboardSubmitButton size="md" pendingLabel="Gespeichert">
               Startseiten-SEO speichern
-            </button>
+            </DashboardSubmitButton>
           </form>
         </div>
       </div>
