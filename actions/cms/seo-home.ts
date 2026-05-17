@@ -1,7 +1,10 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { DashboardAuthError, requireDashboardUser } from "@/lib/auth/dashboard-user";
+import { redirectWithToast } from "@/lib/dashboard/redirect-with-toast";
+import { isNextRedirectError } from "@/lib/navigation/is-next-redirect";
 import {
   createServiceRoleClient,
   hasServiceRoleConfig,
@@ -55,10 +58,11 @@ export async function saveHomeSeo(formData: FormData): Promise<void> {
 
     revalidatePath("/");
     revalidatePath("/dashboard/seo");
+    redirectWithToast("/dashboard/seo", "seo_saved");
   } catch (e) {
+    if (isNextRedirectError(e)) throw e;
     if (e instanceof DashboardAuthError) {
-      console.warn("[cms:saveHomeSeo]", e.message);
-      return;
+      redirect("/auth/login");
     }
     console.error("[cms:saveHomeSeo]", e);
   }

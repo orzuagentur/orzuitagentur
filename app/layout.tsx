@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { LuxuryFooter } from "@/components/layout/luxury-footer";
-import { LuxuryNavbar } from "@/components/layout/luxury-navbar";
+import { ConditionalSiteChrome } from "@/components/layout/conditional-site-chrome";
 import { getMarketingContent } from "@/lib/cms/load-public";
 import "./globals.css";
 
@@ -40,12 +39,9 @@ export default async function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col bg-[var(--background)]">
-        <LuxuryNavbar nav={marketing.nav} />
-        <main className="flex flex-1 flex-col">{children}</main>
-        <LuxuryFooter
-          footer={marketing.footer}
-          navLinks={marketing.nav.links}
-        />
+        <ConditionalSiteChrome nav={marketing.nav} footer={marketing.footer}>
+          {children}
+        </ConditionalSiteChrome>
       </body>
     </html>
   );

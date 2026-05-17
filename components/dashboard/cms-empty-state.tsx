@@ -2,44 +2,16 @@ import Link from "next/link";
 import { seedCmsContent } from "@/actions/cms/seed";
 import { hasServiceRoleConfig } from "@/lib/supabase/service";
 
-const SEED_MESSAGES: Record<string, string> = {
-  seeded:
-    "Standard-Inhalte wurden geladen. Sie können sie jetzt bearbeiten.",
-  already: "Inhalte existieren bereits — nichts erneut eingefügt.",
-  service_role:
-    "SUPABASE_SERVICE_ROLE_KEY fehlt in Vercel. Integrationen prüfen und Redeploy.",
-  db: "Seed fehlgeschlagen. Wurde die SQL-Migration in Supabase ausgeführt?",
-};
-
 type CmsEmptyStateProps = {
   returnTo: string;
   tableLabel: string;
-  seedStatus?: string | null;
 };
 
-export function CmsEmptyState({
-  returnTo,
-  tableLabel,
-  seedStatus,
-}: CmsEmptyStateProps) {
+export function CmsEmptyState({ returnTo, tableLabel }: CmsEmptyStateProps) {
   const hasServiceRole = hasServiceRoleConfig();
-  const statusMessage = seedStatus ? SEED_MESSAGES[seedStatus] : undefined;
 
   return (
     <div className="max-w-2xl space-y-4 rounded-2xl border border-[var(--border)] bg-[color-mix(in_oklab,var(--surface-elevated)_85%,transparent)] px-4 py-8 text-sm text-[var(--muted)]">
-      {statusMessage ? (
-        <p
-          className={
-            seedStatus === "seeded" || seedStatus === "already"
-              ? "text-[var(--accent)]"
-              : "text-red-400/90"
-          }
-          role="status"
-        >
-          {statusMessage}
-        </p>
-      ) : null}
-
       {!hasServiceRole ? (
         <>
           <p>

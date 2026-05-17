@@ -14,22 +14,6 @@ const btnClass =
 const cardClass =
   "rounded-2xl border border-[var(--border)] bg-[color-mix(in_oklab,var(--surface-elevated)_85%,transparent)] p-6";
 
-const STATUS_MESSAGES: Record<string, string> = {
-  redeployed: "Redeploy wurde gestartet.",
-  env_saved: "Variable in Vercel gespeichert. Bitte Redeploy ausführen.",
-  env_deleted: "Variable in Vercel gelöscht.",
-  domain_added: "Domain wurde dem Projekt hinzugefügt. DNS in Vercel prüfen.",
-  not_configured:
-    "Vercel API nicht konfiguriert. Token, Project ID oder Deploy Hook setzen.",
-  env_validation: "Ungültige Eingabe für die Umgebungsvariable.",
-  domain_validation: "Ungültige Domain.",
-  deploy: "Redeploy fehlgeschlagen.",
-  env_api: "Vercel Env API Fehler.",
-  env_delete_code: "Falscher oder abgelaufener Code. Bitte erneut löschen starten.",
-  env_delete_expired: "Bestätigung abgelaufen. Bitte den Löschvorgang erneut starten.",
-  domain_api: "Domain konnte nicht hinzugefügt werden.",
-};
-
 function Flag({ ok, label }: { ok: boolean; label: string }) {
   return (
     <div className="flex items-center justify-between gap-4 rounded-xl border border-[var(--border)] bg-white/[0.02] px-4 py-3">
@@ -47,28 +31,8 @@ function Flag({ ok, label }: { ok: boolean; label: string }) {
   );
 }
 
-export default async function DashboardDeployPage({
-  searchParams,
-}: {
-  searchParams: Promise<Record<string, string | string[] | undefined>>;
-}) {
-  const params = await searchParams;
+export default async function DashboardDeployPage() {
   const data = await getDeployPanelData();
-  const statusKey =
-    typeof params.redeployed === "string"
-      ? "redeployed"
-      : typeof params.env_saved === "string"
-        ? "env_saved"
-        : typeof params.env_deleted === "string"
-          ? "env_deleted"
-          : typeof params.domain_added === "string"
-            ? "domain_added"
-            : typeof params.error === "string"
-              ? params.error
-              : null;
-  const statusMessage = statusKey ? STATUS_MESSAGES[statusKey] : undefined;
-  const deployMessage =
-    typeof params.message === "string" ? decodeURIComponent(params.message) : undefined;
 
   return (
     <>
@@ -78,15 +42,6 @@ export default async function DashboardDeployPage({
       />
 
       <div className="space-y-8 px-4 pb-16 pt-2 sm:px-8 lg:px-10">
-        {(statusMessage || deployMessage) && (
-          <p
-            className={`max-w-3xl text-sm ${statusKey && statusKey.startsWith("env") || statusKey === "redeployed" || statusKey === "domain_added" ? "text-[var(--accent)]" : "text-red-400/90"}`}
-            role="status"
-          >
-            {deployMessage ?? statusMessage}
-          </p>
-        )}
-
         <section className={`${cardClass} max-w-3xl`}>
           <h2 className="text-base font-semibold text-[var(--foreground)]">
             Verbindung

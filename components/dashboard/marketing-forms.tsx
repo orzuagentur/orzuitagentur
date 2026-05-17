@@ -24,7 +24,12 @@ export function MarketingForms({ marketing }: MarketingFormsProps) {
   return (
     <div className="max-w-3xl space-y-10 px-4 pb-16 pt-2 sm:px-8 lg:px-10">
       <section className="rounded-2xl border border-[var(--border)] bg-[color-mix(in_oklab,var(--surface-elevated)_85%,transparent)] p-6">
-        <h2 className="text-base font-semibold text-[var(--foreground)]">Hero</h2>
+        <h2 className="text-base font-semibold text-[var(--foreground)]">
+          Startseite · Hero
+        </h2>
+        <p className="mt-1 text-xs text-[var(--muted)]">
+          Öffentlicher Bereich #start — nicht die Admin-Navigation.
+        </p>
         <form action={saveHeroContent} className="mt-4 space-y-4">
           <div>
             <label className={labelClass} htmlFor="badge">Badge</label>
@@ -94,8 +99,11 @@ export function MarketingForms({ marketing }: MarketingFormsProps) {
 
       <section className="rounded-2xl border border-[var(--border)] bg-[color-mix(in_oklab,var(--surface-elevated)_85%,transparent)] p-6">
         <h2 className="text-base font-semibold text-[var(--foreground)]">
-          Navigation &amp; Footer
+          Öffentliche Website · Menü &amp; Footer
         </h2>
+        <p className="mt-1 text-xs text-[var(--muted)]">
+          Texte für Start, Portfolio, Projekt anfragen usw. auf der Kundenseite.
+        </p>
         <form action={saveNavAndFooter} className="mt-4 space-y-4">
           <p className="text-xs text-[var(--muted)]">Navigationszeilen (Anzahl fix wie in den Defaults)</p>
           {marketing.nav.links.map((link, i) => (
@@ -170,7 +178,9 @@ export function MarketingForms({ marketing }: MarketingFormsProps) {
       </section>
 
       <section className="rounded-2xl border border-[var(--border)] bg-[color-mix(in_oklab,var(--surface-elevated)_85%,transparent)] p-6">
-        <h2 className="text-base font-semibold text-[var(--foreground)]">Kontakt-Sektion</h2>
+        <h2 className="text-base font-semibold text-[var(--foreground)]">
+          Startseite · Kontakt (#kontakt)
+        </h2>
         <form action={saveContactBlock} className="mt-4 space-y-4">
           <div>
             <label className={labelClass} htmlFor="contact_kicker">Kicker</label>
@@ -220,8 +230,11 @@ export function MarketingForms({ marketing }: MarketingFormsProps) {
 
       <section className="rounded-2xl border border-[var(--border)] bg-[color-mix(in_oklab,var(--surface-elevated)_85%,transparent)] p-6">
         <h2 className="text-base font-semibold text-[var(--foreground)]">
-          Sektions-Überschriften
+          Startseite · Sektions-Überschriften
         </h2>
+        <p className="mt-1 text-xs text-[var(--muted)]">
+          Leistungen, Portfolio und Referenzen — nur Intro-Texte, keine Einträge.
+        </p>
         <form action={saveSectionIntros} className="mt-4 space-y-6">
           <fieldset className="space-y-3 rounded-xl border border-[var(--border)] p-4">
             <legend className="px-1 text-sm font-semibold text-[var(--foreground)]">Leistungen</legend>
@@ -253,7 +266,7 @@ export function MarketingForms({ marketing }: MarketingFormsProps) {
 
       <section className="rounded-2xl border border-[var(--border)] bg-[color-mix(in_oklab,var(--surface-elevated)_85%,transparent)] p-6">
         <h2 className="text-base font-semibold text-[var(--foreground)]">
-          Technologien
+          Startseite · Technologien
         </h2>
         <form action={saveTechnologiesSection} className="mt-4 space-y-4">
           <input className={inputClass} name="tech_kicker" defaultValue={marketing.technologiesSection.kicker} />

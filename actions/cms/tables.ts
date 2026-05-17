@@ -1,7 +1,10 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { DashboardAuthError, requireDashboardUser } from "@/lib/auth/dashboard-user";
+import { redirectWithToast } from "@/lib/dashboard/redirect-with-toast";
+import { isNextRedirectError } from "@/lib/navigation/is-next-redirect";
 import {
   portfolioRowSchema,
   serviceRowSchema,
@@ -79,7 +82,10 @@ export async function updateServiceRow(formData: FormData): Promise<void> {
     }
     revalidatePath("/");
     revalidatePath("/dashboard/services");
+    redirectWithToast("/dashboard/services", "updated");
   } catch (e) {
+    if (isNextRedirectError(e)) throw e;
+    if (e instanceof DashboardAuthError) redirect("/auth/login");
     logCmsError("updateServiceRow", e);
   }
 }
@@ -121,7 +127,10 @@ export async function updatePortfolioRow(formData: FormData): Promise<void> {
     }
     revalidatePath("/");
     revalidatePath("/dashboard/portfolio");
+    redirectWithToast("/dashboard/portfolio", "updated");
   } catch (e) {
+    if (isNextRedirectError(e)) throw e;
+    if (e instanceof DashboardAuthError) redirect("/auth/login");
     logCmsError("updatePortfolioRow", e);
   }
 }
@@ -160,7 +169,10 @@ export async function createTestimonialRow(formData: FormData): Promise<void> {
     }
     revalidatePath("/");
     revalidatePath("/dashboard/testimonials");
+    redirectWithToast("/dashboard/testimonials", "created");
   } catch (e) {
+    if (isNextRedirectError(e)) throw e;
+    if (e instanceof DashboardAuthError) redirect("/auth/login");
     logCmsError("createTestimonialRow", e);
   }
 }
@@ -180,7 +192,10 @@ export async function deleteTestimonialRow(formData: FormData): Promise<void> {
     }
     revalidatePath("/");
     revalidatePath("/dashboard/testimonials");
+    redirectWithToast("/dashboard/testimonials", "deleted");
   } catch (e) {
+    if (isNextRedirectError(e)) throw e;
+    if (e instanceof DashboardAuthError) redirect("/auth/login");
     logCmsError("deleteTestimonialRow", e);
   }
 }
@@ -223,7 +238,10 @@ export async function updateTestimonialRow(formData: FormData): Promise<void> {
     }
     revalidatePath("/");
     revalidatePath("/dashboard/testimonials");
+    redirectWithToast("/dashboard/testimonials", "updated");
   } catch (e) {
+    if (isNextRedirectError(e)) throw e;
+    if (e instanceof DashboardAuthError) redirect("/auth/login");
     logCmsError("updateTestimonialRow", e);
   }
 }

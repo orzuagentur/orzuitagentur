@@ -2,7 +2,6 @@ import { updateServiceRow } from "@/actions/cms/tables";
 import { CmsEmptyState } from "@/components/dashboard/cms-empty-state";
 import { DashboardPageHeader } from "@/components/dashboard/page-header";
 import { getServices } from "@/lib/dashboard/cms-services";
-import { seedStatusFromSearch } from "@/lib/dashboard/seed-search-params";
 
 const inputClass =
   "mt-1 w-full rounded-xl border border-[var(--border)] bg-[color-mix(in_oklab,var(--surface)_92%,black)] px-3 py-2 text-sm text-[var(--foreground)] outline-none focus:border-[color-mix(in_oklab,var(--accent)_45%,var(--border))]";
@@ -10,14 +9,8 @@ const labelClass = "block text-xs font-medium text-[var(--muted)]";
 const btnClass =
   "inline-flex h-9 items-center justify-center rounded-full border border-[var(--border-strong)] bg-[var(--surface-elevated)] px-4 text-xs font-semibold uppercase tracking-wider text-[var(--foreground)]";
 
-export default async function DashboardServicesPage({
-  searchParams,
-}: {
-  searchParams: Promise<Record<string, string | string[] | undefined>>;
-}) {
-  const params = await searchParams;
+export default async function DashboardServicesPage() {
   const rows = await getServices();
-  const seedStatus = seedStatusFromSearch(params);
 
   return (
     <>
@@ -28,11 +21,7 @@ export default async function DashboardServicesPage({
 
       <div className="space-y-8 px-4 pb-16 pt-2 sm:px-8 lg:px-10">
         {rows.length === 0 ? (
-          <CmsEmptyState
-            returnTo="/dashboard/services"
-            tableLabel="services"
-            seedStatus={seedStatus}
-          />
+          <CmsEmptyState returnTo="/dashboard/services" tableLabel="services" />
         ) : (
           rows.map((s) => (
             <div

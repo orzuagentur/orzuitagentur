@@ -6,6 +6,8 @@ import {
   upsertVercelEnvModal,
 } from "@/actions/vercel/env";
 import { DashboardModal } from "@/components/dashboard/dashboard-modal";
+import { useDashboardToast } from "@/components/dashboard/dashboard-toast-provider";
+import { TOAST_MESSAGES } from "@/lib/dashboard/toast-messages";
 import { useRouter } from "next/navigation";
 import {
   type FormEvent,
@@ -39,6 +41,7 @@ export function VercelEnvRowMenu({
   targets,
 }: VercelEnvRowMenuProps) {
   const router = useRouter();
+  const { pushToast } = useDashboardToast();
   const menuRef = useRef<HTMLDivElement>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [modal, setModal] = useState<ModalKind>(null);
@@ -109,6 +112,7 @@ export function VercelEnvRowMenu({
         return;
       }
       closeAll();
+      pushToast(TOAST_MESSAGES.env_saved.message, "success");
       router.refresh();
     });
   }
@@ -123,6 +127,7 @@ export function VercelEnvRowMenu({
         return;
       }
       closeAll();
+      pushToast(TOAST_MESSAGES.deleted.message, "success");
       router.refresh();
     });
   }

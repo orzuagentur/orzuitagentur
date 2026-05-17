@@ -1,7 +1,10 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { DashboardAuthError, requireDashboardUser } from "@/lib/auth/dashboard-user";
+import { redirectWithToast } from "@/lib/dashboard/redirect-with-toast";
+import { isNextRedirectError } from "@/lib/navigation/is-next-redirect";
 import { loadMarketingForAdmin, persistMarketing } from "@/lib/cms/persist";
 import { hasServiceRoleConfig } from "@/lib/supabase/service";
 import { marketingContentSchema } from "@/lib/cms/schema";
@@ -96,7 +99,10 @@ export async function saveHeroContent(formData: FormData): Promise<void> {
     await persistMarketing(next);
     revalidatePath("/");
     revalidatePath("/dashboard/content");
+    redirectWithToast("/dashboard/content", "hero_saved");
   } catch (e) {
+    if (isNextRedirectError(e)) throw e;
+    if (e instanceof DashboardAuthError) redirect("/auth/login");
     logCmsError("saveHeroContent", e);
   }
 }
@@ -130,7 +136,10 @@ export async function saveNavAndFooter(formData: FormData): Promise<void> {
     await persistMarketing(next);
     revalidatePath("/");
     revalidatePath("/dashboard/content");
+    redirectWithToast("/dashboard/content", "nav_saved");
   } catch (e) {
+    if (isNextRedirectError(e)) throw e;
+    if (e instanceof DashboardAuthError) redirect("/auth/login");
     logCmsError("saveNavAndFooter", e);
   }
 }
@@ -158,7 +167,10 @@ export async function saveContactBlock(formData: FormData): Promise<void> {
     await persistMarketing(next);
     revalidatePath("/");
     revalidatePath("/dashboard/content");
+    redirectWithToast("/dashboard/content", "contact_saved");
   } catch (e) {
+    if (isNextRedirectError(e)) throw e;
+    if (e instanceof DashboardAuthError) redirect("/auth/login");
     logCmsError("saveContactBlock", e);
   }
 }
@@ -193,7 +205,10 @@ export async function saveSectionIntros(formData: FormData): Promise<void> {
     await persistMarketing(next);
     revalidatePath("/");
     revalidatePath("/dashboard/content");
+    redirectWithToast("/dashboard/content", "sections_saved");
   } catch (e) {
+    if (isNextRedirectError(e)) throw e;
+    if (e instanceof DashboardAuthError) redirect("/auth/login");
     logCmsError("saveSectionIntros", e);
   }
 }
@@ -227,7 +242,10 @@ export async function saveTechnologiesSection(formData: FormData): Promise<void>
     await persistMarketing(next);
     revalidatePath("/");
     revalidatePath("/dashboard/content");
+    redirectWithToast("/dashboard/content", "tech_saved");
   } catch (e) {
+    if (isNextRedirectError(e)) throw e;
+    if (e instanceof DashboardAuthError) redirect("/auth/login");
     logCmsError("saveTechnologiesSection", e);
   }
 }
