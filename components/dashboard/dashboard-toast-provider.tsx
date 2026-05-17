@@ -46,8 +46,8 @@ function ToastCard({ message, variant }: { message: string; variant: ToastVarian
       role="status"
       className={`pointer-events-auto flex max-w-[min(20rem,calc(100vw-2rem))] items-start gap-3 rounded-2xl border px-4 py-3 shadow-[0_12px_40px_rgba(0,0,0,0.45)] backdrop-blur-md animate-[dashboard-toast-in_0.35s_ease-out] ${
         isError
-          ? "border-red-500/40 bg-[color-mix(in_oklab,#2a1215_92%,black)]"
-          : "border-[color-mix(in_oklab,var(--accent)_35%,var(--border))] bg-[color-mix(in_oklab,var(--surface-elevated)_94%,black)]"
+          ? "border-red-500/40 bg-[var(--toast-error-bg)]"
+          : "border-[color-mix(in_oklab,var(--accent)_35%,var(--border))] bg-[color-mix(in_oklab,var(--surface-elevated)_94%,var(--theme-blend))]"
       }`}
     >
       <span

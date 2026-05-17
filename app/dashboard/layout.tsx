@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { redirect } from "next/navigation";
+import { DashboardThemeScript } from "@/components/dashboard/dashboard-theme-script";
 import { DashboardShell } from "@/components/dashboard/dashboard-shell";
 import {
   DashboardAuthError,
@@ -20,5 +21,10 @@ export default async function DashboardLayout({
     throw e;
   }
 
-  return <DashboardShell>{children}</DashboardShell>;
+  return (
+    <>
+      <DashboardThemeScript />
+      <DashboardShell>{children}</DashboardShell>
+    </>
+  );
 }

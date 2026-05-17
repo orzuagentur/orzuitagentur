@@ -11,6 +11,88 @@
   --accent: #22d3ee;
   --accent-2: #a855f7;
   --accent-glow: rgba(34, 211, 238, 0.45);
+  --theme-blend: black;
+  --surface-input: color-mix(in oklab, var(--surface) 92%, var(--theme-blend));
+  --surface-panel: color-mix(in oklab, var(--surface-elevated) 88%, var(--theme-blend));
+  --hover-overlay: rgba(255, 255, 255, 0.04);
+  --inset-highlight: rgba(255, 255, 255, 0.04);
+  --toast-error-bg: color-mix(in oklab, #2a1215 92%, black);
+  --modal-danger-bg: color-mix(in oklab, var(--surface-elevated) 96%, #1a0505);
+}
+
+/* Admin dashboard — scoped light theme */
+.dashboard-theme-root,
+html[data-dashboard-theme="dark"] .dashboard-theme-root {
+  --background: #030306;
+  --foreground: #f4f4f5;
+  --muted: #a1a1aa;
+  --surface: #09090f;
+  --surface-elevated: #12121a;
+  --border: rgba(255, 255, 255, 0.06);
+  --border-strong: rgba(255, 255, 255, 0.12);
+  --accent: #22d3ee;
+  --accent-2: #a855f7;
+  --accent-glow: rgba(34, 211, 238, 0.45);
+  --theme-blend: black;
+  --surface-input: color-mix(in oklab, var(--surface) 92%, var(--theme-blend));
+  --surface-panel: color-mix(in oklab, var(--surface-elevated) 88%, var(--theme-blend));
+  --hover-overlay: rgba(255, 255, 255, 0.04);
+  --inset-highlight: rgba(255, 255, 255, 0.04);
+  --toast-error-bg: color-mix(in oklab, #2a1215 92%, black);
+  --modal-danger-bg: color-mix(in oklab, var(--surface-elevated) 96%, #1a0505);
+  color-scheme: dark;
+}
+
+.dashboard-theme-root[data-theme="light"],
+html[data-dashboard-theme="light"] .dashboard-theme-root {
+  --background: #f0f2f7;
+  --foreground: #0f172a;
+  --muted: #64748b;
+  --surface: #ffffff;
+  --surface-elevated: #ffffff;
+  --border: rgba(15, 23, 42, 0.1);
+  --border-strong: rgba(15, 23, 42, 0.16);
+  --accent: #0e7490;
+  --accent-2: #7c3aed;
+  --accent-glow: rgba(14, 116, 144, 0.22);
+  --theme-blend: #e2e8f0;
+  --surface-input: #ffffff;
+  --surface-panel: #f8fafc;
+  --hover-overlay: rgba(15, 23, 42, 0.05);
+  --inset-highlight: rgba(15, 23, 42, 0.06);
+  --toast-error-bg: #fef2f2;
+  --modal-danger-bg: #fff5f5;
+  color-scheme: light;
+}
+
+html[data-dashboard-theme="light"] .dashboard-theme-root input:not([type="checkbox"]):not([type="radio"]),
+html[data-dashboard-theme="light"] .dashboard-theme-root textarea,
+html[data-dashboard-theme="light"] .dashboard-theme-root select,
+.dashboard-theme-root[data-theme="light"] input:not([type="checkbox"]):not([type="radio"]),
+.dashboard-theme-root[data-theme="light"] textarea,
+.dashboard-theme-root[data-theme="light"] select {
+  background-color: var(--surface-input) !important;
+  color: var(--foreground);
+}
+
+.dashboard-theme-root[data-theme="light"] .dashboard-sidebar,
+html[data-dashboard-theme="light"] .dashboard-theme-root .dashboard-sidebar {
+  background: var(--surface-panel);
+}
+
+.dashboard-theme-root[data-theme="light"] [class*="bg-white/"],
+html[data-dashboard-theme="light"] .dashboard-theme-root [class*="bg-white/"] {
+  background-color: var(--hover-overlay) !important;
+}
+
+.dashboard-theme-root[data-theme="light"] [class*="color-mix(in_oklab,var(--surface-elevated)"],
+html[data-dashboard-theme="light"] .dashboard-theme-root [class*="color-mix(in_oklab,var(--surface-elevated)"] {
+  background: var(--surface-elevated) !important;
+}
+
+.dashboard-theme-root[data-theme="light"] [class*="color-mix(in_oklab,var(--surface)_"],
+html[data-dashboard-theme="light"] .dashboard-theme-root [class*="color-mix(in_oklab,var(--surface)_"] {
+  background: var(--surface-panel) !important;
 }
 
 @theme inline {

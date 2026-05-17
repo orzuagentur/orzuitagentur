@@ -9,7 +9,7 @@ export function DashboardSidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="dashboard-sidebar flex w-full shrink-0 flex-col border-b border-[var(--border)] bg-[color-mix(in_oklab,var(--surface)_88%,black)] px-4 py-6 lg:sticky lg:top-0 lg:h-screen lg:w-64 lg:border-b-0 lg:border-r lg:px-5 lg:py-8">
+    <aside className="dashboard-sidebar flex w-full shrink-0 flex-col border-b border-[var(--border)] bg-[var(--surface-panel)] px-4 py-6 lg:sticky lg:top-0 lg:h-screen lg:w-64 lg:border-b-0 lg:border-r lg:px-5 lg:py-8">
       <div className="mb-8">
         <Link
           href="/dashboard"
