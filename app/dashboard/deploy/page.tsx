@@ -2,7 +2,7 @@ import Link from "next/link";
 import { redeployProduction } from "@/actions/vercel/deploy";
 import { addVercelDomain } from "@/actions/vercel/domains";
 import { upsertVercelEnv } from "@/actions/vercel/env";
-import { DeleteVercelEnvButton } from "@/components/dashboard/delete-vercel-env-button";
+import { DeleteVercelEnvFlow } from "@/components/dashboard/delete-vercel-env-flow";
 import { DashboardPageHeader } from "@/components/dashboard/page-header";
 import { getDeployPanelData } from "@/lib/vercel/panel-data";
 
@@ -25,6 +25,8 @@ const STATUS_MESSAGES: Record<string, string> = {
   domain_validation: "Ungültige Domain.",
   deploy: "Redeploy fehlgeschlagen.",
   env_api: "Vercel Env API Fehler.",
+  env_delete_code: "Falscher oder abgelaufener Code. Bitte erneut löschen starten.",
+  env_delete_expired: "Bestätigung abgelaufen. Bitte den Löschvorgang erneut starten.",
   domain_api: "Domain konnte nicht hinzugefügt werden.",
 };
 
@@ -265,11 +267,8 @@ export default async function DashboardDeployPage({
                         <td className="py-3 pr-4 text-[var(--muted)]">
                           {env.type}
                         </td>
-                        <td className="py-3">
-                          <DeleteVercelEnvButton
-                            envId={env.id}
-                            envKey={env.key}
-                          />
+                        <td className="py-3 align-top">
+                          <DeleteVercelEnvFlow envId={env.id} envKey={env.key} />
                         </td>
                       </tr>
                     ))}
