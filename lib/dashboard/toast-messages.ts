@@ -34,6 +34,12 @@ export const TOAST_MESSAGES: Record<string, { message: string; variant: ToastVar
   },
   env_deleted: { message: "Переменная удалена", variant: "success" },
   domain_added: { message: "Домен добавлен", variant: "success" },
+  domain_removed: { message: "Домен удалён", variant: "success" },
+  domain_verified: { message: "DNS проверен", variant: "success" },
+  domain_verify_failed: {
+    message: "DNS ещё не настроен или проверка не удалась",
+    variant: "error",
+  },
 
   not_configured: { message: "Vercel API не настроен", variant: "error" },
   env_validation: { message: "Неверные данные переменной", variant: "error" },

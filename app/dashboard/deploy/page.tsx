@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { redeployProduction } from "@/actions/vercel/deploy";
-import { addVercelDomain } from "@/actions/vercel/domains";
 import { upsertVercelEnv } from "@/actions/vercel/env";
 import { VercelEnvRowMenu } from "@/components/dashboard/vercel-env-row-menu";
 import { DashboardPageHeader } from "@/components/dashboard/page-header";
@@ -139,48 +138,19 @@ export default async function DashboardDeployPage() {
         {data.configured ? (
           <section className={`${cardClass} max-w-3xl`}>
             <h2 className="text-base font-semibold text-[var(--foreground)]">
-              Domains
+              Domains &amp; DNS
             </h2>
-            {data.domains.length === 0 ? (
-              <p className="mt-2 text-sm text-[var(--muted)]">
-                Noch keine Custom Domains im Projekt.
-              </p>
-            ) : (
-              <ul className="mt-4 space-y-2">
-                {data.domains.map((d) => (
-                  <li
-                    key={d.name}
-                    className="rounded-xl border border-[var(--border)] px-4 py-3 text-sm"
-                  >
-                    <span className="font-medium text-[var(--foreground)]">
-                      {d.name}
-                    </span>
-                    <span
-                      className={`ml-3 text-xs uppercase tracking-wider ${d.verified ? "text-emerald-300" : "text-amber-300"}`}
-                    >
-                      {d.verified ? "verifiziert" : "DNS ausstehend"}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            )}
-            <form action={addVercelDomain} className="mt-6 flex flex-wrap items-end gap-3">
-              <div className="min-w-[200px] flex-1">
-                <label className={labelClass} htmlFor="domain">
-                  Domain hinzufügen
-                </label>
-                <input
-                  className={inputClass}
-                  id="domain"
-                  name="domain"
-                  placeholder="www.orzuit.de"
-                  required
-                />
-              </div>
-              <DashboardSubmitButton pendingLabel="Hinzugefügt">
-                Hinzufügen
-              </DashboardSubmitButton>
-            </form>
+            <p className="mt-2 text-sm text-[var(--muted)]">
+              {data.domains.length === 0
+                ? "Noch keine Custom Domain verbunden."
+                : `${data.domains.length} Domain(s) — DNS-Einträge und Status unter Domains.`}
+            </p>
+            <Link
+              href="/dashboard/domains"
+              className="mt-4 inline-flex text-sm font-semibold text-[var(--accent)] underline-offset-4 hover:underline"
+            >
+              Domains verwalten →
+            </Link>
           </section>
         ) : null}
 

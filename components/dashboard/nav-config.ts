@@ -28,6 +28,11 @@ export const DASHBOARD_NAV = [
   },
   { href: "/dashboard/seo", label: "SEO", description: "Meta & OG" },
   {
+    href: "/dashboard/domains",
+    label: "Domains",
+    description: "DNS · Custom Domain",
+  },
+  {
     href: "/dashboard/settings",
     label: "Einstellungen",
     description: "System & Marke",

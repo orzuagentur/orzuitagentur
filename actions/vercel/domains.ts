@@ -4,8 +4,14 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { DashboardAuthError, requireDashboardUser } from "@/lib/auth/dashboard-user";
+import { redirectWithToast } from "@/lib/dashboard/redirect-with-toast";
+import { isNextRedirectError } from "@/lib/navigation/is-next-redirect";
 import { isVercelApiReady } from "@/lib/vercel/config";
-import { addProjectDomain } from "@/lib/vercel/domains";
+import {
+  addProjectDomain,
+  removeProjectDomain,
+  verifyProjectDomain,
+} from "@/lib/vercel/domains";
 
 const domainSchema = z
   .string()
@@ -16,31 +22,85 @@ const domainSchema = z
     "Ungültige Domain",
   );
 
+function revalidateDomains() {
+  revalidatePath("/dashboard/domains");
+  revalidatePath("/dashboard/deploy");
+}
+
 export async function addVercelDomain(formData: FormData) {
   try {
     await requireDashboardUser();
 
     if (!isVercelApiReady()) {
-      redirect("/dashboard/deploy?error=not_configured");
+      redirectWithToast("/dashboard/domains", "not_configured", "error");
     }
 
     const parsed = domainSchema.safeParse(formData.get("domain"));
     if (!parsed.success) {
-      redirect("/dashboard/deploy?error=domain_validation");
+      redirectWithToast("/dashboard/domains", "domain_validation", "error");
     }
 
-    await addProjectDomain(parsed.data);
-    revalidatePath("/dashboard/deploy");
-    redirect("/dashboard/deploy?domain_added=1");
+    const redirectTo = formData.get("redirect");
+    const redirectTarget =
+      typeof redirectTo === "string" && redirectTo.trim() !== ""
+        ? redirectTo.trim().toLowerCase()
+        : undefined;
+
+    await addProjectDomain(parsed.data, { redirect: redirectTarget });
+    revalidateDomains();
+    redirectWithToast("/dashboard/domains", "domain_added");
   } catch (e) {
-    if (e instanceof DashboardAuthError) {
-      redirect("/auth/login");
-    }
-    if (e && typeof e === "object" && "digest" in e) {
-      const digest = String((e as { digest?: string }).digest ?? "");
-      if (digest.startsWith("NEXT_REDIRECT")) throw e;
-    }
+    if (isNextRedirectError(e)) throw e;
+    if (e instanceof DashboardAuthError) redirect("/auth/login");
     console.error("[vercel:addDomain]", e);
-    redirect("/dashboard/deploy?error=domain_api");
+    redirectWithToast("/dashboard/domains", "domain_api", "error");
+  }
+}
+
+export async function removeVercelDomain(formData: FormData) {
+  try {
+    await requireDashboardUser();
+
+    if (!isVercelApiReady()) {
+      redirectWithToast("/dashboard/domains", "not_configured", "error");
+    }
+
+    const parsed = domainSchema.safeParse(formData.get("domain"));
+    if (!parsed.success) {
+      redirectWithToast("/dashboard/domains", "domain_validation", "error");
+    }
+
+    await removeProjectDomain(parsed.data);
+    revalidateDomains();
+    redirectWithToast("/dashboard/domains", "domain_removed");
+  } catch (e) {
+    if (isNextRedirectError(e)) throw e;
+    if (e instanceof DashboardAuthError) redirect("/auth/login");
+    console.error("[vercel:removeDomain]", e);
+    redirectWithToast("/dashboard/domains", "domain_api", "error");
+  }
+}
+
+export async function verifyVercelDomain(formData: FormData) {
+  try {
+    await requireDashboardUser();
+
+    if (!isVercelApiReady()) {
+      redirectWithToast("/dashboard/domains", "not_configured", "error");
+    }
+
+    const parsed = domainSchema.safeParse(formData.get("domain"));
+    if (!parsed.success) {
+      redirectWithToast("/dashboard/domains", "domain_validation", "error");
+    }
+
+    await verifyProjectDomain(parsed.data);
+    revalidateDomains();
+    redirectWithToast("/dashboard/domains", "domain_verified");
+  } catch (e) {
+    if (isNextRedirectError(e)) throw e;
+    if (e instanceof DashboardAuthError) redirect("/auth/login");
+    console.error("[vercel:verifyDomain]", e);
+    redirectWithToast("/dashboard/domains", "domain_verify_failed", "error");
   }
 }
