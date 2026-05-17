@@ -121,6 +121,87 @@ export async function upsertVercelEnv(formData: FormData) {
   }
 }
 
+export type ActionResult = { ok: true } | { ok: false; error: string };
+
+export async function upsertVercelEnvModal(formData: FormData): Promise<ActionResult> {
+  try {
+    await requireDashboardUser();
+
+    if (!isVercelApiReady()) {
+      return { ok: false, error: "Vercel API nicht konfiguriert." };
+    }
+
+    const parsed = envUpsertSchema.safeParse({
+      key: formData.get("key"),
+      value: formData.get("value"),
+      sensitive: formData.get("sensitive") === "on",
+    });
+
+    if (!parsed.success) {
+      return { ok: false, error: "Ungültige Eingabe." };
+    }
+
+    const targets = readTargets(formData);
+
+    await upsertProjectEnvVar({
+      key: parsed.data.key,
+      value: parsed.data.value,
+      targets,
+      sensitive: parsed.data.sensitive,
+    });
+
+    revalidatePath("/dashboard/deploy");
+    return { ok: true };
+  } catch (e) {
+    if (e instanceof DashboardAuthError) {
+      return { ok: false, error: "Nicht angemeldet." };
+    }
+    console.error("[vercel:upsertEnvModal]", e);
+    return { ok: false, error: "Speichern fehlgeschlagen." };
+  }
+}
+
+export async function confirmDeleteVercelEnvModal(
+  envId: string,
+  confirmCode: string,
+): Promise<ActionResult> {
+  try {
+    await requireDashboardUser();
+
+    if (!isVercelApiReady()) {
+      return { ok: false, error: "Vercel API nicht konfiguriert." };
+    }
+
+    const id = envId.trim();
+    const parsedCode = deleteCodeSchema.safeParse(confirmCode.trim());
+    if (!id || !parsedCode.success) {
+      return { ok: false, error: "Ungültiger Code oder Variable." };
+    }
+
+    const cookieStore = await cookies();
+    const raw = cookieStore.get(VERCEL_ENV_DELETE_COOKIE)?.value;
+    if (!raw) {
+      return { ok: false, error: "Bestätigung abgelaufen. Bitte erneut starten." };
+    }
+
+    const payload = parseDeletePayload(raw);
+    if (!payload || !verifyDeleteCode(payload, id, parsedCode.data)) {
+      return { ok: false, error: "Falscher Code." };
+    }
+
+    await deleteProjectEnvVar(id);
+    cookieStore.delete(VERCEL_ENV_DELETE_COOKIE);
+    revalidatePath("/dashboard/deploy");
+    return { ok: true };
+  } catch (e) {
+    if (e instanceof DashboardAuthError) {
+      return { ok: false, error: "Nicht angemeldet." };
+    }
+    console.error("[vercel:confirmDeleteEnvModal]", e);
+    return { ok: false, error: "Löschen fehlgeschlagen." };
+  }
+}
+
 export async function confirmDeleteVercelEnv(formData: FormData) {
   try {
     await requireDashboardUser();

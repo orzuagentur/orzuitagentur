@@ -2,7 +2,7 @@ import Link from "next/link";
 import { redeployProduction } from "@/actions/vercel/deploy";
 import { addVercelDomain } from "@/actions/vercel/domains";
 import { upsertVercelEnv } from "@/actions/vercel/env";
-import { DeleteVercelEnvFlow } from "@/components/dashboard/delete-vercel-env-flow";
+import { VercelEnvRowMenu } from "@/components/dashboard/vercel-env-row-menu";
 import { DashboardPageHeader } from "@/components/dashboard/page-header";
 import { getDeployPanelData } from "@/lib/vercel/panel-data";
 
@@ -267,8 +267,13 @@ export default async function DashboardDeployPage({
                         <td className="py-3 pr-4 text-[var(--muted)]">
                           {env.type}
                         </td>
-                        <td className="py-3 align-top">
-                          <DeleteVercelEnvFlow envId={env.id} envKey={env.key} />
+                        <td className="py-3 text-right">
+                          <VercelEnvRowMenu
+                            envId={env.id}
+                            envKey={env.key}
+                            envType={env.type}
+                            targets={env.target}
+                          />
                         </td>
                       </tr>
                     ))}
