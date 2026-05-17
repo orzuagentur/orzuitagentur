@@ -5,8 +5,26 @@ import {
   createServiceRoleClient,
   hasServiceRoleConfig,
 } from "@/lib/supabase/service";
-import { sendLeadEmail } from "@/services/email/resend";
+import { getMarketingContent } from "@/lib/cms/load-public";
+import {
+  sendLeadConfirmationEmail,
+  sendLeadEmail,
+} from "@/services/email/resend";
 import { sendLeadTelegram } from "@/services/telegram/notify";
+
+async function notifyLead(data: LeadInput) {
+  const { contact } = await getMarketingContent();
+  await Promise.allSettled([
+    sendLeadEmail(data),
+    sendLeadConfirmationEmail(data, {
+      successTitle: contact.successTitle,
+      successBody: contact.successBody,
+      teamEmail: contact.email,
+      responseTime: contact.responseTime,
+    }),
+    sendLeadTelegram(data),
+  ]);
+}
 
 export type SubmitLeadResult =
   | { ok: true }
@@ -40,7 +58,7 @@ export async function submitLead(raw: unknown): Promise<SubmitLeadResult> {
   const data: LeadInput = parsed.data;
 
   if (!hasServiceRoleConfig()) {
-    await Promise.allSettled([sendLeadEmail(data), sendLeadTelegram(data)]);
+    await notifyLead(data);
     return { ok: true };
   }
 
@@ -63,7 +81,7 @@ export async function submitLead(raw: unknown): Promise<SubmitLeadResult> {
     };
   }
 
-  await Promise.allSettled([sendLeadEmail(data), sendLeadTelegram(data)]);
+  await notifyLead(data);
 
   return { ok: true };
 }
