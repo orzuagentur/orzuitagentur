@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { ConditionalSiteChrome } from "@/components/layout/conditional-site-chrome";
 import { getMarketingContent } from "@/lib/cms/load-public";
 import "./globals.css";
@@ -42,6 +44,8 @@ export default async function RootLayout({
         <ConditionalSiteChrome nav={marketing.nav} footer={marketing.footer}>
           {children}
         </ConditionalSiteChrome>
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
