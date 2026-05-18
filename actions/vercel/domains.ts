@@ -1,10 +1,11 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { DashboardAuthError, requireDashboardUser } from "@/lib/auth/dashboard-user";
+import { revalidateSettingsDashboard } from "@/lib/dashboard/revalidate-settings";
 import { redirectWithToast } from "@/lib/dashboard/redirect-with-toast";
+import { SETTINGS_DOMAINS_PATH } from "@/lib/dashboard/settings-sections";
 import { isNextRedirectError } from "@/lib/navigation/is-next-redirect";
 import { isVercelApiReady } from "@/lib/vercel/config";
 import {
@@ -23,8 +24,7 @@ const domainSchema = z
   );
 
 function revalidateDomains() {
-  revalidatePath("/dashboard/domains");
-  revalidatePath("/dashboard/deploy");
+  revalidateSettingsDashboard();
 }
 
 export async function addVercelDomain(formData: FormData) {
@@ -32,12 +32,12 @@ export async function addVercelDomain(formData: FormData) {
     await requireDashboardUser();
 
     if (!isVercelApiReady()) {
-      redirectWithToast("/dashboard/domains", "not_configured", "error");
+      redirectWithToast(SETTINGS_DOMAINS_PATH, "not_configured", "error");
     }
 
     const parsed = domainSchema.safeParse(formData.get("domain"));
     if (!parsed.success) {
-      redirectWithToast("/dashboard/domains", "domain_validation", "error");
+      redirectWithToast(SETTINGS_DOMAINS_PATH, "domain_validation", "error");
     }
 
     const redirectTo = formData.get("redirect");
@@ -48,12 +48,12 @@ export async function addVercelDomain(formData: FormData) {
 
     await addProjectDomain(parsed.data, { redirect: redirectTarget });
     revalidateDomains();
-    redirectWithToast("/dashboard/domains", "domain_added");
+    redirectWithToast(SETTINGS_DOMAINS_PATH, "domain_added");
   } catch (e) {
     if (isNextRedirectError(e)) throw e;
     if (e instanceof DashboardAuthError) redirect("/auth/login");
     console.error("[vercel:addDomain]", e);
-    redirectWithToast("/dashboard/domains", "domain_api", "error");
+    redirectWithToast(SETTINGS_DOMAINS_PATH, "domain_api", "error");
   }
 }
 
@@ -62,22 +62,22 @@ export async function removeVercelDomain(formData: FormData) {
     await requireDashboardUser();
 
     if (!isVercelApiReady()) {
-      redirectWithToast("/dashboard/domains", "not_configured", "error");
+      redirectWithToast(SETTINGS_DOMAINS_PATH, "not_configured", "error");
     }
 
     const parsed = domainSchema.safeParse(formData.get("domain"));
     if (!parsed.success) {
-      redirectWithToast("/dashboard/domains", "domain_validation", "error");
+      redirectWithToast(SETTINGS_DOMAINS_PATH, "domain_validation", "error");
     }
 
     await removeProjectDomain(parsed.data);
     revalidateDomains();
-    redirectWithToast("/dashboard/domains", "domain_removed");
+    redirectWithToast(SETTINGS_DOMAINS_PATH, "domain_removed");
   } catch (e) {
     if (isNextRedirectError(e)) throw e;
     if (e instanceof DashboardAuthError) redirect("/auth/login");
     console.error("[vercel:removeDomain]", e);
-    redirectWithToast("/dashboard/domains", "domain_api", "error");
+    redirectWithToast(SETTINGS_DOMAINS_PATH, "domain_api", "error");
   }
 }
 
@@ -86,21 +86,21 @@ export async function verifyVercelDomain(formData: FormData) {
     await requireDashboardUser();
 
     if (!isVercelApiReady()) {
-      redirectWithToast("/dashboard/domains", "not_configured", "error");
+      redirectWithToast(SETTINGS_DOMAINS_PATH, "not_configured", "error");
     }
 
     const parsed = domainSchema.safeParse(formData.get("domain"));
     if (!parsed.success) {
-      redirectWithToast("/dashboard/domains", "domain_validation", "error");
+      redirectWithToast(SETTINGS_DOMAINS_PATH, "domain_validation", "error");
     }
 
     await verifyProjectDomain(parsed.data);
     revalidateDomains();
-    redirectWithToast("/dashboard/domains", "domain_verified");
+    redirectWithToast(SETTINGS_DOMAINS_PATH, "domain_verified");
   } catch (e) {
     if (isNextRedirectError(e)) throw e;
     if (e instanceof DashboardAuthError) redirect("/auth/login");
     console.error("[vercel:verifyDomain]", e);
-    redirectWithToast("/dashboard/domains", "domain_verify_failed", "error");
+    redirectWithToast(SETTINGS_DOMAINS_PATH, "domain_verify_failed", "error");
   }
 }

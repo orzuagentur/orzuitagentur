@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { DashboardAuthError, requireDashboardUser } from "@/lib/auth/dashboard-user";
+import { revalidateSettingsDashboard } from "@/lib/dashboard/revalidate-settings";
 import { redirectWithToast } from "@/lib/dashboard/redirect-with-toast";
 import { isNextRedirectError } from "@/lib/navigation/is-next-redirect";
 import {
@@ -57,8 +58,8 @@ export async function saveHomeSeo(formData: FormData): Promise<void> {
     }
 
     revalidatePath("/");
-    revalidatePath("/dashboard/seo");
-    redirectWithToast("/dashboard/seo", "seo_saved");
+    revalidateSettingsDashboard();
+    redirectWithToast("/dashboard/settings/seo", "seo_saved");
   } catch (e) {
     if (isNextRedirectError(e)) throw e;
     if (e instanceof DashboardAuthError) {

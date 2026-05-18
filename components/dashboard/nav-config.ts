@@ -31,25 +31,9 @@ export const DASHBOARD_NAV = [
     label: "Warum OrzuIT",
     description: "Startseite · Arbeitsweise",
   },
-  { href: "/dashboard/seo", label: "SEO", description: "Meta & OG" },
-  {
-    href: "/dashboard/domains",
-    label: "Domains",
-    description: "DNS · Custom Domain",
-  },
   {
     href: "/dashboard/settings",
     label: "Einstellungen",
-    description: "System & Marke",
-  },
-  {
-    href: "/dashboard/integrations",
-    label: "Integrationen",
-    description: "Resend, Telegram, API",
-  },
-  {
-    href: "/dashboard/deploy",
-    label: "Deploy",
-    description: "Vercel · Redeploy · Env",
+    description: "System, SEO, Domains, Integrationen & Deploy",
   },
 ] as const;

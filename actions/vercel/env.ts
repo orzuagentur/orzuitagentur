@@ -1,10 +1,11 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { DashboardAuthError, requireDashboardUser } from "@/lib/auth/dashboard-user";
+import { revalidateSettingsDashboard } from "@/lib/dashboard/revalidate-settings";
+import { SETTINGS_DEPLOY_PATH } from "@/lib/dashboard/settings-sections";
 import { isVercelApiReady } from "@/lib/vercel/config";
 import { deleteProjectEnvVar, upsertProjectEnvVar } from "@/lib/vercel/env";
 import {
@@ -66,7 +67,7 @@ export async function issueDeleteVercelEnvCode(
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
       maxAge: 600,
-      path: "/dashboard/deploy",
+      path: SETTINGS_DEPLOY_PATH,
     });
 
     return { ok: true, code };
@@ -84,7 +85,7 @@ export async function upsertVercelEnv(formData: FormData) {
     await requireDashboardUser();
 
     if (!isVercelApiReady()) {
-      redirect("/dashboard/deploy?error=not_configured");
+      redirect(`${SETTINGS_DEPLOY_PATH}?error=not_configured`);
     }
 
     const parsed = envUpsertSchema.safeParse({
@@ -94,7 +95,7 @@ export async function upsertVercelEnv(formData: FormData) {
     });
 
     if (!parsed.success) {
-      redirect("/dashboard/deploy?error=env_validation");
+      redirect(`${SETTINGS_DEPLOY_PATH}?error=env_validation`);
     }
 
     const targets = readTargets(formData);
@@ -106,8 +107,8 @@ export async function upsertVercelEnv(formData: FormData) {
       sensitive: parsed.data.sensitive,
     });
 
-    revalidatePath("/dashboard/deploy");
-    redirect("/dashboard/deploy?env_saved=1");
+    revalidateSettingsDashboard();
+    redirect(`${SETTINGS_DEPLOY_PATH}?env_saved=1`);
   } catch (e) {
     if (e instanceof DashboardAuthError) {
       redirect("/auth/login");
@@ -117,7 +118,7 @@ export async function upsertVercelEnv(formData: FormData) {
       if (digest.startsWith("NEXT_REDIRECT")) throw e;
     }
     console.error("[vercel:upsertEnv]", e);
-    redirect("/dashboard/deploy?error=env_api");
+    redirect(`${SETTINGS_DEPLOY_PATH}?error=env_api`);
   }
 }
 
@@ -150,7 +151,7 @@ export async function upsertVercelEnvModal(formData: FormData): Promise<ActionRe
       sensitive: parsed.data.sensitive,
     });
 
-    revalidatePath("/dashboard/deploy");
+    revalidateSettingsDashboard();
     return { ok: true };
   } catch (e) {
     if (e instanceof DashboardAuthError) {
@@ -191,7 +192,7 @@ export async function confirmDeleteVercelEnvModal(
 
     await deleteProjectEnvVar(id);
     cookieStore.delete(VERCEL_ENV_DELETE_COOKIE);
-    revalidatePath("/dashboard/deploy");
+    revalidateSettingsDashboard();
     return { ok: true };
   } catch (e) {
     if (e instanceof DashboardAuthError) {
@@ -207,39 +208,39 @@ export async function confirmDeleteVercelEnv(formData: FormData) {
     await requireDashboardUser();
 
     if (!isVercelApiReady()) {
-      redirect("/dashboard/deploy?error=not_configured");
+      redirect(`${SETTINGS_DEPLOY_PATH}?error=not_configured`);
     }
 
     const envId = formData.get("envId");
     const codeRaw = formData.get("confirmCode");
 
     if (typeof envId !== "string" || !envId.trim()) {
-      redirect("/dashboard/deploy?error=env_validation");
+      redirect(`${SETTINGS_DEPLOY_PATH}?error=env_validation`);
     }
 
     const parsedCode = deleteCodeSchema.safeParse(
       typeof codeRaw === "string" ? codeRaw.trim() : "",
     );
     if (!parsedCode.success) {
-      redirect("/dashboard/deploy?error=env_delete_code");
+      redirect(`${SETTINGS_DEPLOY_PATH}?error=env_delete_code`);
     }
 
     const cookieStore = await cookies();
     const raw = cookieStore.get(VERCEL_ENV_DELETE_COOKIE)?.value;
     if (!raw) {
-      redirect("/dashboard/deploy?error=env_delete_expired");
+      redirect(`${SETTINGS_DEPLOY_PATH}?error=env_delete_expired`);
     }
 
     const payload = parseDeletePayload(raw);
     if (!payload || !verifyDeleteCode(payload, envId.trim(), parsedCode.data)) {
-      redirect("/dashboard/deploy?error=env_delete_code");
+      redirect(`${SETTINGS_DEPLOY_PATH}?error=env_delete_code`);
     }
 
     await deleteProjectEnvVar(envId.trim());
     cookieStore.delete(VERCEL_ENV_DELETE_COOKIE);
 
-    revalidatePath("/dashboard/deploy");
-    redirect("/dashboard/deploy?env_deleted=1");
+    revalidateSettingsDashboard();
+    redirect(`${SETTINGS_DEPLOY_PATH}?env_deleted=1`);
   } catch (e) {
     if (e instanceof DashboardAuthError) {
       redirect("/auth/login");
@@ -249,6 +250,6 @@ export async function confirmDeleteVercelEnv(formData: FormData) {
       if (digest.startsWith("NEXT_REDIRECT")) throw e;
     }
     console.error("[vercel:confirmDeleteEnv]", e);
-    redirect("/dashboard/deploy?error=env_api");
+    redirect(`${SETTINGS_DEPLOY_PATH}?error=env_api`);
   }
 }

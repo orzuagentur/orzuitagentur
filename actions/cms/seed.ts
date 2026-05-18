@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { DashboardAuthError, requireDashboardUser } from "@/lib/auth/dashboard-user";
+import { revalidateSettingsDashboard } from "@/lib/dashboard/revalidate-settings";
 import {
   SEED_HOME_SEO,
   SEED_LEGAL_VALUE,
@@ -116,7 +117,7 @@ export async function seedCmsContent(formData: FormData) {
     revalidatePath("/dashboard/legal");
     revalidatePath("/impressum");
     revalidatePath("/datenschutz");
-    revalidatePath("/dashboard/seo");
+    revalidateSettingsDashboard();
 
     if (inserted.length === 0) {
       redirect(`${returnTo}?seed_info=already`);

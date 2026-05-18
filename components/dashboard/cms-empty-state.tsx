@@ -24,7 +24,7 @@ export function CmsEmptyState({ returnTo, tableLabel }: CmsEmptyStateProps) {
             setzen (Supabase → Settings → API → service_role) und neu deployen.
           </p>
           <Link
-            href="/dashboard/integrations"
+            href="/dashboard/settings/integrations"
             className="inline-flex text-sm font-semibold text-[var(--accent)] underline-offset-4 hover:underline"
           >
             Integrationen prüfen →
