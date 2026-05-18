@@ -103,18 +103,18 @@ export function LuxuryFooter({ footer, navLinks }: LuxuryFooterProps) {
             © {year} {footer.copyrightName}. Alle Rechte vorbehalten.
           </p>
           <div className="flex flex-wrap items-center gap-6">
-            <span
-              className="cursor-help border-b border-dotted border-[var(--border-strong)] text-[var(--foreground)]/90"
-              title="Seite folgt mit rechtlicher Ausarbeitung"
+            <Link
+              href="/impressum"
+              className="border-b border-transparent text-[var(--foreground)]/90 transition-colors hover:border-[var(--border-strong)] hover:text-[var(--foreground)]"
             >
               {footer.impressumLabel}
-            </span>
-            <span
-              className="cursor-help border-b border-dotted border-[var(--border-strong)] text-[var(--foreground)]/90"
-              title="Seite folgt mit rechtlicher Ausarbeitung"
+            </Link>
+            <Link
+              href="/datenschutz"
+              className="border-b border-transparent text-[var(--foreground)]/90 transition-colors hover:border-[var(--border-strong)] hover:text-[var(--foreground)]"
             >
               {footer.privacyLabel}
-            </span>
+            </Link>
           </div>
         </div>
       </div>

@@ -2,6 +2,7 @@
 
 import { submitLead } from "@/actions/submit-lead";
 import type { ContactContent } from "@/lib/cms/types";
+import Link from "next/link";
 import { type FormEvent, useId, useMemo, useState, useTransition } from "react";
 
 type FieldKey = "name" | "email" | "company" | "message" | "privacy";
@@ -292,12 +293,12 @@ export function ContactSection({ contact }: ContactSectionProps) {
                       />
                       <span>
                         Ich habe die{" "}
-                        <span
-                          className="font-medium text-[var(--foreground)] underline decoration-[var(--muted)] decoration-dotted underline-offset-4"
-                          title="Vollständige Seite folgt mit Backend-Release"
+                        <Link
+                          href="/datenschutz"
+                          className="font-medium text-[var(--foreground)] underline decoration-[var(--muted)] underline-offset-4 hover:decoration-[var(--accent)]"
                         >
                           Datenschutzhinweise
-                        </span>{" "}
+                        </Link>{" "}
                         zur Kenntnis genommen.{" "}
                         <span className="text-[var(--accent)]">*</span>
                       </span>
