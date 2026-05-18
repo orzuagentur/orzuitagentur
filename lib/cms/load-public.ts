@@ -12,6 +12,7 @@ import { marketingContentSchema } from "@/lib/cms/schema";
 import type {
   HomeSeo,
   MarketingContent,
+  NavContent,
   PortfolioCard,
   ServiceCard,
   TestimonialCard,
@@ -25,6 +26,16 @@ function hasPublicSupabaseEnv() {
 
 import { enrichDefaultPortfolioCards, enrichPortfolioCard } from "@/lib/cms/enrich-portfolio";
 import { visualClassForSlug } from "@/lib/cms/portfolio-visuals";
+import { normalizeNavHref } from "@/lib/navigation/section-scroll";
+function normalizeNavContent(nav: NavContent): NavContent {
+  return {
+    ...nav,
+    links: nav.links.map((link) => ({
+      ...link,
+      href: normalizeNavHref(link.href),
+    })),
+  };
+}
 
 function marketingFromRow(
   raw: unknown,
@@ -32,18 +43,23 @@ function marketingFromRow(
   const base = cloneMarketingDefault(DEFAULT_MARKETING);
   if (!raw || typeof raw !== "object") {
     const parsed = marketingContentSchema.safeParse(base);
-    return parsed.success ? parsed.data : DEFAULT_MARKETING;
+    const marketing = parsed.success ? parsed.data : DEFAULT_MARKETING;
+    return { ...marketing, nav: normalizeNavContent(marketing.nav) };
   }
   const merged = deepMerge(
     base as unknown as Record<string, unknown>,
     raw as Record<string, unknown>,
   );
   const parsed = marketingContentSchema.safeParse(merged);
-  return parsed.success ? parsed.data : DEFAULT_MARKETING;
+  const marketing = parsed.success ? parsed.data : DEFAULT_MARKETING;
+  return {
+    ...marketing,
+    nav: normalizeNavContent(marketing.nav),
+  };
 }
 
 export const getMarketingContent = cache(async (): Promise<MarketingContent> => {
-  if (!hasPublicSupabaseEnv()) return DEFAULT_MARKETING;
+  if (!hasPublicSupabaseEnv()) return { ...DEFAULT_MARKETING, nav: normalizeNavContent(DEFAULT_MARKETING.nav) };
   try {
     const supabase = await createServerSupabaseClient();
     const { data, error } = await supabase
@@ -51,10 +67,10 @@ export const getMarketingContent = cache(async (): Promise<MarketingContent> => 
       .select("value")
       .eq("key", "marketing")
       .maybeSingle();
-    if (error || data?.value == null) return DEFAULT_MARKETING;
+    if (error || data?.value == null) return normalizeNavContent(DEFAULT_MARKETING);
     return marketingFromRow(data.value);
   } catch {
-    return DEFAULT_MARKETING;
+    return { ...DEFAULT_MARKETING, nav: normalizeNavContent(DEFAULT_MARKETING.nav) };
   }
 });
 

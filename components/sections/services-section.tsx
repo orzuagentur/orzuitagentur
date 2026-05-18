@@ -16,7 +16,7 @@ export function ServicesSection({ section, services }: ServicesSectionProps) {
     <section
       id="leistungen"
       aria-labelledby="services-heading"
-      className="relative isolate overflow-hidden border-t border-[var(--border)] py-20 sm:py-28 lg:py-32"
+      className="home-section-anchor relative isolate overflow-hidden border-t border-[var(--border)] py-20 sm:py-28 lg:py-32"
     >
       <div
         aria-hidden

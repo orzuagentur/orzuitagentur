@@ -15,15 +15,11 @@ export function TestimonialsSection({
   section,
   items,
 }: TestimonialsSectionProps) {
-  if (items.length === 0) {
-    return null;
-  }
-
   return (
     <section
       id="warum-orzuit"
       aria-labelledby="why-heading"
-      className="home-section-deferred relative isolate overflow-hidden border-t border-[var(--border)] py-20 sm:py-28 lg:py-32"
+      className="home-section-anchor home-section-deferred relative isolate overflow-hidden border-t border-[var(--border)] py-20 sm:py-28 lg:py-32"
     >
       <div
         aria-hidden
@@ -52,6 +48,7 @@ export function TestimonialsSection({
           </p>
         </header>
 
+        {items.length > 0 ? (
         <ul className="mt-14 grid list-none grid-cols-1 gap-5 lg:mt-16 lg:grid-cols-3 lg:gap-6">
           {items.map((item, index) => {
             const revealClass = REVEAL[Math.min(index, REVEAL.length - 1)];
@@ -82,10 +79,13 @@ export function TestimonialsSection({
             );
           })}
         </ul>
+        ) : null}
 
+        {section.footnote ? (
         <p className="testimonial-reveal testimonial-reveal-foot mt-12 text-center text-sm text-[var(--muted)] lg:mt-14">
           {section.footnote}
         </p>
+        ) : null}
       </div>
     </section>
   );

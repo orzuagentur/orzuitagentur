@@ -6,6 +6,7 @@ import { DashboardAuthError, requireDashboardUser } from "@/lib/auth/dashboard-u
 import { redirectWithToast } from "@/lib/dashboard/redirect-with-toast";
 import { CONTENT_SECTION_PATHS } from "@/lib/dashboard/content-sections";
 import { isNextRedirectError } from "@/lib/navigation/is-next-redirect";
+import { normalizeNavHref } from "@/lib/navigation/section-scroll";
 import { loadMarketingForAdmin, persistMarketing } from "@/lib/cms/persist";
 import { hasServiceRoleConfig } from "@/lib/supabase/service";
 import { marketingContentSchema } from "@/lib/cms/schema";
@@ -124,7 +125,7 @@ export async function saveNavAndFooter(formData: FormData): Promise<void> {
     await guard();
     const m = await loadMarketingForAdmin();
     const links = m.nav.links.map((link, i) => ({
-      href: str(formData, `nav_href_${i}`, 200) || link.href,
+      href: normalizeNavHref(str(formData, `nav_href_${i}`, 200) || link.href),
       label: str(formData, `nav_label_${i}`, 120) || link.label,
     }));
     const next = {

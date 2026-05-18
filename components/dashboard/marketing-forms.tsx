@@ -117,7 +117,13 @@ export function NavFooterForm({ marketing }: MarketingFormsProps) {
             <div key={`nav-${i}`} className="grid gap-2 sm:grid-cols-2">
               <div>
                 <label className={labelClass} htmlFor={`nav_href_${i}`}>Link {i + 1} (href)</label>
-                <input className={inputClass} id={`nav_href_${i}`} name={`nav_href_${i}`} defaultValue={link.href} />
+                <input
+                  className={inputClass}
+                  id={`nav_href_${i}`}
+                  name={`nav_href_${i}`}
+                  defaultValue={link.href}
+                  placeholder={link.href.includes("warum") || link.href.includes("orzu") ? "#warum-orzuit" : "#start"}
+                />
               </div>
               <div>
                 <label className={labelClass} htmlFor={`nav_label_${i}`}>Label {i + 1}</label>

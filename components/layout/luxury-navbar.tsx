@@ -2,16 +2,44 @@
 
 import { MotionNavLink } from "@/components/motion";
 import type { NavContent } from "@/lib/cms/types";
+import {
+  normalizeNavHref,
+  pickActiveSectionId,
+  scrollToSectionId,
+} from "@/lib/navigation/section-scroll";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState, type MouseEvent } from "react";
 
 type LuxuryNavbarProps = {
   nav: NavContent;
 };
 
 export function LuxuryNavbar({ nav }: LuxuryNavbarProps) {
-  const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [activeHash, setActiveHash] = useState("#start");
+
+  const navLinks = useMemo(
+    () =>
+      nav.links.map((link) => ({
+        ...link,
+        href: normalizeNavHref(link.href),
+      })),
+    [nav.links],
+  );
+
+  const sectionIds = useMemo(
+    () =>
+      navLinks
+        .map((link) => (link.href.startsWith("#") ? link.href.slice(1) : ""))
+        .filter(Boolean),
+    [navLinks],
+  );
+
+  const updateActiveFromScroll = useCallback(() => {
+    if (sectionIds.length === 0) return;
+    const id = pickActiveSectionId(sectionIds);
+    setActiveHash(`#${id}`);
+  }, [sectionIds]);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10);
@@ -21,15 +49,41 @@ export function LuxuryNavbar({ nav }: LuxuryNavbarProps) {
   }, []);
 
   useEffect(() => {
-    if (menuOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
+    updateActiveFromScroll();
+    window.addEventListener("scroll", updateActiveFromScroll, { passive: true });
+    window.addEventListener("resize", updateActiveFromScroll);
     return () => {
-      document.body.style.overflow = "";
+      window.removeEventListener("scroll", updateActiveFromScroll);
+      window.removeEventListener("resize", updateActiveFromScroll);
     };
-  }, [menuOpen]);
+  }, [updateActiveFromScroll]);
+
+  useEffect(() => {
+    const hash = window.location.hash;
+    if (!hash) return;
+
+    const id = normalizeNavHref(hash).slice(1);
+    const timer = window.setTimeout(() => {
+      if (scrollToSectionId(id, "auto")) {
+        setActiveHash(`#${id}`);
+      }
+    }, 120);
+
+    return () => window.clearTimeout(timer);
+  }, [sectionIds]);
+
+  const handleSectionClick = (event: MouseEvent<HTMLAnchorElement>, href: string) => {
+    if (!href.startsWith("#")) return;
+
+    const id = href.slice(1);
+    const target = document.getElementById(id);
+    if (!target) return;
+
+    event.preventDefault();
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    scrollToSectionId(id, reduced ? "auto" : "smooth");
+    setActiveHash(`#${id}`);
+  };
 
   return (
     <header
@@ -40,118 +94,52 @@ export function LuxuryNavbar({ nav }: LuxuryNavbarProps) {
       }`}
     >
       <div className="navbar-glow motion-reduce:hidden pointer-events-none absolute inset-x-0 top-full h-px bg-gradient-to-r from-transparent via-[var(--accent)]/40 to-transparent opacity-80" />
-      <div className="mx-auto flex h-[72px] max-w-7xl items-center justify-between gap-6 px-4 sm:px-6 lg:px-8">
+      <div className="navbar-bar mx-auto max-w-7xl px-4 py-2.5 sm:px-6 lg:h-[72px] lg:px-8 lg:py-0">
         <Link
           href="#start"
-          className="group relative flex shrink-0 items-center gap-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--accent)]"
-          onClick={() => setMenuOpen(false)}
+          scroll={false}
+          onClick={(e) => handleSectionClick(e, "#start")}
+          className="navbar-logo group relative flex w-fit shrink-0 items-center gap-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--accent)]"
         >
           <span
             aria-hidden
             className="absolute -inset-1 rounded-2xl bg-gradient-to-br from-[var(--accent)]/25 via-transparent to-[var(--accent-2)]/20 opacity-0 blur-md transition-opacity duration-500 group-hover:opacity-100 motion-reduce:transition-none"
           />
           <span className="relative font-mono text-sm font-semibold uppercase tracking-[0.28em] text-[var(--foreground)]">
-            Orzu<span className="bg-gradient-to-r from-[var(--accent)] to-[var(--accent-2)] bg-clip-text text-transparent">IT</span>
+            Orzu
+            <span className="bg-gradient-to-r from-[var(--accent)] to-[var(--accent-2)] bg-clip-text text-transparent">
+              IT
+            </span>
           </span>
         </Link>
 
-        <nav
-          className="hidden items-center gap-1 lg:flex"
-          aria-label="Hauptnavigation"
-        >
-          {nav.links.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="group relative px-3 py-2 text-sm font-medium text-[var(--muted)] transition-colors duration-300 hover:text-[var(--foreground)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]"
-            >
-              <span className="relative z-10">{link.label}</span>
-              <span
-                aria-hidden
-                className="absolute inset-x-2 bottom-1 h-px scale-x-0 bg-gradient-to-r from-[var(--accent)] to-[var(--accent-2)] transition-transform duration-300 ease-out group-hover:scale-x-100 motion-reduce:transition-none"
-              />
-            </Link>
-          ))}
-        </nav>
-
-        <div className="hidden items-center gap-3 lg:flex">
-          <MotionNavLink
-            href="#kontakt"
-            className="cta-shine group relative overflow-hidden rounded-full border border-[var(--border-strong)] bg-[var(--surface-elevated)] px-5 py-2.5 text-sm font-semibold text-[var(--foreground)] shadow-[0_0_0_1px_rgba(255,255,255,0.04)_inset] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]"
-            hoverLift={4}
-          >
-            <span className="relative z-10">{nav.ctaLabel}</span>
-          </MotionNavLink>
-        </div>
-
-        <button
-          type="button"
-          className="relative z-10 flex h-11 w-11 items-center justify-center rounded-xl border border-[var(--border)] bg-[var(--surface-elevated)]/80 text-[var(--foreground)] backdrop-blur-sm transition-[border-color,transform] duration-300 hover:border-[var(--border-strong)] lg:hidden focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]"
-          aria-expanded={menuOpen}
-          aria-controls="mobile-nav"
-          aria-label={menuOpen ? "Menü schließen" : "Menü öffnen"}
-          onClick={() => setMenuOpen((open) => !open)}
-        >
-          <span className="sr-only">Navigation</span>
-          <span className="flex h-5 w-5 flex-col justify-center gap-1.5">
-            <span
-              className={`h-0.5 w-full origin-center rounded-full bg-current transition-transform duration-300 motion-reduce:transition-none ${
-                menuOpen ? "translate-y-[5px] rotate-45" : ""
-              }`}
-            />
-            <span
-              className={`h-0.5 w-full rounded-full bg-current transition-opacity duration-300 motion-reduce:transition-none ${
-                menuOpen ? "opacity-0" : "opacity-100"
-              }`}
-            />
-            <span
-              className={`h-0.5 w-full origin-center rounded-full bg-current transition-transform duration-300 motion-reduce:transition-none ${
-                menuOpen ? "-translate-y-[5px] -rotate-45" : ""
-              }`}
-            />
-          </span>
-        </button>
-      </div>
-
-      <div
-        id="mobile-nav"
-        className={`lg:hidden ${
-          menuOpen ? "pointer-events-auto" : "pointer-events-none"
-        }`}
-        aria-hidden={!menuOpen}
-      >
-        <div
-          className={`fixed inset-0 top-[72px] z-40 bg-black/60 backdrop-blur-sm transition-opacity duration-300 motion-reduce:transition-none ${
-            menuOpen ? "opacity-100" : "opacity-0"
-          }`}
-          onClick={() => setMenuOpen(false)}
-        />
-        <div
-          className={`fixed inset-x-0 top-[72px] z-50 max-h-[min(70vh,520px)] overflow-y-auto border-b border-[var(--border-strong)] bg-[color-mix(in_oklab,var(--surface)_92%,transparent)] px-4 py-6 shadow-2xl backdrop-blur-xl transition-[transform,opacity] duration-300 ease-out motion-reduce:transition-none sm:px-6 ${
-            menuOpen ? "translate-y-0 opacity-100" : "-translate-y-4 opacity-0"
-          }`}
-        >
-          <nav className="mx-auto flex max-w-7xl flex-col gap-1" aria-label="Mobile Navigation">
-            {nav.links.map((link) => (
+        <nav className="navbar-nav-pill navbar-nav-pill--scroll" aria-label="Hauptnavigation">
+          {navLinks.map((link) => {
+            const isActive = activeHash === link.href;
+            return (
               <Link
-                key={link.href}
+                key={`${link.href}-${link.label}`}
                 href={link.href}
-                className="rounded-xl px-4 py-3 text-base font-medium text-[var(--muted)] transition-[color,background-color] duration-200 hover:bg-white/5 hover:text-[var(--foreground)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]"
-                onClick={() => setMenuOpen(false)}
+                scroll={false}
+                aria-current={isActive ? "location" : undefined}
+                onClick={(e) => handleSectionClick(e, link.href)}
+                className={`navbar-nav-pill-link${isActive ? " is-active" : ""}`}
               >
                 {link.label}
               </Link>
-            ))}
-            <MotionNavLink
-              href="#kontakt"
-              className="mt-4 rounded-full border border-[var(--border-strong)] bg-gradient-to-r from-[var(--accent)]/20 to-[var(--accent-2)]/20 px-4 py-3 text-center text-base font-semibold text-[var(--foreground)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]"
-              hoverLift={2}
-              onClick={() => setMenuOpen(false)}
-            >
-              {nav.ctaLabel}
-            </MotionNavLink>
-          </nav>
-        </div>
+            );
+          })}
+        </nav>
+
+        <MotionNavLink
+          href="#kontakt"
+          scroll={false}
+          onClick={(e) => handleSectionClick(e, "#kontakt")}
+          className="navbar-cta cta-shine group relative shrink-0 overflow-hidden rounded-full border border-[var(--border-strong)] bg-[var(--surface-elevated)] px-3.5 py-2 text-xs font-semibold text-[var(--foreground)] shadow-[0_0_0_1px_rgba(255,255,255,0.04)_inset] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)] sm:px-5 sm:py-2.5 sm:text-sm"
+          hoverLift={4}
+        >
+          <span className="relative z-10">{nav.ctaLabel}</span>
+        </MotionNavLink>
       </div>
     </header>
   );

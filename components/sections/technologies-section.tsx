@@ -17,7 +17,7 @@ export function TechnologiesSection({ section }: TechnologiesSectionProps) {
     <section
       id="technologien"
       aria-labelledby="technologies-heading"
-      className="home-section-deferred relative isolate overflow-hidden border-t border-[var(--border)] py-20 sm:py-28 lg:py-32"
+      className="home-section-anchor home-section-deferred relative isolate overflow-hidden border-t border-[var(--border)] py-20 sm:py-28 lg:py-32"
     >
       <div
         aria-hidden
