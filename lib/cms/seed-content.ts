@@ -5,6 +5,7 @@ import {
   DEFAULT_SERVICES_CARDS,
   DEFAULT_TESTIMONIALS_CARDS,
 } from "@/lib/cms/defaults";
+import { DEFAULT_PORTFOLIO_BODIES } from "@/lib/cms/portfolio-bodies";
 import { marketingContentSchema } from "@/lib/cms/schema";
 import { DEFAULT_LEGAL } from "@/lib/legal/defaults";
 import { legalContentSchema } from "@/lib/legal/schema";
@@ -21,6 +22,7 @@ export const SEED_PORTFOLIO = DEFAULT_PORTFOLIO_CARDS.map((card, index) => ({
   slug: card.key,
   title_de: card.title,
   summary_de: card.description,
+  body_de: DEFAULT_PORTFOLIO_BODIES[card.key] ?? card.description,
   category_de: card.category,
   sort_order: index + 1,
   published: true,

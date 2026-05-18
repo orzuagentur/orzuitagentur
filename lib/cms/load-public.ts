@@ -23,17 +23,8 @@ function hasPublicSupabaseEnv() {
   );
 }
 
-const SLUG_TO_VISUAL: Record<string, string> = {
-  finsight: "portfolio-visual-finsight",
-  velo: "portfolio-visual-velo",
-  aura: "portfolio-visual-aura",
-};
-
-const FALLBACK_VISUALS = [
-  "portfolio-visual-finsight",
-  "portfolio-visual-velo",
-  "portfolio-visual-aura",
-] as const;
+import { enrichDefaultPortfolioCards, enrichPortfolioCard } from "@/lib/cms/enrich-portfolio";
+import { visualClassForSlug } from "@/lib/cms/portfolio-visuals";
 
 function marketingFromRow(
   raw: unknown,
@@ -125,21 +116,19 @@ export const getServiceCards = cache(async (): Promise<ServiceCard[]> => {
 });
 
 export const getPortfolioCards = cache(async (): Promise<PortfolioCard[]> => {
-  if (!hasPublicSupabaseEnv()) return DEFAULT_PORTFOLIO_CARDS;
+  if (!hasPublicSupabaseEnv()) return enrichDefaultPortfolioCards();
   try {
     const supabase = await createServerSupabaseClient();
     const { data, error } = await supabase
       .from("portfolio_entries")
-      .select("slug,title_de,summary_de,category_de,sort_order")
+      .select("slug,title_de,summary_de,body_de,category_de,sort_order")
       .eq("published", true)
       .order("sort_order", { ascending: true });
-    if (error || !data?.length) return DEFAULT_PORTFOLIO_CARDS;
+    if (error || !data?.length) return enrichDefaultPortfolioCards();
     return data.map((row, index) => {
       const slug = row.slug;
-      const visual =
-        SLUG_TO_VISUAL[slug] ??
-        FALLBACK_VISUALS[index % FALLBACK_VISUALS.length];
-      return {
+      const visual = visualClassForSlug(slug, index);
+      const base: PortfolioCard = {
         key: slug,
         title: row.title_de,
         category: row.category_de ?? "",
@@ -147,9 +136,10 @@ export const getPortfolioCards = cache(async (): Promise<PortfolioCard[]> => {
         visualClass: visual,
         size: index === 0 ? ("featured" as const) : ("compact" as const),
       };
+      return enrichPortfolioCard(base, row.body_de);
     });
   } catch {
-    return DEFAULT_PORTFOLIO_CARDS;
+    return enrichDefaultPortfolioCards();
   }
 });
 

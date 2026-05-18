@@ -31,10 +31,19 @@ export default async function DashboardPortfolioPage() {
               className="max-w-2xl rounded-2xl border border-[var(--border)] bg-[color-mix(in_oklab,var(--surface-elevated)_85%,transparent)] p-6"
             >
               <p className="font-mono text-xs text-[var(--muted)]">
-                {p.slug} · ID {p.id}
+                {p.slug} · ID {p.id} ·{" "}
+                <a
+                  href={`/portfolio/${p.slug}`}
+                  className="text-[var(--accent)] hover:underline"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  /portfolio/{p.slug}
+                </a>
               </p>
               <form action={updatePortfolioRow} className="mt-4 space-y-3">
                 <input type="hidden" name="id" value={p.id} />
+                <input type="hidden" name="slug" value={p.slug} />
                 <div>
                   <label className={labelClass} htmlFor={`ptitle-${p.id}`}>
                     Titel
@@ -56,6 +65,18 @@ export default async function DashboardPortfolioPage() {
                     id={`psum-${p.id}`}
                     name="summary_de"
                     defaultValue={p.summary_de ?? ""}
+                  />
+                </div>
+                <div>
+                  <label className={labelClass} htmlFor={`pbody-${p.id}`}>
+                    Case-Study Text (Absätze mit Leerzeile)
+                  </label>
+                  <textarea
+                    className={`${inputClass} min-h-[200px] text-[13px] leading-relaxed`}
+                    id={`pbody-${p.id}`}
+                    name="body_de"
+                    defaultValue={p.body_de ?? ""}
+                    placeholder="Mehrere Absätze durch eine Leerzeile trennen."
                   />
                 </div>
                 <div>

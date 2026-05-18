@@ -116,6 +116,19 @@ export type PortfolioCard = {
   description: string;
   visualClass: string;
   size: "featured" | "compact";
+  /** Full case-study copy for flip-card back */
+  body?: string;
+  technologies?: string[];
+  highlights?: string[];
+};
+
+export type PortfolioDetail = {
+  slug: string;
+  title: string;
+  category: string;
+  summary: string;
+  body: string;
+  visualClass: string;
 };
 
 export type TestimonialCard = {

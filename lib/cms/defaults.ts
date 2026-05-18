@@ -207,29 +207,56 @@ export const DEFAULT_SERVICES_CARDS: ServiceCard[] = [
 export const DEFAULT_PORTFOLIO_CARDS: PortfolioCard[] = [
   {
     key: "finsight",
-    title: "Reporting-Dashboard",
-    category: "Beispiel · Finanzen",
+    title: "FinSight Nexus",
+    category: "Finanz • Echtzeit",
     description:
-      "Zentrale Kennzahlen aus Excel, ERP und CRM — mit Rollen, Export und automatischen Hinweisen bei Abweichungen.",
+      "Rollensichere Steuerzentrale mit Live-Marktdaten, Compliance-Trails und KI-gestützten Anomalie-Hinweisen.",
     visualClass: "portfolio-visual-finsight",
     size: "featured",
   },
   {
     key: "velo",
-    title: "Prozess-Automatisierung",
-    category: "Beispiel · Operations",
+    title: "VeloCarbon Ops",
+    category: "Nachhaltigkeit • IoT",
     description:
-      "Wiederkehrende Aufgaben per Workflow und KI entlasten — inklusive Protokollierung und Freigaben im Team.",
+      "Digital Twin für Emissionsketten – Sensordaten harmonisieren, KPIs vergleichen, Audit Trails exportieren.",
     visualClass: "portfolio-visual-velo",
     size: "compact",
   },
   {
     key: "aura",
-    title: "Unternehmens-Website",
-    category: "Beispiel · Web",
+    title: "Aura Commerce",
+    category: "Retail • Plattform",
     description:
-      "Übersichtliche Marketing-Site mit Kontaktformular, CMS und messbarer Ladezeit — bereit für SEO und Erweiterungen.",
+      "Headless Commerce mit personalisierten Journeys, Inventory-Sync und Performance-Budget ab Tag eins.",
     visualClass: "portfolio-visual-aura",
+    size: "compact",
+  },
+  {
+    key: "nexus",
+    title: "Nexus Health",
+    category: "Gesundheit • KI",
+    description:
+      "Patientenpfade, Terminlogik und KI-Triage in einer DSGVO-konformen Plattform für Kliniknetzwerke.",
+    visualClass: "portfolio-visual-nexus",
+    size: "compact",
+  },
+  {
+    key: "vault",
+    title: "Vault Ledger",
+    category: "Compliance • Security",
+    description:
+      "Revisionssichere Audit Trails, Rollenmodelle und Echtzeit-Alerts für regulierte Finanzprozesse.",
+    visualClass: "portfolio-visual-vault",
+    size: "compact",
+  },
+  {
+    key: "pulse",
+    title: "Pulse Retail",
+    category: "E-Commerce • Analytics",
+    description:
+      "Conversion-Dashboards, Lager-Signale und Kampagnen-Automation in einer Headless-Storefront.",
+    visualClass: "portfolio-visual-pulse",
     size: "compact",
   },
 ];

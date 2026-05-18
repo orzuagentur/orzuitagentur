@@ -96,8 +96,10 @@ export async function updatePortfolioRow(formData: FormData): Promise<void> {
 
     const parsed = portfolioRowSchema.safeParse({
       id: str(formData, "id", 64),
+      slug: str(formData, "slug", 120),
       title_de: str(formData, "title_de", 400),
       summary_de: str(formData, "summary_de", 4000) || null,
+      body_de: str(formData, "body_de", 20000) || null,
       category_de: str(formData, "category_de", 200) || null,
       sort_order: parseIntSafe(str(formData, "sort_order", 12), 0),
       published: readPublished(formData),
@@ -114,6 +116,7 @@ export async function updatePortfolioRow(formData: FormData): Promise<void> {
       .update({
         title_de: row.title_de,
         summary_de: row.summary_de,
+        body_de: row.body_de,
         category_de: row.category_de,
         sort_order: row.sort_order,
         published: row.published,
@@ -126,6 +129,7 @@ export async function updatePortfolioRow(formData: FormData): Promise<void> {
       return;
     }
     revalidatePath("/");
+    revalidatePath(`/portfolio/${row.slug}`);
     revalidatePath("/dashboard/portfolio");
     redirectWithToast("/dashboard/portfolio", "updated");
   } catch (e) {

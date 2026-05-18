@@ -8,6 +8,7 @@ export type PortfolioRow = {
   slug: string;
   title_de: string;
   summary_de: string | null;
+  body_de: string | null;
   category_de: string | null;
   sort_order: number;
   published: boolean;
@@ -20,7 +21,7 @@ export async function getPortfolioEntries(): Promise<PortfolioRow[]> {
   const { data, error } = await supabase
     .from("portfolio_entries")
     .select(
-      "id,slug,title_de,summary_de,category_de,sort_order,published,updated_at",
+      "id,slug,title_de,summary_de,body_de,category_de,sort_order,published,updated_at",
     )
     .order("sort_order", { ascending: true });
 

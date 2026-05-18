@@ -12,8 +12,10 @@ export const serviceRowSchema = z.object({
 
 export const portfolioRowSchema = z.object({
   id: uuidLike,
+  slug: z.string().min(1).max(120),
   title_de: z.string().min(1).max(400),
   summary_de: z.string().max(4000).nullable(),
+  body_de: z.string().max(20000).nullable(),
   category_de: z.string().max(200).nullable(),
   sort_order: z.number().int().min(-9999).max(9999),
   published: z.boolean(),
