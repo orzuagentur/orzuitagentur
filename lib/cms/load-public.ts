@@ -67,7 +67,9 @@ export const getMarketingContent = cache(async (): Promise<MarketingContent> => 
       .select("value")
       .eq("key", "marketing")
       .maybeSingle();
-    if (error || data?.value == null) return normalizeNavContent(DEFAULT_MARKETING);
+    if (error || data?.value == null) {
+      return { ...DEFAULT_MARKETING, nav: normalizeNavContent(DEFAULT_MARKETING.nav) };
+    }
     return marketingFromRow(data.value);
   } catch {
     return { ...DEFAULT_MARKETING, nav: normalizeNavContent(DEFAULT_MARKETING.nav) };
