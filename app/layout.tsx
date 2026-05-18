@@ -20,11 +20,11 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: getSiteUrl(),
   title: {
-    default: "OrzuIT — Premium IT & KI-Lösungen",
+    default: "OrzuIT — Software, KI & Web für wachsende Unternehmen",
     template: "%s | OrzuIT",
   },
   description:
-    "Luxuriöse digitale Erlebnisse, zukunftsweisende Software und KI — OrzuIT entwickelt Ihre Vision mit Präzision und Klarheit.",
+    "Individuelle Software, KI-Automatisierung und moderne Weblösungen: OrzuIT plant, entwickelt und betreibt digitale Produkte mit klarem Nutzen für Ihr Team.",
   openGraph: {
     type: "website",
     locale: "de_DE",

@@ -43,9 +43,9 @@ export default async function DashboardHomePage() {
             hint="Projekte in portfolio_entries."
           />
           <StatCard
-            label="Testimonials"
+            label="Warum OrzuIT"
             value={valueOrDash(stats.testimonials)}
-            hint="Kundenstimmen."
+            hint="Karten auf der Startseite."
           />
           <StatCard
             label="Analytics-Ereignisse"

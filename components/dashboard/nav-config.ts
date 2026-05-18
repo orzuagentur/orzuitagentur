@@ -28,8 +28,8 @@ export const DASHBOARD_NAV = [
   },
   {
     href: "/dashboard/testimonials",
-    label: "Referenzen",
-    description: "Testimonials",
+    label: "Warum OrzuIT",
+    description: "Startseite · Arbeitsweise",
   },
   { href: "/dashboard/seo", label: "SEO", description: "Meta & OG" },
   {

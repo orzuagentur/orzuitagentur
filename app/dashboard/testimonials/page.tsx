@@ -22,66 +22,66 @@ export default async function DashboardTestimonialsPage() {
   return (
     <>
       <DashboardPageHeader
-        title="Referenzen"
-        description="Echte Kundenstimmen für den Block „Referenzen“ auf der Startseite. Nur Einträge mit „Veröffentlicht“ sind öffentlich sichtbar. Demo-Texte können Sie löschen oder deaktivieren."
+        title="Warum OrzuIT"
+        description="Karten für den Abschnitt #warum-orzuit auf der Startseite (Überschrift + Text, keine Kundenstimmen). Feld „Autor“ = Überschrift, „Zitat“ = Beschreibung. Alte Demo-Referenzen bitte löschen oder deaktivieren."
       />
 
       <div className="space-y-8 px-4 pb-16 pt-2 sm:px-8 lg:px-10">
         <section className="max-w-2xl rounded-2xl border border-dashed border-[var(--border-strong)] bg-[color-mix(in_oklab,var(--surface-elevated)_70%,transparent)] p-6">
           <h2 className="text-base font-semibold text-[var(--foreground)]">
-            Neue Referenz hinzufügen
+            Neue Karte hinzufügen
           </h2>
           <p className="mt-1 text-sm text-[var(--muted)]">
-            Nach dem Speichern erscheint das Zitat auf der Startseite unter
-            #referenzen (wenn „Veröffentlicht“ aktiv ist).
+            Erscheint auf der Startseite unter #warum-orzuit, wenn „Veröffentlicht“
+            aktiv ist.
           </p>
           <form action={createTestimonialRow} className="mt-4 space-y-3">
             <div>
               <label className={labelClass} htmlFor="new-quote">
-                Zitat des Kunden
+                Text (Beschreibung)
               </label>
               <textarea
                 className={`${inputClass} min-h-[120px]`}
                 id="new-quote"
                 name="quote_de"
                 required
-                placeholder="Was hat der Kunde über die Zusammenarbeit gesagt?"
+                placeholder="Was macht OrzuIT hier besonders?"
               />
             </div>
             <div className="grid gap-3 sm:grid-cols-2">
               <div>
                 <label className={labelClass} htmlFor="new-author">
-                  Name
+                  Überschrift
                 </label>
                 <input
                   className={inputClass}
                   id="new-author"
                   name="author_de"
                   required
-                  placeholder="Max Mustermann"
+                  placeholder="z. B. Klare Kommunikation"
                 />
               </div>
               <div>
                 <label className={labelClass} htmlFor="new-role">
-                  Rolle
+                  Zusatz (optional)
                 </label>
                 <input
                   className={inputClass}
                   id="new-role"
                   name="role_de"
-                  placeholder="Geschäftsführer"
+                  placeholder="Leer lassen, wenn nicht nötig"
                 />
               </div>
             </div>
             <div>
               <label className={labelClass} htmlFor="new-org">
-                Unternehmen
+                Zusatz Zeile 2 (optional)
               </label>
               <input
                 className={inputClass}
                 id="new-org"
                 name="org_de"
-                placeholder="Firma GmbH"
+                placeholder="Leer lassen, wenn nicht nötig"
               />
             </div>
             <div className="flex flex-wrap items-end gap-4">
@@ -109,7 +109,7 @@ export default async function DashboardTestimonialsPage() {
               </label>
             </div>
             <DashboardSubmitButton pendingLabel="Hinzugefügt">
-              Referenz anlegen
+              Karte anlegen
             </DashboardSubmitButton>
           </form>
         </section>

@@ -1,100 +1,101 @@
--- OrzuIT — Starter-Inhalte (Leistungen, Portfolio, Referenzen, Marketing, SEO)
--- Im Supabase SQL Editor ausführen, wenn Tabellen leer sind.
-
-insert into public.services (slug, title_de, description_de, sort_order, published)
-values
-  (
-    's1',
-    'Produkt & Plattform',
-    'Skalierbare Webanwendungen, APIs und Cloud-Architekturen — von der ersten Architektur bis zum Go-live.',
-    1,
-    true
-  ),
-  (
-    's2',
-    'KI & Automatisierung',
-    'Intelligente Workflows, Daten-Pipelines und Assistenten, die sich nahtlos in Ihre Systeme einfügen.',
-    2,
-    true
-  ),
-  (
-    's3',
-    'Design & Experience',
-    'Premium Interfaces, Design Systems und Motion — konsistent, barrierebewusst, markenstark.',
-    3,
-    true
-  ),
-  (
-    's4',
-    'Betrieb & Sicherheit',
-    'CI/CD, Observability und harte Sicherheitsstandards, damit Ihr Produkt zuverlässig bleibt.',
-    4,
-    true
-  )
-on conflict (slug) do nothing;
-
-insert into public.portfolio_entries (slug, title_de, summary_de, category_de, sort_order, published)
-values
-  (
-    'finsight',
-    'FinSight Nexus',
-    'Rollensichere Steuerzentrale mit Live-Marktdaten, Compliance-Trails und KI-gestützten Anomalie-Hinweisen.',
-    'Finanz · Echtzeit',
-    1,
-    true
-  ),
-  (
-    'velo',
-    'VeloCarbon Ops',
-    'Digital Twin für Emissionsketten — Sensordaten harmonisieren, KPIs vergleichen, Audit Trails exportieren.',
-    'Nachhaltigkeit · IoT',
-    2,
-    true
-  ),
-  (
-    'aura',
-    'Aura Commerce',
-    'Headless Storefront mit millisekundenschnellen Seiten, Edge-Personalisierung und Storytelling.',
-    'E-Commerce · Experience',
-    3,
-    true
-  )
-on conflict (slug) do nothing;
-
-insert into public.testimonials (quote_de, author_de, role_de, org_de, sort_order, published)
-select * from (values
-  (
-    'Die Liefergeschwindigkeit war ungewöhnlich — aber nie auf Kosten von Stabilität. Wir haben endlich einen Stack, der mit unserer Regulatorik mithält.',
-    'Elena Vogt',
-    'CTO',
-    'Nordlicht Capital',
-    1,
-    true
-  ),
-  (
-    'Vom ersten Wireframe bis zum Livegang: ein durchgängiges Niveau, das sich wie eine Marke anfühlt — nicht wie ein Flickenteppich aus Agenturen.',
-    'Jonas Malik',
-    'Head of Product',
-    'VeloCarbon GmbH',
-    2,
-    true
-  ),
-  (
-    'Integrationen, Monitoring, Incident-Playbooks — alles dokumentiert und wartbar. Genau das, was Operations braucht, wenn Umsatz auf dem Spiel steht.',
-    'Priya N.',
-    'Director Operations',
-    'Aura Commerce',
-    3,
-    true
-  )
-) as v(quote_de, author_de, role_de, org_de, sort_order, published)
-where not exists (select 1 from public.testimonials limit 1);
-
-insert into public.site_seo (path, title_de, description_de, og_image_url)
-values (
-  '/',
-  'OrzuIT — Premium IT & KI-Lösungen',
-  'Luxuriöse digitale Erlebnisse, zukunftsweisende Software und KI — OrzuIT entwickelt Ihre Vision mit Präzision und Klarheit.',
-  null
-)
-on conflict (path) do nothing;
+-- OrzuIT — Starter-Inhalte (Leistungen, Portfolio, Warum OrzuIT, SEO)
+-- Im Supabase SQL Editor ausführen, wenn Tabellen leer sind.
+
+insert into public.services (slug, title_de, description_de, sort_order, published)
+values
+  (
+    's1',
+    'Individuelle Software',
+    'Web-Apps und interne Tools für wachsende Unternehmen — z. B. Kundenportale, Verwaltung oder Prozessunterstützung. Ergebnis: weniger manuelle Arbeit, klarere Abläufe.',
+    1,
+    true
+  ),
+  (
+    's2',
+    'KI & Automatisierung',
+    'Assistenten, Dokumentenverarbeitung und Schnittstellen, die repetitive Aufgaben übernehmen. Für Teams mit viel Routine in Support, Backoffice oder Datenpflege.',
+    2,
+    true
+  ),
+  (
+    's3',
+    'Websites & Webshops',
+    'Moderne, schnelle Websites und Shops, die Sie selbst pflegen können. Fokus: verständliche Struktur, gute Performance und saubere Anbindung an CRM oder Buchhaltung.',
+    3,
+    true
+  ),
+  (
+    's4',
+    'Betrieb & Sicherheit',
+    'Hosting, Updates, Backups und Monitoring — damit Ihre Lösung im Alltag stabil läuft. Inklusive klarer Zuständigkeiten und dokumentierter Übergabe.',
+    4,
+    true
+  )
+on conflict (slug) do nothing;
+
+insert into public.portfolio_entries (slug, title_de, summary_de, category_de, sort_order, published)
+values
+  (
+    'finsight',
+    'Reporting-Dashboard',
+    'Zentrale Kennzahlen aus Excel, ERP und CRM — mit Rollen, Export und automatischen Hinweisen bei Abweichungen.',
+    'Beispiel · Finanzen',
+    1,
+    true
+  ),
+  (
+    'velo',
+    'Prozess-Automatisierung',
+    'Wiederkehrende Aufgaben per Workflow und KI entlasten — inklusive Protokollierung und Freigaben im Team.',
+    'Beispiel · Operations',
+    2,
+    true
+  ),
+  (
+    'aura',
+    'Unternehmens-Website',
+    'Übersichtliche Marketing-Site mit Kontaktformular, CMS und messbarer Ladezeit — bereit für SEO und Erweiterungen.',
+    'Beispiel · Web',
+    3,
+    true
+  )
+on conflict (slug) do nothing;
+
+insert into public.testimonials (quote_de, author_de, role_de, org_de, sort_order, published)
+select * from (values
+  (
+    'Wir erklären Optionen, Aufwand und Risiken in normaler Sprache — damit Sie fundiert entscheiden können, ohne ein eigenes IT-Team zu brauchen.',
+    'Verständlich statt Fachchinesisch',
+    '',
+    '',
+    1,
+    true
+  ),
+  (
+    'Vom Kick-off über Umsetzung bis Übergabe: klare Meilensteine, feste Ansprechpartner und nachvollziehbare Prioritäten statt endloser Abstimmungsrunden.',
+    'Ein Ansprechpartner, ein Plan',
+    '',
+    '',
+    2,
+    true
+  ),
+  (
+    'Sauberer Code, Dokumentation und Betrieb — damit Ihre Software nicht nur beim Launch gut wirkt, sondern Monate später noch wartbar bleibt.',
+    'Lösungen, die im Alltag funktionieren',
+    '',
+    '',
+    3,
+    true
+  )
+) as v(quote_de, author_de, role_de, org_de, sort_order, published)
+where not exists (select 1 from public.testimonials limit 1);
+
+insert into public.site_seo (path, title_de, description_de, og_image_url)
+values (
+  '/',
+  'OrzuIT — Software, KI & Web für wachsende Unternehmen',
+  'Individuelle Software, KI-Automatisierung und moderne Weblösungen: OrzuIT plant, entwickelt und betreibt digitale Produkte mit klarem Nutzen für Ihr Team.',
+  null
+)
+on conflict (path) do nothing;
+

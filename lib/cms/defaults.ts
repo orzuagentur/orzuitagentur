@@ -14,37 +14,36 @@ import type {
 } from "@/lib/cms/types";
 
 export const DEFAULT_HERO: HeroContent = {
-  badge: "Luxus · KI · Engineering",
-  titleBefore: "Software, die ",
-  titleHighlight: "Licht",
-  titleAfter: " ins Dunkel bringt.",
+  badge: "Software · KI · Web",
+  titleBefore: "",
+  titleHighlight: "Individuelle Software",
+  titleAfter:
+    ", KI-Automatisierung und moderne Weblösungen für wachsende Unternehmen.",
   subtitle:
-    "Wir entwickeln produktbereite Systeme, intelligente Automatisierung und Interfaces, die sich premium anfühlen — von der ersten Zeile Code bis zur Live-Umgebung.",
+    "Wir planen, entwickeln und betreiben digitale Lösungen, die Prozesse vereinfachen und messbar Zeit oder Kosten sparen — von der ersten Idee bis zum stabilen Betrieb.",
   primaryCta: { label: "Projekt besprechen", href: "#kontakt" },
-  secondaryCta: { label: "Leistungen entdecken", href: "#leistungen" },
+  secondaryCta: { label: "Leistungen ansehen", href: "#leistungen" },
   stats: [
     {
-      label: "Präzision",
-      value: "99.9",
-      valueSuffix: "%",
-      hint: "Verfügbarkeit-Ziel",
+      label: "Umsetzung",
+      value: "agil",
+      hint: "in klaren Etappen",
     },
     {
-      label: "Tempo",
-      value: "unter 100",
-      valueSuffix: " ms",
-      hint: "API-Antwort",
+      label: "Rückmeldung",
+      value: "1–2",
+      valueSuffix: " Tage",
+      hint: "auf Anfragen",
     },
     {
-      label: "Teams",
-      value: "24",
-      valueSuffix: "/7",
-      hint: "Support",
+      label: "Stack",
+      value: "Next.js",
+      hint: "& Cloud-nativ",
     },
     {
-      label: "Fokus",
-      value: "Enterprise",
-      hint: "& Deep Tech",
+      label: "Sprache",
+      value: "DE",
+      hint: "EN auf Anfrage",
     },
   ],
 };
@@ -55,7 +54,7 @@ export const DEFAULT_NAV: NavContent = {
     { href: "#leistungen", label: "Leistungen" },
     { href: "#portfolio", label: "Portfolio" },
     { href: "#technologien", label: "Technologien" },
-    { href: "#referenzen", label: "Referenzen" },
+    { href: "#warum-orzuit", label: "Warum OrzuIT" },
     { href: "#kontakt", label: "Kontakt" },
   ],
   ctaLabel: "Projekt anfragen",
@@ -63,7 +62,7 @@ export const DEFAULT_NAV: NavContent = {
 
 export const DEFAULT_FOOTER: FooterContent = {
   tagline:
-    "Luxuriöse digitale Produkte, KI-gestützte Automatisierung und Engineering auf Enterprise-Niveau — präzise, skalierbar, partnerschaftlich.",
+    "Individuelle Software, KI-Automatisierung und moderne Weblösungen — verständlich geplant, sauber umgesetzt, zuverlässig betrieben.",
   ctaLabel: "Projekt anfragen",
   navHeading: "Navigation",
   contactHeading: "Kontakt",
@@ -78,9 +77,9 @@ export const DEFAULT_FOOTER: FooterContent = {
 
 export const DEFAULT_CONTACT: ContactContent = {
   kicker: "Kontakt",
-  heading: "Lassen Sie uns Ihr nächstes Kapitel bauen.",
+  heading: "Sprechen wir über Ihr Projekt.",
   intro:
-    "Erzählen Sie uns in wenigen Sätzen von Ziel, Zeitrahmen und Stakeholdern — wir melden uns persönlich mit einem klaren nächsten Schritt.",
+    "Beschreiben Sie kurz Ziel, Zeitrahmen und aktuelle Situation — wir melden uns mit einem konkreten Vorschlag für das weitere Vorgehen.",
   asideTitle: "Direkt ins Team",
   asideText:
     "Für Projektanfragen, Budget-Rahmen und strategische Gespräche — deutschsprachig, zeitnah, verbindlich.",
@@ -95,37 +94,37 @@ export const DEFAULT_CONTACT: ContactContent = {
 
 export const DEFAULT_SERVICES_SECTION: ServicesSectionContent = {
   kicker: "Leistungen",
-  title: "Alles, was digitale Spitzenprodukte brauchen.",
+  title: "Was wir für Ihr Unternehmen umsetzen.",
   subtitle:
-    "Ein zusammenhängendes Team, ein durchgängiger Standard — damit Ästhetik, Performance und Robustheit zusammenkommen.",
+    "Klare Leistungen, verständliche Ergebnisse — für Teams, die digitale Prozesse verbessern oder neue Produkte auf den Markt bringen wollen.",
   closing:
-    "Sie haben eine spezielle Roadmap? Wir integrieren uns in Ihr Team — als Embedded Unit oder als Accelerator.",
+    "Sie haben bereits ein Team oder Partner? Wir ergänzen gezielt — z. B. für Architektur, Umsetzung oder Betrieb.",
   ctaLabel: "Erstgespräch vereinbaren",
 };
 
 export const DEFAULT_PORTFOLIO_SECTION: PortfolioSectionContent = {
   kicker: "Portfolio",
-  title: "Ausgewählte Cases mit Charakter.",
+  title: "Beispielhafte Projektideen.",
   subtitleRight:
-    "Jedes Projekt wird als langfristige Partnerschaft geführt — Design, Engineering und Betrieb aus einer Hand.",
+    "Typische Szenarien, die wir umsetzen — als Orientierung, nicht als Liste echter Kundenreferenzen.",
   footnote:
-    "Weitere Referenzen und Detail-Storys auf Anfrage — NDA-sicher nach Bedarf.",
+    "Konkrete Referenzen und Details teilen wir im persönlichen Gespräch, sofern vorhanden und freigegeben.",
 };
 
 export const DEFAULT_TESTIMONIALS_SECTION: TestimonialsSectionContent = {
-  kicker: "Referenzen",
-  title: "Stimmen aus Projekten, die wir gemeinsam skalieren.",
+  kicker: "Arbeitsweise",
+  title: "Warum Unternehmen mit OrzuIT arbeiten.",
   subtitle:
-    "Echte Partnerschaften, klare Kommunikation und messbare Resultate — so arbeiten wir mit Teams, die mehr erwarten als „nur eine Website“.",
+    "Keine erfundenen Kundenstimmen — stattdessen transparent, wie wir Projekte angehen und was Sie davon haben.",
   footnote:
-    "Weitere Referenzen und detaillierte Case-Storys stellen wir im persönlichen Gespräch zur Verfügung.",
+    "Passt das zu Ihrem Vorhaben? Im Erstgespräch klären wir Scope, Budget-Rahmen und den sinnvollsten nächsten Schritt.",
 };
 
 export const DEFAULT_TECHNOLOGIES_SECTION: TechnologiesSectionContent = {
   kicker: "Technologien",
-  title: "Ein Stack, der mitwächst — ohne Kompromisse bei Qualität.",
+  title: "Technik, die zu Ihrem Projekt passt.",
   subtitle:
-    "Wir setzen auf bewährte Plattformen, strikte Typisierung und Automatisierung überall dort, wo Menschen sich wiederholen würden.",
+    "Bewährte Tools statt Hype: wartbarer Code, sichere Deployments und Automatisierung dort, wo sie Zeit spart.",
   stacks: [
     {
       title: "Produkt & Interface",
@@ -178,93 +177,96 @@ export const DEFAULT_SERVICES_CARDS: ServiceCard[] = [
   {
     key: "s1",
     label: "01",
-    title: "Produkt & Plattform",
+    title: "Individuelle Software",
     description:
-      "Skalierbare Webanwendungen, APIs und Cloud-Architekturen — von der ersten Architektur bis zum Go-live.",
+      "Web-Apps und interne Tools für wachsende Unternehmen — z. B. Kundenportale, Verwaltung oder Prozessunterstützung. Ergebnis: weniger manuelle Arbeit, klarere Abläufe.",
   },
   {
     key: "s2",
     label: "02",
     title: "KI & Automatisierung",
     description:
-      "Intelligente Workflows, Daten-Pipelines und Assistenten, die sich nahtlos in Ihre Systeme einfügen.",
+      "Assistenten, Dokumentenverarbeitung und Schnittstellen, die repetitive Aufgaben übernehmen. Für Teams mit viel Routine in Support, Backoffice oder Datenpflege.",
   },
   {
     key: "s3",
     label: "03",
-    title: "Design & Experience",
+    title: "Websites & Webshops",
     description:
-      "Premium Interfaces, Design Systems und Motion — konsistent, barrierebewusst, markenstark.",
+      "Moderne, schnelle Websites und Shops, die Sie selbst pflegen können. Fokus: verständliche Struktur, gute Performance und saubere Anbindung an CRM oder Buchhaltung.",
   },
   {
     key: "s4",
     label: "04",
     title: "Betrieb & Sicherheit",
     description:
-      "CI/CD, Observability und harte Sicherheitsstandards, damit Ihr Produkt zuverlässig bleibt.",
+      "Hosting, Updates, Backups und Monitoring — damit Ihre Lösung im Alltag stabil läuft. Inklusive klarer Zuständigkeiten und dokumentierter Übergabe.",
   },
 ];
 
 export const DEFAULT_PORTFOLIO_CARDS: PortfolioCard[] = [
   {
     key: "finsight",
-    title: "FinSight Nexus",
-    category: "Finanz · Echtzeit",
+    title: "Reporting-Dashboard",
+    category: "Beispiel · Finanzen",
     description:
-      "Rollensichere Steuerzentrale mit Live-Marktdaten, Compliance-Trails und KI-gestützten Anomalie-Hinweisen.",
+      "Zentrale Kennzahlen aus Excel, ERP und CRM — mit Rollen, Export und automatischen Hinweisen bei Abweichungen.",
     visualClass: "portfolio-visual-finsight",
     size: "featured",
   },
   {
     key: "velo",
-    title: "VeloCarbon Ops",
-    category: "Nachhaltigkeit · IoT",
+    title: "Prozess-Automatisierung",
+    category: "Beispiel · Operations",
     description:
-      "Digital Twin für Emissionsketten — Sensordaten harmonisieren, KPIs vergleichen, Audit Trails exportieren.",
+      "Wiederkehrende Aufgaben per Workflow und KI entlasten — inklusive Protokollierung und Freigaben im Team.",
     visualClass: "portfolio-visual-velo",
     size: "compact",
   },
   {
     key: "aura",
-    title: "Aura Commerce",
-    category: "E-Commerce · Experience",
+    title: "Unternehmens-Website",
+    category: "Beispiel · Web",
     description:
-      "Headless Storefront mit millisekundenschnellen Seiten, Edge-Personalisierung und Storytelling.",
+      "Übersichtliche Marketing-Site mit Kontaktformular, CMS und messbarer Ladezeit — bereit für SEO und Erweiterungen.",
     visualClass: "portfolio-visual-aura",
     size: "compact",
   },
 ];
 
-export const DEFAULT_TESTIMONIALS_CARDS: TestimonialCard[] = [
+/** Value cards for „Warum OrzuIT“ (author = heading, quote = body). */
+export const DEFAULT_WHY_CARDS: TestimonialCard[] = [
   {
-    key: "t1",
+    key: "why-1",
+    author: "Verständlich statt Fachchinesisch",
     quote:
-      "Die Liefergeschwindigkeit war ungewöhnlich — aber nie auf Kosten von Stabilität. Wir haben endlich einen Stack, der mit unserer Regulatorik mithält.",
-    author: "Elena Vogt",
-    role: "CTO",
-    org: "Nordlicht Capital",
+      "Wir erklären Optionen, Aufwand und Risiken in normaler Sprache — damit Sie fundiert entscheiden können, ohne ein eigenes IT-Team zu brauchen.",
+    role: "",
+    org: "",
   },
   {
-    key: "t2",
+    key: "why-2",
+    author: "Ein Ansprechpartner, ein Plan",
     quote:
-      "Vom ersten Wireframe bis zum Livegang: ein durchgängiges Niveau, das sich wie eine Marke anfühlt — nicht wie ein Flickenteppich aus Agenturen.",
-    author: "Jonas Malik",
-    role: "Head of Product",
-    org: "VeloCarbon GmbH",
+      "Vom Kick-off über Umsetzung bis Übergabe: klare Meilensteine, feste Ansprechpartner und nachvollziehbare Prioritäten statt endloser Abstimmungsrunden.",
+    role: "",
+    org: "",
   },
   {
-    key: "t3",
+    key: "why-3",
+    author: "Lösungen, die im Alltag funktionieren",
     quote:
-      "Integrationen, Monitoring, Incident-Playbooks — alles dokumentiert und wartbar. Genau das, was Operations braucht, wenn Umsatz auf dem Spiel steht.",
-    author: "Priya N.",
-    role: "Director Operations",
-    org: "Aura Commerce",
+      "Sauberer Code, Dokumentation und Betrieb — damit Ihre Software nicht nur beim Launch gut wirkt, sondern Monate später noch wartbar bleibt.",
+    role: "",
+    org: "",
   },
 ];
 
+export const DEFAULT_TESTIMONIALS_CARDS = DEFAULT_WHY_CARDS;
+
 export const DEFAULT_HOME_SEO = {
-  title: "OrzuIT — Premium IT & KI-Lösungen",
+  title: "OrzuIT — Software, KI & Web für wachsende Unternehmen",
   description:
-    "Luxuriöse digitale Erlebnisse, zukunftsweisende Software und KI — OrzuIT entwickelt Ihre Vision mit Präzision und Klarheit.",
+    "Individuelle Software, KI-Automatisierung und moderne Weblösungen: OrzuIT plant, entwickelt und betreibt digitale Produkte mit klarem Nutzen für Ihr Team.",
   ogImageUrl: null as string | null,
 };

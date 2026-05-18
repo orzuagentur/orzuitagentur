@@ -251,7 +251,7 @@ export function MarketingForms({ marketing }: MarketingFormsProps) {
             <textarea className={`${inputClass} min-h-[50px]`} name="port_footnote" defaultValue={marketing.portfolioSection.footnote} />
           </fieldset>
           <fieldset className="space-y-3 rounded-xl border border-[var(--border)] p-4">
-            <legend className="px-1 text-sm font-semibold text-[var(--foreground)]">Referenzen</legend>
+            <legend className="px-1 text-sm font-semibold text-[var(--foreground)]">Warum OrzuIT (#warum-orzuit)</legend>
             <input className={inputClass} name="test_kicker" defaultValue={marketing.testimonialsSection.kicker} />
             <input className={inputClass} name="test_title" defaultValue={marketing.testimonialsSection.title} />
             <textarea className={`${inputClass} min-h-[70px]`} name="test_subtitle" defaultValue={marketing.testimonialsSection.subtitle} />
