@@ -1,23 +1,34 @@
 import type { Metadata } from "next";
 import { LegalPage } from "@/components/legal/legal-page";
-import { buildImpressumSections } from "@/lib/legal/impressum-content";
-import { getLegalSiteInfo } from "@/lib/legal/site-legal";
+import { getLegalContent } from "@/lib/legal/cms";
 
-export const metadata: Metadata = {
-  title: "Impressum",
-  description: "Impressum und Anbieterkennzeichnung gemäß § 5 TMG — OrzuIT.",
-  robots: { index: true, follow: true },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const legal = await getLegalContent();
+  return {
+    title: legal.impressum.title,
+    description: legal.impressum.metaDescription,
+    robots: { index: true, follow: true },
+  };
+}
 
 export default async function ImpressumPage() {
-  const info = await getLegalSiteInfo();
-  const sections = buildImpressumSections(info);
+  const legal = await getLegalContent();
+  const page = legal.impressum;
 
   return (
     <LegalPage
-      title="Impressum"
-      intro={`Anbieterkennzeichnung für ${info.brand} gemäß § 5 Telemediengesetz (TMG) und § 18 Medienstaatsvertrag (MStV).`}
-      sections={sections}
+      title={page.title}
+      intro={page.intro}
+      sections={page.sections}
+      updatedLabel={
+        page.showUpdatedLabel
+          ? `Stand: ${new Date().toLocaleDateString("de-DE", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}`
+          : undefined
+      }
     />
   );
 }

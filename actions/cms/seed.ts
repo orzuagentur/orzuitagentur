@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { DashboardAuthError, requireDashboardUser } from "@/lib/auth/dashboard-user";
 import {
   SEED_HOME_SEO,
+  SEED_LEGAL_VALUE,
   SEED_MARKETING_VALUE,
   SEED_PORTFOLIO,
   SEED_SERVICES,
@@ -75,6 +76,22 @@ export async function seedCmsContent(formData: FormData) {
       inserted.push("marketing");
     }
 
+    const { data: legalRow } = await supabase
+      .from("site_settings")
+      .select("key")
+      .eq("key", "legal")
+      .maybeSingle();
+
+    if (!legalRow) {
+      const { error } = await supabase.from("site_settings").upsert({
+        key: "legal",
+        value: SEED_LEGAL_VALUE as unknown as Record<string, unknown>,
+        updated_at: new Date().toISOString(),
+      });
+      if (error) throw error;
+      inserted.push("legal");
+    }
+
     const { data: seoRow } = await supabase
       .from("site_seo")
       .select("path")
@@ -96,6 +113,9 @@ export async function seedCmsContent(formData: FormData) {
     revalidatePath("/dashboard/portfolio");
     revalidatePath("/dashboard/testimonials");
     revalidatePath("/dashboard/content");
+    revalidatePath("/dashboard/legal");
+    revalidatePath("/impressum");
+    revalidatePath("/datenschutz");
     revalidatePath("/dashboard/seo");
 
     if (inserted.length === 0) {

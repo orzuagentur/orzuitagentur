@@ -12,6 +12,22 @@ export const TOAST_MESSAGES: Record<string, { message: string; variant: ToastVar
   sections_saved: { message: "Секции — успешно сохранено", variant: "success" },
   tech_saved: { message: "Технологии — успешно сохранено", variant: "success" },
   seo_saved: { message: "SEO — успешно сохранено", variant: "success" },
+  legal_operator_saved: {
+    message: "Anbieterdaten — успешно сохранено",
+    variant: "success",
+  },
+  legal_impressum_saved: {
+    message: "Impressum — успешно сохранено",
+    variant: "success",
+  },
+  legal_datenschutz_saved: {
+    message: "Datenschutz — успешно сохранено",
+    variant: "success",
+  },
+  legal_reset: {
+    message: "Rechtstexte auf Standard zurückgesetzt",
+    variant: "success",
+  },
 
   content_seeded: {
     message: "Стандартный контент загружен",

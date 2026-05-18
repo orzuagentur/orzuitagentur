@@ -12,6 +12,11 @@ export const DASHBOARD_NAV = [
     description: "Seiten & Texte",
   },
   {
+    href: "/dashboard/legal",
+    label: "Rechtliches",
+    description: "Impressum & Datenschutz",
+  },
+  {
     href: "/dashboard/services",
     label: "Leistungen",
     description: "CMS · Services",

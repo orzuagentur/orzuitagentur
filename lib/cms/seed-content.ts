@@ -6,6 +6,8 @@ import {
   DEFAULT_TESTIMONIALS_CARDS,
 } from "@/lib/cms/defaults";
 import { marketingContentSchema } from "@/lib/cms/schema";
+import { DEFAULT_LEGAL } from "@/lib/legal/defaults";
+import { legalContentSchema } from "@/lib/legal/schema";
 
 export const SEED_SERVICES = DEFAULT_SERVICES_CARDS.map((card, index) => ({
   slug: card.key,
@@ -34,6 +36,8 @@ export const SEED_TESTIMONIALS = DEFAULT_TESTIMONIALS_CARDS.map((card, index) =>
 }));
 
 export const SEED_MARKETING_VALUE = marketingContentSchema.parse(DEFAULT_MARKETING);
+
+export const SEED_LEGAL_VALUE = legalContentSchema.parse(DEFAULT_LEGAL);
 
 export const SEED_HOME_SEO = {
   path: "/",
