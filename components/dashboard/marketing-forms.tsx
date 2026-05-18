@@ -6,28 +6,28 @@ import {
   saveTechnologiesSection,
 } from "@/actions/cms/marketing";
 import { DashboardSubmitButton } from "@/components/dashboard/dashboard-submit-button";
+import {
+  cmsFormWrapClass,
+  cmsInputClass as inputClass,
+  cmsLabelClass as labelClass,
+  cmsSectionCardClass,
+} from "@/lib/dashboard/cms-form-styles";
 import type { MarketingContent } from "@/lib/cms/types";
 
-const inputClass =
-  "mt-1 w-full rounded-xl border border-[var(--border)] bg-[color-mix(in_oklab,var(--surface)_92%,black)] px-3 py-2 text-sm text-[var(--foreground)] outline-none focus:border-[color-mix(in_oklab,var(--accent)_45%,var(--border))]";
-const labelClass = "block text-xs font-medium text-[var(--muted)]";
-
-type MarketingFormsProps = {
+export type MarketingFormsProps = {
   marketing: MarketingContent;
 };
 
-export function MarketingForms({ marketing }: MarketingFormsProps) {
+export function HeroForm({ marketing }: MarketingFormsProps) {
   const h = marketing.hero;
   const sec = (i: number) => h.stats[i];
 
   return (
-    <div className="max-w-3xl space-y-10 px-4 pb-16 pt-2 sm:px-8 lg:px-10">
-      <section className="rounded-2xl border border-[var(--border)] bg-[color-mix(in_oklab,var(--surface-elevated)_85%,transparent)] p-6">
-        <h2 className="text-base font-semibold text-[var(--foreground)]">
-          Startseite · Hero
-        </h2>
+    <div className={cmsFormWrapClass}>
+      <section className={cmsSectionCardClass}>
+        <h2 className="text-base font-semibold text-[var(--foreground)]">Hero · #start</h2>
         <p className="mt-1 text-xs text-[var(--muted)]">
-          Öffentlicher Bereich #start — nicht die Admin-Navigation.
+          Hauptüberschrift, Untertitel, Buttons und Kennzahlen.
         </p>
         <form action={saveHeroContent} className="mt-4 space-y-4">
           <div>
@@ -95,10 +95,16 @@ export function MarketingForms({ marketing }: MarketingFormsProps) {
           </DashboardSubmitButton>
         </form>
       </section>
+    </div>
+  );
+}
 
-      <section className="rounded-2xl border border-[var(--border)] bg-[color-mix(in_oklab,var(--surface-elevated)_85%,transparent)] p-6">
+export function NavFooterForm({ marketing }: MarketingFormsProps) {
+  return (
+    <div className={cmsFormWrapClass}>
+      <section className={cmsSectionCardClass}>
         <h2 className="text-base font-semibold text-[var(--foreground)]">
-          Öffentliche Website · Menü &amp; Footer
+          Menü &amp; Footer
         </h2>
         <p className="mt-1 text-xs text-[var(--muted)]">
           Texte für Start, Portfolio, Projekt anfragen usw. auf der Kundenseite.
@@ -175,10 +181,16 @@ export function MarketingForms({ marketing }: MarketingFormsProps) {
           </DashboardSubmitButton>
         </form>
       </section>
+    </div>
+  );
+}
 
-      <section className="rounded-2xl border border-[var(--border)] bg-[color-mix(in_oklab,var(--surface-elevated)_85%,transparent)] p-6">
+export function ContactForm({ marketing }: MarketingFormsProps) {
+  return (
+    <div className={cmsFormWrapClass}>
+      <section className={cmsSectionCardClass}>
         <h2 className="text-base font-semibold text-[var(--foreground)]">
-          Startseite · Kontakt (#kontakt)
+          Kontakt · #kontakt
         </h2>
         <form action={saveContactBlock} className="mt-4 space-y-4">
           <div>
@@ -226,10 +238,16 @@ export function MarketingForms({ marketing }: MarketingFormsProps) {
           </DashboardSubmitButton>
         </form>
       </section>
+    </div>
+  );
+}
 
-      <section className="rounded-2xl border border-[var(--border)] bg-[color-mix(in_oklab,var(--surface-elevated)_85%,transparent)] p-6">
+export function SectionIntrosForm({ marketing }: MarketingFormsProps) {
+  return (
+    <div className={cmsFormWrapClass}>
+      <section className={cmsSectionCardClass}>
         <h2 className="text-base font-semibold text-[var(--foreground)]">
-          Startseite · Sektions-Überschriften
+          Sektions-Überschriften
         </h2>
         <p className="mt-1 text-xs text-[var(--muted)]">
           Leistungen, Portfolio und Referenzen — nur Intro-Texte, keine Einträge.
@@ -262,10 +280,16 @@ export function MarketingForms({ marketing }: MarketingFormsProps) {
           </DashboardSubmitButton>
         </form>
       </section>
+    </div>
+  );
+}
 
-      <section className="rounded-2xl border border-[var(--border)] bg-[color-mix(in_oklab,var(--surface-elevated)_85%,transparent)] p-6">
+export function TechnologiesForm({ marketing }: MarketingFormsProps) {
+  return (
+    <div className={cmsFormWrapClass}>
+      <section className={cmsSectionCardClass}>
         <h2 className="text-base font-semibold text-[var(--foreground)]">
-          Startseite · Technologien
+          Technologien · #technologien
         </h2>
         <form action={saveTechnologiesSection} className="mt-4 space-y-4">
           <input className={inputClass} name="tech_kicker" defaultValue={marketing.technologiesSection.kicker} />

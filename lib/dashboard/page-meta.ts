@@ -1,4 +1,5 @@
 import { DASHBOARD_NAV } from "@/components/dashboard/nav-config";
+import { getContentPageMeta } from "@/lib/dashboard/content-sections";
 
 export type DashboardPageMeta = {
   label: string;
@@ -6,6 +7,9 @@ export type DashboardPageMeta = {
 };
 
 export function getDashboardPageMeta(pathname: string): DashboardPageMeta {
+  const contentMeta = getContentPageMeta(pathname);
+  if (contentMeta) return contentMeta;
+
   const sorted = [...DASHBOARD_NAV].sort((a, b) => b.href.length - a.href.length);
 
   for (const item of sorted) {

@@ -99,6 +99,11 @@ export async function saveHeroContent(formData: FormData): Promise<void> {
     await persistMarketing(next);
     revalidatePath("/");
     revalidatePath("/dashboard/content");
+    revalidatePath("/dashboard/content/hero");
+    revalidatePath("/dashboard/content/nav-footer");
+    revalidatePath("/dashboard/content/contact");
+    revalidatePath("/dashboard/content/sections");
+    revalidatePath("/dashboard/content/technologies");
     redirectWithToast("/dashboard/content", "hero_saved");
   } catch (e) {
     if (isNextRedirectError(e)) throw e;
@@ -136,7 +141,12 @@ export async function saveNavAndFooter(formData: FormData): Promise<void> {
     await persistMarketing(next);
     revalidatePath("/");
     revalidatePath("/dashboard/content");
-    redirectWithToast("/dashboard/content", "nav_saved");
+    revalidatePath("/dashboard/content/hero");
+    revalidatePath("/dashboard/content/nav-footer");
+    revalidatePath("/dashboard/content/contact");
+    revalidatePath("/dashboard/content/sections");
+    revalidatePath("/dashboard/content/technologies");
+    redirectWithToast("/dashboard/content/nav-footer", "nav_saved");
   } catch (e) {
     if (isNextRedirectError(e)) throw e;
     if (e instanceof DashboardAuthError) redirect("/auth/login");
@@ -167,6 +177,11 @@ export async function saveContactBlock(formData: FormData): Promise<void> {
     await persistMarketing(next);
     revalidatePath("/");
     revalidatePath("/dashboard/content");
+    revalidatePath("/dashboard/content/hero");
+    revalidatePath("/dashboard/content/nav-footer");
+    revalidatePath("/dashboard/content/contact");
+    revalidatePath("/dashboard/content/sections");
+    revalidatePath("/dashboard/content/technologies");
     redirectWithToast("/dashboard/content", "contact_saved");
   } catch (e) {
     if (isNextRedirectError(e)) throw e;
@@ -205,7 +220,12 @@ export async function saveSectionIntros(formData: FormData): Promise<void> {
     await persistMarketing(next);
     revalidatePath("/");
     revalidatePath("/dashboard/content");
-    redirectWithToast("/dashboard/content", "sections_saved");
+    revalidatePath("/dashboard/content/hero");
+    revalidatePath("/dashboard/content/nav-footer");
+    revalidatePath("/dashboard/content/contact");
+    revalidatePath("/dashboard/content/sections");
+    revalidatePath("/dashboard/content/technologies");
+    redirectWithToast("/dashboard/content/sections", "sections_saved");
   } catch (e) {
     if (isNextRedirectError(e)) throw e;
     if (e instanceof DashboardAuthError) redirect("/auth/login");
@@ -242,6 +262,11 @@ export async function saveTechnologiesSection(formData: FormData): Promise<void>
     await persistMarketing(next);
     revalidatePath("/");
     revalidatePath("/dashboard/content");
+    revalidatePath("/dashboard/content/hero");
+    revalidatePath("/dashboard/content/nav-footer");
+    revalidatePath("/dashboard/content/contact");
+    revalidatePath("/dashboard/content/sections");
+    revalidatePath("/dashboard/content/technologies");
     redirectWithToast("/dashboard/content", "tech_saved");
   } catch (e) {
     if (isNextRedirectError(e)) throw e;
