@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { buildContentSecurityPolicy } from "./lib/security/csp";
 
 const securityHeaders = [
   { key: "X-Frame-Options", value: "DENY" },
@@ -7,6 +8,10 @@ const securityHeaders = [
   {
     key: "Permissions-Policy",
     value: "camera=(), microphone=(), geolocation=()",
+  },
+  {
+    key: "Content-Security-Policy",
+    value: buildContentSecurityPolicy(),
   },
 ];
 
