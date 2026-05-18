@@ -1,10 +1,5 @@
-import { TechnologiesForm } from "@/components/dashboard/marketing-forms";
-import { ContentSubPage } from "../_shared";
+import { redirect } from "next/navigation";
 
-export default function ContentTechnologiesPage() {
-  return (
-    <ContentSubPage pathname="/dashboard/content/technologies">
-      {(marketing) => <TechnologiesForm marketing={marketing} />}
-    </ContentSubPage>
-  );
+export default function ContentTechnologiesRedirect() {
+  redirect("/dashboard/content/technologien");
 }

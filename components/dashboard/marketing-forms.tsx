@@ -2,8 +2,10 @@ import {
   saveContactBlock,
   saveHeroContent,
   saveNavAndFooter,
-  saveSectionIntros,
+  savePortfolioIntro,
+  saveServicesIntro,
   saveTechnologiesSection,
+  saveWarumIntro,
 } from "@/actions/cms/marketing";
 import { DashboardSubmitButton } from "@/components/dashboard/dashboard-submit-button";
 import {
@@ -242,41 +244,75 @@ export function ContactForm({ marketing }: MarketingFormsProps) {
   );
 }
 
-export function SectionIntrosForm({ marketing }: MarketingFormsProps) {
+export function LeistungenIntroForm({ marketing }: MarketingFormsProps) {
+  const s = marketing.servicesSection;
   return (
     <div className={cmsFormWrapClass}>
       <section className={cmsSectionCardClass}>
         <h2 className="text-base font-semibold text-[var(--foreground)]">
-          Sektions-Überschriften
+          Leistungen · #leistungen
         </h2>
         <p className="mt-1 text-xs text-[var(--muted)]">
-          Leistungen, Portfolio und Referenzen — nur Intro-Texte, keine Einträge.
+          Nur Überschrift und Texte über dem Leistungs-Block — keine einzelnen Karten.
         </p>
-        <form action={saveSectionIntros} className="mt-4 space-y-6">
-          <fieldset className="space-y-3 rounded-xl border border-[var(--border)] p-4">
-            <legend className="px-1 text-sm font-semibold text-[var(--foreground)]">Leistungen</legend>
-            <input className={inputClass} name="svc_kicker" defaultValue={marketing.servicesSection.kicker} placeholder="Kicker" />
-            <input className={inputClass} name="svc_title" defaultValue={marketing.servicesSection.title} placeholder="Titel" />
-            <textarea className={`${inputClass} min-h-[70px]`} name="svc_subtitle" defaultValue={marketing.servicesSection.subtitle} />
-            <textarea className={`${inputClass} min-h-[60px]`} name="svc_closing" defaultValue={marketing.servicesSection.closing} />
-            <input className={inputClass} name="svc_ctaLabel" defaultValue={marketing.servicesSection.ctaLabel} />
-          </fieldset>
-          <fieldset className="space-y-3 rounded-xl border border-[var(--border)] p-4">
-            <legend className="px-1 text-sm font-semibold text-[var(--foreground)]">Portfolio</legend>
-            <input className={inputClass} name="port_kicker" defaultValue={marketing.portfolioSection.kicker} />
-            <input className={inputClass} name="port_title" defaultValue={marketing.portfolioSection.title} />
-            <textarea className={`${inputClass} min-h-[70px]`} name="port_subtitleRight" defaultValue={marketing.portfolioSection.subtitleRight} />
-            <textarea className={`${inputClass} min-h-[50px]`} name="port_footnote" defaultValue={marketing.portfolioSection.footnote} />
-          </fieldset>
-          <fieldset className="space-y-3 rounded-xl border border-[var(--border)] p-4">
-            <legend className="px-1 text-sm font-semibold text-[var(--foreground)]">Warum OrzuIT (#warum-orzuit)</legend>
-            <input className={inputClass} name="test_kicker" defaultValue={marketing.testimonialsSection.kicker} />
-            <input className={inputClass} name="test_title" defaultValue={marketing.testimonialsSection.title} />
-            <textarea className={`${inputClass} min-h-[70px]`} name="test_subtitle" defaultValue={marketing.testimonialsSection.subtitle} />
-            <textarea className={`${inputClass} min-h-[50px]`} name="test_footnote" defaultValue={marketing.testimonialsSection.footnote} />
-          </fieldset>
+        <form action={saveServicesIntro} className="mt-4 space-y-4">
+          <input className={inputClass} name="svc_kicker" defaultValue={s.kicker} placeholder="Kicker" />
+          <input className={inputClass} name="svc_title" defaultValue={s.title} placeholder="Titel" />
+          <textarea className={`${inputClass} min-h-[70px]`} name="svc_subtitle" defaultValue={s.subtitle} />
+          <textarea className={`${inputClass} min-h-[60px]`} name="svc_closing" defaultValue={s.closing} />
+          <input className={inputClass} name="svc_ctaLabel" defaultValue={s.ctaLabel} />
           <DashboardSubmitButton size="md" pendingLabel="Gespeichert">
-            Sektionen speichern
+            Leistungen speichern
+          </DashboardSubmitButton>
+        </form>
+      </section>
+    </div>
+  );
+}
+
+export function PortfolioIntroForm({ marketing }: MarketingFormsProps) {
+  const p = marketing.portfolioSection;
+  return (
+    <div className={cmsFormWrapClass}>
+      <section className={cmsSectionCardClass}>
+        <h2 className="text-base font-semibold text-[var(--foreground)]">
+          Portfolio · #portfolio
+        </h2>
+        <p className="mt-1 text-xs text-[var(--muted)]">
+          Nur Intro-Texte — keine Projekt-Einträge (die liegen unter Portfolio im Menü).
+        </p>
+        <form action={savePortfolioIntro} className="mt-4 space-y-4">
+          <input className={inputClass} name="port_kicker" defaultValue={p.kicker} />
+          <input className={inputClass} name="port_title" defaultValue={p.title} />
+          <textarea className={`${inputClass} min-h-[70px]`} name="port_subtitleRight" defaultValue={p.subtitleRight} />
+          <textarea className={`${inputClass} min-h-[50px]`} name="port_footnote" defaultValue={p.footnote} />
+          <DashboardSubmitButton size="md" pendingLabel="Gespeichert">
+            Portfolio speichern
+          </DashboardSubmitButton>
+        </form>
+      </section>
+    </div>
+  );
+}
+
+export function WarumIntroForm({ marketing }: MarketingFormsProps) {
+  const t = marketing.testimonialsSection;
+  return (
+    <div className={cmsFormWrapClass}>
+      <section className={cmsSectionCardClass}>
+        <h2 className="text-base font-semibold text-[var(--foreground)]">
+          Warum OrzuIT · #warum-orzuit
+        </h2>
+        <p className="mt-1 text-xs text-[var(--muted)]">
+          Überschriften und Texte — Karten-Inhalte bearbeiten Sie unter Warum OrzuIT im Menü.
+        </p>
+        <form action={saveWarumIntro} className="mt-4 space-y-4">
+          <input className={inputClass} name="test_kicker" defaultValue={t.kicker} />
+          <input className={inputClass} name="test_title" defaultValue={t.title} />
+          <textarea className={`${inputClass} min-h-[70px]`} name="test_subtitle" defaultValue={t.subtitle} />
+          <textarea className={`${inputClass} min-h-[50px]`} name="test_footnote" defaultValue={t.footnote} />
+          <DashboardSubmitButton size="md" pendingLabel="Gespeichert">
+            Warum OrzuIT speichern
           </DashboardSubmitButton>
         </form>
       </section>

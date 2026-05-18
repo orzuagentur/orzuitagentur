@@ -1,10 +1,5 @@
-import { HeroForm } from "@/components/dashboard/marketing-forms";
-import { ContentSubPage } from "../_shared";
+import { redirect } from "next/navigation";
 
-export default function ContentHeroPage() {
-  return (
-    <ContentSubPage pathname="/dashboard/content/hero">
-      {(marketing) => <HeroForm marketing={marketing} />}
-    </ContentSubPage>
-  );
+export default function ContentHeroRedirect() {
+  redirect("/dashboard/content/start");
 }

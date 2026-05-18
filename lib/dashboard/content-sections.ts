@@ -5,78 +5,70 @@ export type ContentSection = {
   siteAnchor: string;
 };
 
+/** Startseite — nur Marketing-Texte (site_settings · marketing), keine Karten/Einträge. */
 export const CONTENT_SECTIONS: ContentSection[] = [
   {
-    href: "/dashboard/content/hero",
-    label: "Hero",
-    description: "Startbereich mit Hauptüberschrift, CTAs und Kennzahlen.",
+    href: "/dashboard/content/start",
+    label: "Start",
+    description: "Hero: Überschrift, Untertitel, Buttons und Kennzahlen (#start).",
     siteAnchor: "#start",
   },
   {
-    href: "/dashboard/content/nav-footer",
-    label: "Menü & Footer",
-    description: "Navigation, Footer-Texte und Kontaktzeile im Fußbereich.",
-    siteAnchor: "global",
-  },
-  {
-    href: "/dashboard/content/contact",
-    label: "Kontakt",
-    description: "Kontaktformular und Erfolgsmeldungen.",
-    siteAnchor: "#kontakt",
-  },
-  {
-    href: "/dashboard/content/sections",
-    label: "Sektionen",
-    description: "Überschriften für Leistungen, Portfolio und Warum OrzuIT.",
+    href: "/dashboard/content/leistungen",
+    label: "Leistungen",
+    description: "Nur Überschrift und Texte über dem Leistungs-Block — keine einzelnen Karten.",
     siteAnchor: "#leistungen",
   },
   {
-    href: "/dashboard/content/technologies",
+    href: "/dashboard/content/portfolio",
+    label: "Portfolio",
+    description: "Nur Intro-Texte des Portfolio-Abschnitts — keine Projekt-Einträge.",
+    siteAnchor: "#portfolio",
+  },
+  {
+    href: "/dashboard/content/warum",
+    label: "Warum OrzuIT",
+    description: "Überschriften und Texte im Abschnitt Arbeitsweise — keine Karten-Inhalte.",
+    siteAnchor: "#warum-orzuit",
+  },
+  {
+    href: "/dashboard/content/technologien",
     label: "Technologien",
-    description: "Tech-Stack, Spalten und Marquee auf der Startseite.",
+    description: "Tech-Stack, Spalten und Lauftext (#technologien).",
     siteAnchor: "#technologien",
+  },
+  {
+    href: "/dashboard/content/kontakt",
+    label: "Kontakt",
+    description: "Kontaktformular und Erfolgsmeldungen (#kontakt).",
+    siteAnchor: "#kontakt",
+  },
+  {
+    href: "/dashboard/content/menu",
+    label: "Menü & Footer",
+    description: "Navigation, Footer und globale Kurztexte.",
+    siteAnchor: "global",
   },
 ];
 
-export const CONTENT_RELATED_CMS = [
-  {
-    href: "/dashboard/services",
-    label: "Leistungen",
-    description: "Einzelne Leistungskarten bearbeiten.",
-  },
-  {
-    href: "/dashboard/portfolio",
-    label: "Portfolio",
-    description: "Projektbeispiele und Cases.",
-  },
-  {
-    href: "/dashboard/testimonials",
-    label: "Warum OrzuIT",
-    description: "Karten im Abschnitt Arbeitsweise.",
-  },
-  {
-    href: "/dashboard/seo",
-    label: "SEO",
-    description: "Titel, Beschreibung und OG-Bild der Startseite.",
-  },
-  {
-    href: "/dashboard/legal",
-    label: "Rechtliches",
-    description: "Impressum und Datenschutz.",
-  },
+export const CONTENT_SECTION_PATHS = [
+  "/dashboard/content",
+  ...CONTENT_SECTIONS.map((s) => s.href),
 ] as const;
+
+/** Legacy routes → new section URLs (bookmarks). */
+export const CONTENT_LEGACY_REDIRECTS: Record<string, string> = {
+  "/dashboard/content/hero": "/dashboard/content/start",
+  "/dashboard/content/sections": "/dashboard/content/leistungen",
+  "/dashboard/content/nav-footer": "/dashboard/content/menu",
+  "/dashboard/content/contact": "/dashboard/content/kontakt",
+  "/dashboard/content/technologies": "/dashboard/content/technologien",
+};
 
 export function getContentPageMeta(pathname: string): {
   label: string;
   description: string;
 } | null {
-  if (pathname === "/dashboard/content") {
-    return {
-      label: "Content",
-      description: "Texte der öffentlichen Startseite — Bereich wählen.",
-    };
-  }
-
   const section = CONTENT_SECTIONS.find((s) => pathname === s.href);
   if (section) {
     return {
@@ -85,10 +77,10 @@ export function getContentPageMeta(pathname: string): {
     };
   }
 
-  if (pathname.startsWith("/dashboard/content/")) {
+  if (pathname.startsWith("/dashboard/content")) {
     return {
       label: "Content",
-      description: "Texte der öffentlichen Startseite.",
+      description: "Texte der Startseite — Bereich in der Leiste wählen.",
     };
   }
 

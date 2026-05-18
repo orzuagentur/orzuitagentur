@@ -1,10 +1,5 @@
-import { NavFooterForm } from "@/components/dashboard/marketing-forms";
-import { ContentSubPage } from "../_shared";
+import { redirect } from "next/navigation";
 
-export default function ContentNavFooterPage() {
-  return (
-    <ContentSubPage pathname="/dashboard/content/nav-footer">
-      {(marketing) => <NavFooterForm marketing={marketing} />}
-    </ContentSubPage>
-  );
+export default function ContentNavFooterRedirect() {
+  redirect("/dashboard/content/menu");
 }

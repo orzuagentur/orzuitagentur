@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { DashboardAuthError, requireDashboardUser } from "@/lib/auth/dashboard-user";
 import { redirectWithToast } from "@/lib/dashboard/redirect-with-toast";
+import { CONTENT_SECTION_PATHS } from "@/lib/dashboard/content-sections";
 import { isNextRedirectError } from "@/lib/navigation/is-next-redirect";
 import { loadMarketingForAdmin, persistMarketing } from "@/lib/cms/persist";
 import { hasServiceRoleConfig } from "@/lib/supabase/service";
@@ -42,6 +43,18 @@ function logCmsError(context: string, e: unknown) {
     return;
   }
   console.error(`[cms:${context}]`, e);
+}
+
+function revalidateMarketingPages() {
+  revalidatePath("/");
+  for (const path of CONTENT_SECTION_PATHS) {
+    revalidatePath(path);
+  }
+  revalidatePath("/dashboard/content/hero");
+  revalidatePath("/dashboard/content/sections");
+  revalidatePath("/dashboard/content/nav-footer");
+  revalidatePath("/dashboard/content/contact");
+  revalidatePath("/dashboard/content/technologies");
 }
 
 export async function saveHeroContent(formData: FormData): Promise<void> {
@@ -97,14 +110,8 @@ export async function saveHeroContent(formData: FormData): Promise<void> {
     };
     marketingContentSchema.parse(next);
     await persistMarketing(next);
-    revalidatePath("/");
-    revalidatePath("/dashboard/content");
-    revalidatePath("/dashboard/content/hero");
-    revalidatePath("/dashboard/content/nav-footer");
-    revalidatePath("/dashboard/content/contact");
-    revalidatePath("/dashboard/content/sections");
-    revalidatePath("/dashboard/content/technologies");
-    redirectWithToast("/dashboard/content", "hero_saved");
+    revalidateMarketingPages();
+    redirectWithToast("/dashboard/content/start", "hero_saved");
   } catch (e) {
     if (isNextRedirectError(e)) throw e;
     if (e instanceof DashboardAuthError) redirect("/auth/login");
@@ -139,14 +146,8 @@ export async function saveNavAndFooter(formData: FormData): Promise<void> {
     };
     marketingContentSchema.parse(next);
     await persistMarketing(next);
-    revalidatePath("/");
-    revalidatePath("/dashboard/content");
-    revalidatePath("/dashboard/content/hero");
-    revalidatePath("/dashboard/content/nav-footer");
-    revalidatePath("/dashboard/content/contact");
-    revalidatePath("/dashboard/content/sections");
-    revalidatePath("/dashboard/content/technologies");
-    redirectWithToast("/dashboard/content/nav-footer", "nav_saved");
+    revalidateMarketingPages();
+    redirectWithToast("/dashboard/content/menu", "nav_saved");
   } catch (e) {
     if (isNextRedirectError(e)) throw e;
     if (e instanceof DashboardAuthError) redirect("/auth/login");
@@ -175,14 +176,8 @@ export async function saveContactBlock(formData: FormData): Promise<void> {
     };
     marketingContentSchema.parse(next);
     await persistMarketing(next);
-    revalidatePath("/");
-    revalidatePath("/dashboard/content");
-    revalidatePath("/dashboard/content/hero");
-    revalidatePath("/dashboard/content/nav-footer");
-    revalidatePath("/dashboard/content/contact");
-    revalidatePath("/dashboard/content/sections");
-    revalidatePath("/dashboard/content/technologies");
-    redirectWithToast("/dashboard/content", "contact_saved");
+    revalidateMarketingPages();
+    redirectWithToast("/dashboard/content/kontakt", "contact_saved");
   } catch (e) {
     if (isNextRedirectError(e)) throw e;
     if (e instanceof DashboardAuthError) redirect("/auth/login");
@@ -190,7 +185,7 @@ export async function saveContactBlock(formData: FormData): Promise<void> {
   }
 }
 
-export async function saveSectionIntros(formData: FormData): Promise<void> {
+export async function saveServicesIntro(formData: FormData): Promise<void> {
   try {
     await guard();
     const m = await loadMarketingForAdmin();
@@ -203,12 +198,48 @@ export async function saveSectionIntros(formData: FormData): Promise<void> {
         closing: str(formData, "svc_closing", 2000),
         ctaLabel: str(formData, "svc_ctaLabel", 120),
       },
+    };
+    marketingContentSchema.parse(next);
+    await persistMarketing(next);
+    revalidateMarketingPages();
+    redirectWithToast("/dashboard/content/leistungen", "leistungen_saved");
+  } catch (e) {
+    if (isNextRedirectError(e)) throw e;
+    if (e instanceof DashboardAuthError) redirect("/auth/login");
+    logCmsError("saveServicesIntro", e);
+  }
+}
+
+export async function savePortfolioIntro(formData: FormData): Promise<void> {
+  try {
+    await guard();
+    const m = await loadMarketingForAdmin();
+    const next = {
+      ...m,
       portfolioSection: {
         kicker: str(formData, "port_kicker", 120),
         title: str(formData, "port_title", 400),
         subtitleRight: str(formData, "port_subtitleRight", 2000),
         footnote: str(formData, "port_footnote", 2000),
       },
+    };
+    marketingContentSchema.parse(next);
+    await persistMarketing(next);
+    revalidateMarketingPages();
+    redirectWithToast("/dashboard/content/portfolio", "portfolio_saved");
+  } catch (e) {
+    if (isNextRedirectError(e)) throw e;
+    if (e instanceof DashboardAuthError) redirect("/auth/login");
+    logCmsError("savePortfolioIntro", e);
+  }
+}
+
+export async function saveWarumIntro(formData: FormData): Promise<void> {
+  try {
+    await guard();
+    const m = await loadMarketingForAdmin();
+    const next = {
+      ...m,
       testimonialsSection: {
         kicker: str(formData, "test_kicker", 120),
         title: str(formData, "test_title", 400),
@@ -218,18 +249,12 @@ export async function saveSectionIntros(formData: FormData): Promise<void> {
     };
     marketingContentSchema.parse(next);
     await persistMarketing(next);
-    revalidatePath("/");
-    revalidatePath("/dashboard/content");
-    revalidatePath("/dashboard/content/hero");
-    revalidatePath("/dashboard/content/nav-footer");
-    revalidatePath("/dashboard/content/contact");
-    revalidatePath("/dashboard/content/sections");
-    revalidatePath("/dashboard/content/technologies");
-    redirectWithToast("/dashboard/content/sections", "sections_saved");
+    revalidateMarketingPages();
+    redirectWithToast("/dashboard/content/warum", "warum_saved");
   } catch (e) {
     if (isNextRedirectError(e)) throw e;
     if (e instanceof DashboardAuthError) redirect("/auth/login");
-    logCmsError("saveSectionIntros", e);
+    logCmsError("saveWarumIntro", e);
   }
 }
 
@@ -260,14 +285,8 @@ export async function saveTechnologiesSection(formData: FormData): Promise<void>
     };
     marketingContentSchema.parse(next);
     await persistMarketing(next);
-    revalidatePath("/");
-    revalidatePath("/dashboard/content");
-    revalidatePath("/dashboard/content/hero");
-    revalidatePath("/dashboard/content/nav-footer");
-    revalidatePath("/dashboard/content/contact");
-    revalidatePath("/dashboard/content/sections");
-    revalidatePath("/dashboard/content/technologies");
-    redirectWithToast("/dashboard/content", "tech_saved");
+    revalidateMarketingPages();
+    redirectWithToast("/dashboard/content/technologien", "tech_saved");
   } catch (e) {
     if (isNextRedirectError(e)) throw e;
     if (e instanceof DashboardAuthError) redirect("/auth/login");

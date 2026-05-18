@@ -10,6 +10,9 @@ export const TOAST_MESSAGES: Record<string, { message: string; variant: ToastVar
   nav_saved: { message: "Навигация и Footer — успешно сохранено", variant: "success" },
   contact_saved: { message: "Контакт — успешно сохранено", variant: "success" },
   sections_saved: { message: "Секции — успешно сохранено", variant: "success" },
+  leistungen_saved: { message: "Leistungen — успешно сохранено", variant: "success" },
+  portfolio_saved: { message: "Portfolio — успешно сохранено", variant: "success" },
+  warum_saved: { message: "Warum OrzuIT — успешно сохранено", variant: "success" },
   tech_saved: { message: "Технологии — успешно сохранено", variant: "success" },
   seo_saved: { message: "SEO — успешно сохранено", variant: "success" },
   legal_operator_saved: {

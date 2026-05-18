@@ -1,10 +1,5 @@
-import { ContactForm } from "@/components/dashboard/marketing-forms";
-import { ContentSubPage } from "../_shared";
+import { redirect } from "next/navigation";
 
-export default function ContentContactPage() {
-  return (
-    <ContentSubPage pathname="/dashboard/content/contact">
-      {(marketing) => <ContactForm marketing={marketing} />}
-    </ContentSubPage>
-  );
+export default function ContentContactRedirect() {
+  redirect("/dashboard/content/kontakt");
 }

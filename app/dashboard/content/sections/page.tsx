@@ -1,10 +1,5 @@
-import { SectionIntrosForm } from "@/components/dashboard/marketing-forms";
-import { ContentSubPage } from "../_shared";
+import { redirect } from "next/navigation";
 
-export default function ContentSectionsPage() {
-  return (
-    <ContentSubPage pathname="/dashboard/content/sections">
-      {(marketing) => <SectionIntrosForm marketing={marketing} />}
-    </ContentSubPage>
-  );
+export default function ContentSectionsRedirect() {
+  redirect("/dashboard/content/leistungen");
 }
