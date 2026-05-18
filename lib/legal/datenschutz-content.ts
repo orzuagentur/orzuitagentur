@@ -1,9 +1,9 @@
 import type { LegalSiteInfo } from "@/lib/legal/site-legal";
 import type { LegalSection } from "@/lib/legal/types";
+import { getCanonicalUrl } from "@/lib/site/url";
 
 export function buildDatenschutzSections(info: LegalSiteInfo): LegalSection[] {
-  const siteUrl =
-    process.env.NEXT_PUBLIC_SITE_URL?.trim() || "https://www.orzuit.de";
+  const siteUrl = getCanonicalUrl("/");
 
   return [
     {

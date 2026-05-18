@@ -4,6 +4,7 @@ import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { ConditionalSiteChrome } from "@/components/layout/conditional-site-chrome";
 import { getMarketingContent } from "@/lib/cms/load-public";
+import { getSiteUrl } from "@/lib/site/url";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -17,15 +18,18 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase:
-    process.env.NEXT_PUBLIC_SITE_URL &&
-    (process.env.NEXT_PUBLIC_SITE_URL.startsWith("http://") ||
-      process.env.NEXT_PUBLIC_SITE_URL.startsWith("https://"))
-      ? new URL(process.env.NEXT_PUBLIC_SITE_URL)
-      : new URL("http://localhost:3000"),
-  title: "OrzuIT — Premium IT & KI-Lösungen",
+  metadataBase: getSiteUrl(),
+  title: {
+    default: "OrzuIT — Premium IT & KI-Lösungen",
+    template: "%s | OrzuIT",
+  },
   description:
     "Luxuriöse digitale Erlebnisse, zukunftsweisende Software und KI — OrzuIT entwickelt Ihre Vision mit Präzision und Klarheit.",
+  openGraph: {
+    type: "website",
+    locale: "de_DE",
+    siteName: "OrzuIT",
+  },
 };
 
 export default async function RootLayout({

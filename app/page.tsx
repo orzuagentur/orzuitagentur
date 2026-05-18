@@ -10,6 +10,7 @@ import {
   getServiceCards,
   getTestimonialCards,
 } from "@/lib/cms/load-public";
+import { buildPageMetadata } from "@/lib/seo/metadata";
 
 const PortfolioSection = dynamic(() =>
   import("@/components/sections/portfolio-section").then(
@@ -37,18 +38,12 @@ const ContactSection = dynamic(() =>
 
 export async function generateMetadata(): Promise<Metadata> {
   const seo = await getHomeSeo();
-  const meta: Metadata = {
+  return buildPageMetadata({
+    path: "/",
     title: seo.title,
     description: seo.description,
-  };
-  if (seo.ogImageUrl) {
-    meta.openGraph = {
-      title: seo.title,
-      description: seo.description,
-      images: [{ url: seo.ogImageUrl }],
-    };
-  }
-  return meta;
+    ogImageUrl: seo.ogImageUrl,
+  });
 }
 
 export default async function Home() {

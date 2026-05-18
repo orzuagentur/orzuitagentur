@@ -1,14 +1,16 @@
 import type { Metadata } from "next";
 import { LegalPage } from "@/components/legal/legal-page";
 import { getLegalContent } from "@/lib/legal/cms";
+import { buildPageMetadata } from "@/lib/seo/metadata";
 
 export async function generateMetadata(): Promise<Metadata> {
   const legal = await getLegalContent();
-  return {
+  return buildPageMetadata({
+    path: "/datenschutz",
     title: legal.datenschutz.title,
     description: legal.datenschutz.metaDescription,
     robots: { index: true, follow: true },
-  };
+  });
 }
 
 export default async function DatenschutzPage() {
