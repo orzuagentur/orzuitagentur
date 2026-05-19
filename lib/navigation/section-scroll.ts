@@ -41,8 +41,16 @@ export function normalizeNavHref(href: string): string {
 export function getNavScrollOffset(): number {
   if (typeof document === "undefined") return 92;
   const header = document.querySelector("header.navbar-surface");
-  const height = header?.getBoundingClientRect().height ?? 72;
-  return height + 16;
+  const headerHeight = header?.getBoundingClientRect().height ?? 0;
+  if (headerHeight > 0) return headerHeight + 16;
+
+  const mobileMenu = document.querySelector(".navbar-menu-toggle--fixed");
+  if (mobileMenu) {
+    const { bottom } = mobileMenu.getBoundingClientRect();
+    return bottom + 12;
+  }
+
+  return 56;
 }
 
 export function scrollToSectionId(

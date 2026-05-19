@@ -15,7 +15,7 @@ export function CinematicHero({ hero }: CinematicHeroProps) {
     <section
       id="start"
       aria-labelledby="hero-heading"
-      className="home-section-anchor hero-section relative isolate flex min-h-[min(100vh,1200px)] w-full flex-col justify-end overflow-hidden pb-16 pt-28 sm:pb-20 sm:pt-32 lg:pb-28"
+      className="home-section-anchor hero-section relative isolate flex min-h-[min(100vh,1200px)] w-full flex-col justify-end overflow-hidden pb-16 pt-6 sm:pb-20 sm:pt-8 lg:pb-28 lg:pt-28"
     >
       <GradientMesh className="motion-gradient-mesh pointer-events-none absolute inset-0 -z-[15] opacity-40" />
 

@@ -176,7 +176,7 @@ export function LuxuryNavbar({ nav }: LuxuryNavbarProps) {
   return (
     <>
       <header
-        className={`navbar-surface sticky top-0 z-50 w-full border-b transition-[backdrop-filter,background-color,box-shadow] duration-500 motion-reduce:transition-none ${headerClass}`}
+        className={`navbar-surface sticky top-0 z-50 hidden w-full border-b transition-[backdrop-filter,background-color,box-shadow] duration-500 motion-reduce:transition-none lg:block ${headerClass}`}
       >
         <div
           aria-hidden
@@ -200,17 +200,6 @@ export function LuxuryNavbar({ nav }: LuxuryNavbarProps) {
               </span>
             </span>
           </Link>
-
-          <button
-            type="button"
-            className="navbar-menu-toggle lg:hidden"
-            aria-expanded={menuOpen}
-            aria-controls={menuId}
-            onClick={() => setMenuOpen((open) => !open)}
-          >
-            <MenuIcon open={menuOpen} />
-            <span className="sr-only">{menuOpen ? "Menü schließen" : "Menü öffnen"}</span>
-          </button>
 
           <nav
             className="navbar-nav-pill hidden lg:inline-flex"
@@ -245,6 +234,17 @@ export function LuxuryNavbar({ nav }: LuxuryNavbarProps) {
         </div>
       </header>
 
+      <button
+        type="button"
+        className="navbar-menu-toggle navbar-menu-toggle--fixed lg:hidden"
+        aria-expanded={menuOpen}
+        aria-controls={menuId}
+        onClick={() => setMenuOpen((open) => !open)}
+      >
+        <MenuIcon open={menuOpen} />
+        <span className="sr-only">{menuOpen ? "Menü schließen" : "Menü öffnen"}</span>
+      </button>
+
       <div
         className={`navbar-mobile-backdrop lg:hidden${menuOpen ? " is-open" : ""}`}
         aria-hidden={!menuOpen}
@@ -258,6 +258,17 @@ export function LuxuryNavbar({ nav }: LuxuryNavbarProps) {
         aria-hidden={!menuOpen}
       >
         <ul className="navbar-mobile-list">
+          <li>
+            <Link
+              href="#start"
+              scroll={false}
+              tabIndex={menuOpen ? undefined : -1}
+              onClick={(e) => handleSectionClick(e, "#start", true)}
+              className="navbar-mobile-link navbar-mobile-link--brand"
+            >
+              OrzuIT
+            </Link>
+          </li>
           {navLinks.map((link) => {
             const isActive = activeHash === link.href;
             return (

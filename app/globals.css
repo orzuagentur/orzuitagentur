@@ -169,6 +169,13 @@ body {
   outline-offset: 2px;
 }
 
+.navbar-menu-toggle--fixed {
+  position: fixed;
+  top: max(0.75rem, env(safe-area-inset-top, 0px));
+  right: max(1rem, env(safe-area-inset-right, 0px));
+  z-index: 50;
+}
+
 .navbar-mobile-backdrop {
   position: fixed;
   inset: 0;
@@ -186,7 +193,7 @@ body {
 
 .navbar-mobile-panel {
   position: fixed;
-  top: 3.65rem;
+  top: calc(max(0.75rem, env(safe-area-inset-top, 0px)) + 3.5rem + 0.5rem);
   left: 0.75rem;
   right: 0.75rem;
   z-index: 56;
@@ -242,6 +249,15 @@ body {
   color: var(--foreground);
   background: color-mix(in oklab, var(--accent) 14%, transparent);
   box-shadow: 0 0 0 1px color-mix(in oklab, var(--accent) 28%, transparent);
+}
+
+.navbar-mobile-link--brand {
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--foreground);
 }
 
 .navbar-mobile-fab {
@@ -351,6 +367,10 @@ body {
 }
 
 @media (max-width: 1023px) {
+  .home-section-anchor {
+    scroll-margin-top: 1rem;
+  }
+
   .site-main-with-mobile-fab {
     padding-bottom: calc(5rem + env(safe-area-inset-bottom, 0px));
   }
