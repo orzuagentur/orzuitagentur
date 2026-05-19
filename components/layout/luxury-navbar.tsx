@@ -1,6 +1,5 @@
 "use client";
 
-import { MotionNavLink } from "@/components/motion";
 import type { NavContent } from "@/lib/cms/types";
 import {
   normalizeNavHref,
@@ -182,27 +181,9 @@ export function LuxuryNavbar({ nav }: LuxuryNavbarProps) {
           aria-hidden
           className="navbar-glow pointer-events-none absolute inset-x-0 top-full h-px bg-gradient-to-r from-transparent via-[var(--accent)]/40 to-transparent opacity-80 motion-reduce:hidden"
         />
-        <div className="navbar-bar mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-2.5 sm:px-6 lg:grid lg:h-[72px] lg:px-8 lg:py-0">
-          <Link
-            href="#start"
-            scroll={false}
-            onClick={(e) => handleSectionClick(e, "#start", menuOpen)}
-            className="navbar-logo group relative flex w-fit shrink-0 items-center gap-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--accent)]"
-          >
-            <span
-              aria-hidden
-              className="absolute -inset-1 rounded-2xl bg-gradient-to-br from-[var(--accent)]/25 via-transparent to-[var(--accent-2)]/20 opacity-0 blur-md transition-opacity duration-500 group-hover:opacity-100 motion-reduce:transition-none"
-            />
-            <span className="relative font-mono text-sm font-semibold uppercase tracking-[0.28em] text-[var(--foreground)]">
-              Orzu
-              <span className="bg-gradient-to-r from-[var(--accent)] to-[var(--accent-2)] bg-clip-text text-transparent">
-                IT
-              </span>
-            </span>
-          </Link>
-
+        <div className="navbar-bar navbar-bar--desktop mx-auto flex max-w-7xl items-center justify-center px-6 py-3 lg:px-8 lg:py-3.5">
           <nav
-            className="navbar-nav-pill hidden lg:inline-flex"
+            className="navbar-nav-pill"
             aria-label="Hauptnavigation"
           >
             {navLinks.map((link) => {
@@ -222,15 +203,6 @@ export function LuxuryNavbar({ nav }: LuxuryNavbarProps) {
             })}
           </nav>
 
-          <MotionNavLink
-            href="#kontakt"
-            scroll={false}
-            onClick={(e) => handleSectionClick(e, "#kontakt")}
-            className="navbar-cta cta-shine group relative hidden shrink-0 overflow-hidden rounded-full border border-[var(--border-strong)] bg-[var(--surface-elevated)] px-5 py-2.5 text-sm font-semibold text-[var(--foreground)] shadow-[0_0_0_1px_rgba(255,255,255,0.04)_inset] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)] lg:inline-flex lg:items-center lg:justify-center"
-            hoverLift={4}
-          >
-            <span className="relative z-10">{nav.ctaLabel}</span>
-          </MotionNavLink>
         </div>
       </header>
 
@@ -293,7 +265,7 @@ export function LuxuryNavbar({ nav }: LuxuryNavbarProps) {
         href="#kontakt"
         scroll={false}
         onClick={(e) => handleSectionClick(e, "#kontakt")}
-        className="navbar-mobile-fab cta-shine lg:hidden"
+        className="navbar-contact-fab cta-shine"
         aria-label={nav.ctaLabel}
         title={nav.ctaLabel}
       >
