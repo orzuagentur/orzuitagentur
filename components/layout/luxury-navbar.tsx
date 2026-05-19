@@ -1,6 +1,6 @@
 "use client";
 
-import type { NavContent } from "@/lib/cms/types";
+import type { ContactContent, NavContent } from "@/lib/cms/types";
 import {
   normalizeNavHref,
   pickActiveSectionId,
@@ -18,6 +18,7 @@ import {
 
 type LuxuryNavbarProps = {
   nav: NavContent;
+  contact: ContactContent;
 };
 
 function MenuIcon({ open }: { open: boolean }) {
@@ -65,7 +66,7 @@ function ProjectFabIcon() {
   );
 }
 
-export function LuxuryNavbar({ nav }: LuxuryNavbarProps) {
+export function LuxuryNavbar({ nav, contact }: LuxuryNavbarProps) {
   const menuId = useId();
   const [activeHash, setActiveHash] = useState("#start");
   const [menuOpen, setMenuOpen] = useState(false);
@@ -77,6 +78,7 @@ export function LuxuryNavbar({ nav }: LuxuryNavbarProps) {
           ...link,
           href: normalizeNavHref(link.href),
         }))
+        .filter((link) => link.visible !== false)
         .filter((link) => link.href !== "#technologien"),
     [nav.links],
   );
@@ -96,10 +98,11 @@ export function LuxuryNavbar({ nav }: LuxuryNavbarProps) {
   }, [sectionIds]);
 
   useEffect(() => {
-    updateActiveFromScroll();
+    const frame = window.requestAnimationFrame(updateActiveFromScroll);
     window.addEventListener("scroll", updateActiveFromScroll, { passive: true });
     window.addEventListener("resize", updateActiveFromScroll);
     return () => {
+      window.cancelAnimationFrame(frame);
       window.removeEventListener("scroll", updateActiveFromScroll);
       window.removeEventListener("resize", updateActiveFromScroll);
     };
@@ -161,6 +164,15 @@ export function LuxuryNavbar({ nav }: LuxuryNavbarProps) {
     setActiveHash(`#${id}`);
     if (closeMenu) setMenuOpen(false);
   };
+
+  const fabChannel = contact.channels?.find(
+    (channel) =>
+      channel.visible &&
+      channel.href &&
+      (channel.route === "fab" || channel.route === "all"),
+  );
+  const fabHref = fabChannel?.href || nav.ctaHref || "#kontakt";
+  const fabLabel = fabChannel?.label || nav.ctaLabel;
 
   return (
     <>
@@ -242,12 +254,12 @@ export function LuxuryNavbar({ nav }: LuxuryNavbarProps) {
       </nav>
 
       <Link
-        href="#kontakt"
+        href={fabHref}
         scroll={false}
-        onClick={(e) => handleSectionClick(e, "#kontakt")}
+        onClick={(e) => handleSectionClick(e, fabHref)}
         className="navbar-contact-fab cta-shine"
-        aria-label={nav.ctaLabel}
-        title={nav.ctaLabel}
+        aria-label={fabLabel}
+        title={fabLabel}
       >
         <ProjectFabIcon />
       </Link>

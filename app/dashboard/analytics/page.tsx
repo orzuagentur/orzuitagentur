@@ -1,5 +1,10 @@
+import { saveAnalyticsSettings } from "@/actions/cms/analytics";
+import { DashboardSubmitButton } from "@/components/dashboard/dashboard-submit-button";
 import { DashboardPageHeader } from "@/components/dashboard/page-header";
-import { getAnalyticsOverview } from "@/lib/dashboard/analytics";
+import { getAnalyticsOverview, getAnalyticsSettings } from "@/lib/dashboard/analytics";
+
+const inputClass =
+  "mt-1 w-full rounded-xl border border-[var(--border)] bg-[color-mix(in_oklab,var(--surface)_92%,black)] px-3 py-2 text-sm text-[var(--foreground)] outline-none focus:border-[color-mix(in_oklab,var(--accent)_45%,var(--border))]";
 
 function formatDate(iso: string) {
   try {
@@ -13,7 +18,10 @@ function formatDate(iso: string) {
 }
 
 export default async function DashboardAnalyticsPage() {
-  const overview = await getAnalyticsOverview();
+  const [overview, settings] = await Promise.all([
+    getAnalyticsOverview(),
+    getAnalyticsSettings(),
+  ]);
 
   return (
     <>
@@ -29,19 +37,86 @@ export default async function DashboardAnalyticsPage() {
           </p>
         ) : null}
 
-        <div className="grid gap-4 sm:grid-cols-2">
-          <div className="rounded-2xl border border-[var(--border)] bg-[color-mix(in_oklab,var(--surface-elevated)_85%,transparent)] p-5">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+          {[
+            ["Ereignisse gesamt", overview.total ?? "—"],
+            ["Page Views", overview.pageViews],
+            ["CTA-Klicks", overview.ctaClicks],
+            ["Leads", overview.leadsCount],
+            [
+              "Conversion",
+              overview.conversionRate === null
+                ? "—"
+                : `${overview.conversionRate.toFixed(1)}%`,
+            ],
+          ].map(([label, value]) => (
+          <div key={label} className="rounded-2xl border border-[var(--border)] bg-[color-mix(in_oklab,var(--surface-elevated)_85%,transparent)] p-5">
             <p className="text-xs font-medium uppercase tracking-[0.2em] text-[var(--muted)]">
-              Ereignisse gesamt
+              {label}
             </p>
             <p className="mt-3 font-mono text-3xl font-semibold tabular-nums text-[var(--foreground)]">
-              {overview.total ?? "—"}
-            </p>
-            <p className="mt-2 text-xs text-[var(--muted)]">
-              Exakter Count aus der Datenbank, sofern Service-Role aktiv ist.
+              {value}
             </p>
           </div>
+          ))}
         </div>
+
+        <div className="grid gap-4 lg:grid-cols-3">
+          <MetricTable
+            title="Top CTAs"
+            rows={overview.topCtas.map((row) => [row.label, row.count])}
+          />
+          <MetricTable
+            title="Scroll-Tiefe"
+            rows={overview.scrollDepth.map((row) => [row.depth, row.count])}
+          />
+          <MetricTable
+            title="Core Web Vitals"
+            rows={overview.webVitals.map((row) => [
+              `${row.metric} · ${row.rating}`,
+              row.value,
+            ])}
+          />
+        </div>
+
+        <section className="rounded-2xl border border-[var(--border)] bg-[color-mix(in_oklab,var(--surface-elevated)_85%,transparent)] p-5">
+          <h2 className="text-sm font-semibold uppercase tracking-[0.22em] text-[var(--muted)]">
+            Heatmap & Tracking
+          </h2>
+          <form action={saveAnalyticsSettings} className="mt-4 grid gap-4 lg:grid-cols-2">
+            <input
+              className={inputClass}
+              name="heatmapProvider"
+              defaultValue={settings.heatmapProvider}
+              placeholder="Hotjar, Microsoft Clarity, Plausible..."
+            />
+            <input
+              className={inputClass}
+              name="heatmapProjectId"
+              defaultValue={settings.heatmapProjectId}
+              placeholder="Project / Site ID"
+            />
+            <label className="flex items-center gap-2 text-sm text-[var(--foreground)]">
+              <input type="checkbox" name="heatmapEnabled" defaultChecked={settings.heatmapEnabled} />
+              Heatmap Integration aktiv
+            </label>
+            <label className="flex items-center gap-2 text-sm text-[var(--foreground)]">
+              <input type="checkbox" name="trackCtaClicks" defaultChecked={settings.trackCtaClicks} />
+              CTA-Klicks tracken
+            </label>
+            <label className="flex items-center gap-2 text-sm text-[var(--foreground)]">
+              <input type="checkbox" name="trackScrollDepth" defaultChecked={settings.trackScrollDepth} />
+              Scroll-Tiefe tracken
+            </label>
+            <label className="flex items-center gap-2 text-sm text-[var(--foreground)]">
+              <input type="checkbox" name="trackWebVitals" defaultChecked={settings.trackWebVitals} />
+              Core Web Vitals tracken
+            </label>
+            <DashboardSubmitButton size="sm" pendingLabel="Gespeichert">
+              Analytics speichern
+            </DashboardSubmitButton>
+          </form>
+        </section>
 
         <div>
           <h2 className="text-sm font-semibold uppercase tracking-[0.22em] text-[var(--muted)]">
@@ -120,5 +195,33 @@ export default async function DashboardAnalyticsPage() {
         </div>
       </div>
     </>
+  );
+}
+
+function MetricTable({
+  title,
+  rows,
+}: {
+  title: string;
+  rows: [string, number | string][];
+}) {
+  return (
+    <section className="rounded-2xl border border-[var(--border)] bg-[color-mix(in_oklab,var(--surface-elevated)_85%,transparent)] p-5">
+      <h2 className="text-sm font-semibold uppercase tracking-[0.22em] text-[var(--muted)]">
+        {title}
+      </h2>
+      <div className="mt-3 space-y-2">
+        {rows.length === 0 ? (
+          <p className="text-sm text-[var(--muted)]">Noch keine Daten.</p>
+        ) : (
+          rows.map(([label, value]) => (
+            <p key={label} className="flex justify-between gap-3 rounded-lg border border-[var(--border)] px-3 py-2 text-sm">
+              <span className="truncate text-[var(--foreground)]">{label}</span>
+              <span className="font-mono text-[var(--muted)]">{value}</span>
+            </p>
+          ))
+        )}
+      </div>
+    </section>
   );
 }

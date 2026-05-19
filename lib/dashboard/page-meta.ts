@@ -14,6 +14,14 @@ export function getDashboardPageMeta(pathname: string): DashboardPageMeta {
   const settingsMeta = getSettingsPageMeta(pathname);
   if (settingsMeta) return settingsMeta;
 
+  if (pathname === "/dashboard/entries") {
+    return {
+      label: "Einträge-Hub",
+      description:
+        "Leistungen, Portfolio und Warum OrzuIT — einzelne Karten bearbeiten.",
+    };
+  }
+
   const sorted = [...DASHBOARD_NAV].sort((a, b) => b.href.length - a.href.length);
 
   for (const item of sorted) {

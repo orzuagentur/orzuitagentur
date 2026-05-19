@@ -3,7 +3,6 @@ import { createServerSupabaseClient } from "@/lib/supabase/server";
 import {
   DEFAULT_HOME_SEO,
   DEFAULT_MARKETING,
-  DEFAULT_PORTFOLIO_CARDS,
   DEFAULT_SERVICES_CARDS,
   DEFAULT_TESTIMONIALS_CARDS,
 } from "@/lib/cms/defaults";
@@ -12,6 +11,7 @@ import { marketingContentSchema } from "@/lib/cms/schema";
 import type {
   HomeSeo,
   MarketingContent,
+  NavLinkContent,
   NavContent,
   PortfolioCard,
   ServiceCard,
@@ -32,18 +32,49 @@ function imageUrlFromRow(row: Record<string, unknown>): string | null {
   return trimmed || null;
 }
 
+function imageAltFromRow(row: Record<string, unknown>): string | null {
+  if (!("image_alt" in row)) return null;
+  const alt = row.image_alt;
+  if (typeof alt !== "string") return null;
+  const trimmed = alt.trim();
+  return trimmed || null;
+}
+
+function stringFromRow(row: Record<string, unknown>, key: string): string | null {
+  const value = row[key];
+  if (typeof value !== "string") return null;
+  const trimmed = value.trim();
+  return trimmed || null;
+}
+
+function tagsFromRow(row: Record<string, unknown>): string[] {
+  const value = row.tags;
+  return Array.isArray(value)
+    ? value.filter((item): item is string => typeof item === "string" && item.trim().length > 0)
+    : [];
+}
+
 import { enrichDefaultPortfolioCards, enrichPortfolioCard } from "@/lib/cms/enrich-portfolio";
 import { enrichDefaultServiceCards, enrichServiceCard } from "@/lib/cms/enrich-services";
 import { visualClassForSlug } from "@/lib/cms/portfolio-visuals";
 import { visualClassForService } from "@/lib/cms/service-visuals";
 import { normalizeNavHref } from "@/lib/navigation/section-scroll";
+function normalizeNavLinks(links: NavLinkContent[]): NavLinkContent[] {
+  return links
+    .map((link, index) => ({
+      ...link,
+      href: normalizeNavHref(link.href),
+      visible: link.visible !== false,
+      sortOrder: Number.isFinite(link.sortOrder) ? link.sortOrder : index + 1,
+    }))
+    .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
+}
+
 function normalizeNavContent(nav: NavContent): NavContent {
   return {
     ...nav,
-    links: nav.links.map((link) => ({
-      ...link,
-      href: normalizeNavHref(link.href),
-    })),
+    ctaHref: normalizeNavHref(nav.ctaHref || "#kontakt"),
+    links: normalizeNavLinks(nav.links),
   };
 }
 
@@ -129,7 +160,7 @@ export const getServiceCards = cache(async (): Promise<ServiceCard[]> => {
     const withImage = await supabase
       .from("services")
       .select(
-        "slug,title_de,description_de,body_de,category_de,project_url,image_url,sort_order",
+        "slug,title_de,description_de,body_de,category_de,project_url,image_url,image_alt,icon_name,tags,cta_label,animation_preset,enable_3d,video_url,sort_order",
       )
       .eq("published", true)
       .order("sort_order", { ascending: true });
@@ -176,6 +207,14 @@ export const getServiceCards = cache(async (): Promise<ServiceCard[]> => {
         description: row.description_de ?? "",
         visualClass: visual,
         imageUrl: imageUrlFromRow(row as Record<string, unknown>),
+        imageAlt: imageAltFromRow(row as Record<string, unknown>),
+        iconName: stringFromRow(row as Record<string, unknown>, "icon_name"),
+        tags: tagsFromRow(row as Record<string, unknown>),
+        ctaLabel: stringFromRow(row as Record<string, unknown>, "cta_label"),
+        animationPreset: stringFromRow(row as Record<string, unknown>, "animation_preset"),
+        enable3d:
+          "enable_3d" in row ? Boolean((row as { enable_3d?: boolean }).enable_3d) : true,
+        videoUrl: stringFromRow(row as Record<string, unknown>, "video_url"),
         projectUrl:
           "project_url" in row
             ? String((row as { project_url?: string | null }).project_url ?? "").trim() ||
@@ -196,7 +235,7 @@ export const getPortfolioCards = cache(async (): Promise<PortfolioCard[]> => {
     const withImage = await supabase
       .from("portfolio_entries")
       .select(
-        "slug,title_de,summary_de,body_de,category_de,project_url,image_url,sort_order",
+        "slug,title_de,summary_de,body_de,category_de,project_url,image_url,image_alt,icon_name,tags,cta_label,animation_preset,enable_3d,video_url,sort_order",
       )
       .eq("published", true)
       .order("sort_order", { ascending: true });
@@ -240,6 +279,14 @@ export const getPortfolioCards = cache(async (): Promise<PortfolioCard[]> => {
         description: row.summary_de ?? "",
         visualClass: visual,
         imageUrl: imageUrlFromRow(row as Record<string, unknown>),
+        imageAlt: imageAltFromRow(row as Record<string, unknown>),
+        iconName: stringFromRow(row as Record<string, unknown>, "icon_name"),
+        tags: tagsFromRow(row as Record<string, unknown>),
+        ctaLabel: stringFromRow(row as Record<string, unknown>, "cta_label"),
+        animationPreset: stringFromRow(row as Record<string, unknown>, "animation_preset"),
+        enable3d:
+          "enable_3d" in row ? Boolean((row as { enable_3d?: boolean }).enable_3d) : true,
+        videoUrl: stringFromRow(row as Record<string, unknown>, "video_url"),
         size: index === 0 ? ("featured" as const) : ("compact" as const),
         projectUrl:
           "project_url" in row

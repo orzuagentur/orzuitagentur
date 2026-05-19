@@ -26,6 +26,20 @@ export type ServiceRow = {
 
   image_url: string | null;
 
+  image_alt: string | null;
+
+  icon_name: string | null;
+
+  tags: string[];
+
+  cta_label: string | null;
+
+  animation_preset: string | null;
+
+  enable_3d: boolean;
+
+  video_url: string | null;
+
   sort_order: number;
 
   published: boolean;
@@ -48,7 +62,7 @@ export async function getServices(): Promise<ServiceRow[]> {
 
     .select(
 
-      "id,slug,title_de,description_de,body_de,category_de,project_url,image_url,sort_order,published,updated_at",
+      "id,slug,title_de,description_de,body_de,category_de,project_url,image_url,image_alt,icon_name,tags,cta_label,animation_preset,enable_3d,video_url,sort_order,published,updated_at",
 
     )
 
@@ -86,11 +100,25 @@ export async function getServices(): Promise<ServiceRow[]> {
 
   return (fallback.data ?? []).map((row) => ({
 
-    ...(row as Omit<ServiceRow, "project_url" | "image_url">),
+    ...(row as Omit<ServiceRow, "project_url" | "image_url" | "image_alt" | "icon_name" | "tags" | "cta_label" | "animation_preset" | "enable_3d" | "video_url">),
 
     project_url: null,
 
     image_url: null,
+
+    image_alt: null,
+
+    icon_name: null,
+
+    tags: [],
+
+    cta_label: null,
+
+    animation_preset: null,
+
+    enable_3d: true,
+
+    video_url: null,
 
   }));
 

@@ -9,6 +9,8 @@ export type PageSeoInput = {
   title: string;
   description: string;
   ogImageUrl?: string | null;
+  canonicalUrl?: string | null;
+  schemaJson?: Record<string, unknown> | null;
   robots?: Metadata["robots"];
 };
 
@@ -22,7 +24,7 @@ function resolveOgImageUrl(ogImageUrl: string | null | undefined, siteBase: URL)
 
 export function buildPageMetadata(input: PageSeoInput): Metadata {
   const siteUrl = getSiteUrl();
-  const canonical = getCanonicalUrl(input.path);
+  const canonical = input.canonicalUrl?.trim() || getCanonicalUrl(input.path);
   const imageUrl = resolveOgImageUrl(input.ogImageUrl, siteUrl);
 
   return {
@@ -51,6 +53,9 @@ export function buildPageMetadata(input: PageSeoInput): Metadata {
       description: input.description,
       images: [imageUrl],
     },
+    ...(input.schemaJson && Object.keys(input.schemaJson).length > 0
+      ? { other: { "script:ld+json": JSON.stringify(input.schemaJson) } }
+      : {}),
     ...(input.robots ? { robots: input.robots } : {}),
   };
 }

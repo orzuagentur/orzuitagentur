@@ -446,6 +446,7 @@ function ServiceStackCard({
         >
           <CardStackVisual
             imageUrl={service.imageUrl}
+            imageAlt={service.imageAlt}
             visualClass={service.visualClass}
             title={service.title}
             category={service.category}

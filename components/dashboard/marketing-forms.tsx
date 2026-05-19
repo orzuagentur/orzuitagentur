@@ -56,6 +56,33 @@ export function HeroForm({ marketing }: MarketingFormsProps) {
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
+              <label className={labelClass} htmlFor="hero_mediaUrl">Hero Media URL</label>
+              <input className={inputClass} id="hero_mediaUrl" name="hero_mediaUrl" defaultValue={h.mediaUrl ?? ""} placeholder="Bild oder Video URL" />
+            </div>
+            <div>
+              <label className={labelClass} htmlFor="hero_mediaAlt">Hero Media Alt</label>
+              <input className={inputClass} id="hero_mediaAlt" name="hero_mediaAlt" defaultValue={h.mediaAlt ?? ""} />
+            </div>
+            <div>
+              <label className={labelClass} htmlFor="hero_animationPreset">Hero Animation</label>
+              <select className={inputClass} id="hero_animationPreset" name="hero_animationPreset" defaultValue={h.animationPreset ?? "cinematic"}>
+                <option value="cinematic">cinematic</option>
+                <option value="fade">fade</option>
+                <option value="minimal">minimal</option>
+                <option value="depth">depth</option>
+              </select>
+            </div>
+            <div>
+              <label className={labelClass} htmlFor="hero_animationIntensity">Hero Motion Intensität</label>
+              <select className={inputClass} id="hero_animationIntensity" name="hero_animationIntensity" defaultValue={h.animationIntensity ?? "medium"}>
+                <option value="low">low</option>
+                <option value="medium">medium</option>
+                <option value="high">high</option>
+              </select>
+            </div>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div>
               <label className={labelClass} htmlFor="primaryCta_label">Primär-CTA Text</label>
               <input className={inputClass} id="primaryCta_label" name="primaryCta_label" defaultValue={h.primaryCta.label} />
             </div>
@@ -102,6 +129,16 @@ export function HeroForm({ marketing }: MarketingFormsProps) {
 }
 
 export function NavFooterForm({ marketing }: MarketingFormsProps) {
+  const socialLinks =
+    marketing.footer.socialLinks?.length
+      ? marketing.footer.socialLinks
+      : [
+          { label: "Instagram", href: "", visible: false },
+          { label: "LinkedIn", href: "", visible: false },
+          { label: "WhatsApp", href: "", visible: false },
+          { label: "Telegram", href: "", visible: false },
+        ];
+
   return (
     <div className={cmsFormWrapClass}>
       <section className={cmsSectionCardClass}>
@@ -112,9 +149,18 @@ export function NavFooterForm({ marketing }: MarketingFormsProps) {
           Texte für Start, Portfolio, Projekt anfragen usw. auf der Kundenseite.
         </p>
         <form action={saveNavAndFooter} className="mt-4 space-y-4">
-          <p className="text-xs text-[var(--muted)]">Navigationszeilen (Anzahl fix wie in den Defaults)</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--muted)]">
+            Navigation
+          </p>
           {marketing.nav.links.map((link, i) => (
-            <div key={`nav-${i}`} className="grid gap-2 sm:grid-cols-2">
+            <fieldset
+              key={`nav-${i}`}
+              className="rounded-xl border border-[var(--border)] p-3"
+            >
+              <legend className="px-1 text-xs font-semibold text-[var(--foreground)]">
+                Menüpunkt {i + 1}
+              </legend>
+              <div className="grid gap-2 sm:grid-cols-[1fr_1fr_96px_auto]">
               <div>
                 <label className={labelClass} htmlFor={`nav_href_${i}`}>Link {i + 1} (href)</label>
                 <input
@@ -129,13 +175,45 @@ export function NavFooterForm({ marketing }: MarketingFormsProps) {
                 <label className={labelClass} htmlFor={`nav_label_${i}`}>Label {i + 1}</label>
                 <input className={inputClass} id={`nav_label_${i}`} name={`nav_label_${i}`} defaultValue={link.label} />
               </div>
-            </div>
+                <div>
+                  <label className={labelClass} htmlFor={`nav_sort_${i}`}>
+                    Reihenfolge
+                  </label>
+                  <input
+                    className={inputClass}
+                    id={`nav_sort_${i}`}
+                    name={`nav_sort_${i}`}
+                    type="number"
+                    defaultValue={link.sortOrder ?? i + 1}
+                  />
+                </div>
+                <label className="mt-6 flex cursor-pointer items-center gap-2 text-sm text-[var(--foreground)]">
+                  <input
+                    type="checkbox"
+                    name={`nav_visible_${i}`}
+                    value="true"
+                    defaultChecked={link.visible !== false}
+                    className="h-4 w-4 rounded border-[var(--border-strong)]"
+                  />
+                  Sichtbar
+                </label>
+              </div>
+            </fieldset>
           ))}
-          <div>
-            <label className={labelClass} htmlFor="nav_ctaLabel">Header-CTA</label>
-            <input className={inputClass} id="nav_ctaLabel" name="nav_ctaLabel" defaultValue={marketing.nav.ctaLabel} />
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div>
+              <label className={labelClass} htmlFor="nav_ctaLabel">Header/FAB · CTA Text</label>
+              <input className={inputClass} id="nav_ctaLabel" name="nav_ctaLabel" defaultValue={marketing.nav.ctaLabel} />
+            </div>
+            <div>
+              <label className={labelClass} htmlFor="nav_ctaHref">Header/FAB · CTA Link</label>
+              <input className={inputClass} id="nav_ctaHref" name="nav_ctaHref" defaultValue={marketing.nav.ctaHref ?? "#kontakt"} />
+            </div>
           </div>
           <hr className="border-[var(--border)]" />
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--muted)]">
+            Footer & globale CTAs
+          </p>
           <div>
             <label className={labelClass} htmlFor="footer_tagline">Footer · Kurztext</label>
             <textarea className={`${inputClass} min-h-[80px]`} id="footer_tagline" name="footer_tagline" defaultValue={marketing.footer.tagline} />
@@ -145,6 +223,12 @@ export function NavFooterForm({ marketing }: MarketingFormsProps) {
               <label className={labelClass} htmlFor="footer_ctaLabel">Footer · CTA</label>
               <input className={inputClass} id="footer_ctaLabel" name="footer_ctaLabel" defaultValue={marketing.footer.ctaLabel} />
             </div>
+            <div>
+              <label className={labelClass} htmlFor="footer_ctaHref">Footer · CTA Link</label>
+              <input className={inputClass} id="footer_ctaHref" name="footer_ctaHref" defaultValue={marketing.footer.ctaHref ?? "#kontakt"} />
+            </div>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2">
             <div>
               <label className={labelClass} htmlFor="footer_email">Footer · E-Mail</label>
               <input className={inputClass} id="footer_email" name="footer_email" defaultValue={marketing.footer.email} type="email" />
@@ -184,6 +268,174 @@ export function NavFooterForm({ marketing }: MarketingFormsProps) {
               <input className={inputClass} id="footer_privacyLabel" name="footer_privacyLabel" defaultValue={marketing.footer.privacyLabel} />
             </div>
           </div>
+          <hr className="border-[var(--border)]" />
+          <div>
+            <label className={labelClass} htmlFor="footer_socialHeading">
+              Social-Überschrift
+            </label>
+            <input
+              className={inputClass}
+              id="footer_socialHeading"
+              name="footer_socialHeading"
+              defaultValue={marketing.footer.socialHeading ?? "Social"}
+            />
+          </div>
+          {socialLinks.map((link, i) => (
+            <fieldset
+              key={`social-${i}`}
+              className="rounded-xl border border-[var(--border)] p-3"
+            >
+              <legend className="px-1 text-xs font-semibold text-[var(--foreground)]">
+                Social Link {i + 1}
+              </legend>
+              <div className="grid gap-2 sm:grid-cols-[1fr_2fr_auto]">
+                <input
+                  className={inputClass}
+                  name={`footer_social_label_${i}`}
+                  defaultValue={link.label}
+                  placeholder="Label, z. B. LinkedIn"
+                />
+                <input
+                  className={inputClass}
+                  name={`footer_social_href_${i}`}
+                  defaultValue={link.href}
+                  placeholder="https://..."
+                />
+                <label className="mt-2 flex cursor-pointer items-center gap-2 text-sm text-[var(--foreground)] sm:mt-6">
+                  <input
+                    type="checkbox"
+                    name={`footer_social_visible_${i}`}
+                    value="true"
+                    defaultChecked={link.visible === true}
+                    className="h-4 w-4 rounded border-[var(--border-strong)]"
+                  />
+                  Sichtbar
+                </label>
+              </div>
+            </fieldset>
+          ))}
+          <hr className="border-[var(--border)]" />
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--muted)]">
+            Design Tokens
+          </p>
+          <div className="grid gap-4 sm:grid-cols-4">
+            <input className={inputClass} name="design_accent" defaultValue={marketing.designSystem.accent} placeholder="Accent #7dd3fc" />
+            <input className={inputClass} name="design_accent2" defaultValue={marketing.designSystem.accent2} placeholder="Accent 2" />
+            <input className={inputClass} name="design_foreground" defaultValue={marketing.designSystem.foreground} placeholder="Foreground" />
+            <input className={inputClass} name="design_background" defaultValue={marketing.designSystem.background} placeholder="Background" />
+          </div>
+          <div className="grid gap-4 sm:grid-cols-4">
+            <select className={inputClass} name="design_typographyScale" defaultValue={marketing.designSystem.typographyScale}>
+              <option value="compact">compact</option>
+              <option value="comfortable">comfortable</option>
+              <option value="large">large</option>
+            </select>
+            <select className={inputClass} name="design_radius" defaultValue={marketing.designSystem.radius}>
+              <option value="sharp">sharp</option>
+              <option value="rounded">rounded</option>
+              <option value="pill">pill</option>
+            </select>
+            <select className={inputClass} name="design_spacingPreset" defaultValue={marketing.designSystem.spacingPreset}>
+              <option value="compact">compact</option>
+              <option value="luxury">luxury</option>
+              <option value="spacious">spacious</option>
+            </select>
+            <select className={inputClass} name="design_sectionPadding" defaultValue={marketing.designSystem.sectionPadding}>
+              <option value="small">small</option>
+              <option value="large">large</option>
+              <option value="cinematic">cinematic</option>
+            </select>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-4">
+            <select className={inputClass} name="design_shadowPreset" defaultValue={marketing.designSystem.shadowPreset ?? "soft"}>
+              <option value="none">shadow: none</option>
+              <option value="soft">shadow: soft</option>
+              <option value="deep">shadow: deep</option>
+              <option value="neon">shadow: neon</option>
+            </select>
+            <select className={inputClass} name="design_borderPreset" defaultValue={marketing.designSystem.borderPreset ?? "subtle"}>
+              <option value="none">border: none</option>
+              <option value="subtle">border: subtle</option>
+              <option value="strong">border: strong</option>
+              <option value="accent">border: accent</option>
+            </select>
+            <label className="flex items-center gap-2 text-sm text-[var(--foreground)]">
+              <input
+                type="checkbox"
+                name="design_glassmorphism"
+                defaultChecked={marketing.designSystem.glassmorphism ?? true}
+                className="h-4 w-4 rounded border-[var(--border-strong)]"
+              />
+              Glassmorphism
+            </label>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-4">
+            <select className={inputClass} name="design_motionPreset" defaultValue={marketing.designSystem.motionPreset ?? "cinematic"}>
+              <option value="minimal">motion: minimal</option>
+              <option value="smooth">motion: smooth</option>
+              <option value="cinematic">motion: cinematic</option>
+              <option value="energetic">motion: energetic</option>
+            </select>
+            <select className={inputClass} name="design_framerPreset" defaultValue={marketing.designSystem.framerPreset ?? "smooth"}>
+              <option value="fade">Framer: fade</option>
+              <option value="smooth">Framer: smooth</option>
+              <option value="spring">Framer: spring</option>
+              <option value="depth">Framer: depth</option>
+            </select>
+            <select className={inputClass} name="design_scrollRevealIntensity" defaultValue={marketing.designSystem.scrollRevealIntensity ?? "medium"}>
+              <option value="off">scroll reveal: off</option>
+              <option value="low">scroll reveal: low</option>
+              <option value="medium">scroll reveal: medium</option>
+              <option value="high">scroll reveal: high</option>
+            </select>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-4">
+            <label className="flex items-center gap-2 text-sm text-[var(--foreground)]">
+              <input type="checkbox" name="design_parallaxEnabled" defaultChecked={marketing.designSystem.parallaxEnabled ?? true} className="h-4 w-4 rounded border-[var(--border-strong)]" />
+              Parallax
+            </label>
+            <label className="flex items-center gap-2 text-sm text-[var(--foreground)]">
+              <input type="checkbox" name="design_tiltEnabled" defaultChecked={marketing.designSystem.tiltEnabled ?? true} className="h-4 w-4 rounded border-[var(--border-strong)]" />
+              Tilt
+            </label>
+            <label className="flex items-center gap-2 text-sm text-[var(--foreground)]">
+              <input type="checkbox" name="design_glowEnabled" defaultChecked={marketing.designSystem.glowEnabled ?? true} className="h-4 w-4 rounded border-[var(--border-strong)]" />
+              Glow
+            </label>
+            <label className="flex items-center gap-2 text-sm text-[var(--foreground)]">
+              <input type="checkbox" name="design_reducedMotion" defaultChecked={marketing.designSystem.reducedMotion ?? false} className="h-4 w-4 rounded border-[var(--border-strong)]" />
+              Reduced Motion
+            </label>
+          </div>
+          <hr className="border-[var(--border)]" />
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--muted)]">
+            App Icons & Medien-Pipeline
+          </p>
+          <div className="grid gap-4 sm:grid-cols-3">
+            <input className={inputClass} name="assets_faviconUrl" defaultValue={marketing.siteAssets.faviconUrl} placeholder="Favicon URL" />
+            <input className={inputClass} name="assets_appleIconUrl" defaultValue={marketing.siteAssets.appleIconUrl} placeholder="Apple Icon URL" />
+            <input className={inputClass} name="assets_ogFallbackImageUrl" defaultValue={marketing.siteAssets.ogFallbackImageUrl} placeholder="OG Fallback Image URL" />
+          </div>
+          <div className="grid gap-4 sm:grid-cols-5">
+            <label className="flex items-center gap-2 text-sm text-[var(--foreground)]">
+              <input type="checkbox" name="media_autoWebp" defaultChecked={marketing.mediaPipeline.autoWebp} className="h-4 w-4 rounded border-[var(--border-strong)]" />
+              Auto WebP
+            </label>
+            <label className="flex items-center gap-2 text-sm text-[var(--foreground)]">
+              <input type="checkbox" name="media_autoAvif" defaultChecked={marketing.mediaPipeline.autoAvif} className="h-4 w-4 rounded border-[var(--border-strong)]" />
+              Auto AVIF
+            </label>
+            <label className="flex items-center gap-2 text-sm text-[var(--foreground)]">
+              <input type="checkbox" name="media_videoUploads" defaultChecked={marketing.mediaPipeline.videoUploads} className="h-4 w-4 rounded border-[var(--border-strong)]" />
+              Video Uploads
+            </label>
+            <select className={inputClass} name="media_preferredImageFormat" defaultValue={marketing.mediaPipeline.preferredImageFormat}>
+              <option value="original">original</option>
+              <option value="webp">webp</option>
+              <option value="avif">avif</option>
+            </select>
+            <input className={inputClass} name="media_maxUploadMb" type="number" defaultValue={marketing.mediaPipeline.maxUploadMb} />
+          </div>
           <DashboardSubmitButton size="md" pendingLabel="Gespeichert">
             Navigation &amp; Footer speichern
           </DashboardSubmitButton>
@@ -194,6 +446,18 @@ export function NavFooterForm({ marketing }: MarketingFormsProps) {
 }
 
 export function ContactForm({ marketing }: MarketingFormsProps) {
+  const channels =
+    marketing.contact.channels?.length
+      ? marketing.contact.channels
+      : [
+          { key: "telegram", label: "Telegram", href: "", icon: "telegram", visible: false, route: "contact" as const },
+          { key: "whatsapp", label: "WhatsApp", href: "", icon: "whatsapp", visible: false, route: "fab" as const },
+          { key: "instagram", label: "Instagram", href: "", icon: "instagram", visible: false, route: "footer" as const },
+          { key: "linkedin", label: "LinkedIn", href: "", icon: "linkedin", visible: false, route: "footer" as const },
+          { key: "email", label: "E-Mail", href: `mailto:${marketing.contact.email}`, icon: "mail", visible: true, route: "all" as const },
+          { key: "calendly", label: "Termin buchen", href: "", icon: "calendar", visible: false, route: "contact" as const },
+        ];
+
   return (
     <div className={cmsFormWrapClass}>
       <section className={cmsSectionCardClass}>
@@ -249,6 +513,38 @@ export function ContactForm({ marketing }: MarketingFormsProps) {
             <label className={labelClass} htmlFor="contact_successBody">Erfolg · Text vor E-Mail-Link</label>
             <textarea className={`${inputClass} min-h-[80px]`} id="contact_successBody" name="contact_successBody" defaultValue={marketing.contact.successBody} />
           </div>
+          <div>
+            <label className={labelClass} htmlFor="contact_webhookUrl">Lead Webhook URL (Zapier/Make)</label>
+            <input className={inputClass} id="contact_webhookUrl" name="contact_webhookUrl" defaultValue={marketing.contact.webhookUrl ?? ""} placeholder="https://hooks.zapier.com/..." />
+          </div>
+          <div className="space-y-3 rounded-xl border border-[var(--border)] p-4">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--muted)]">
+              Kontaktkanäle
+            </p>
+            {channels.map((channel) => (
+              <fieldset key={channel.key} className="rounded-xl border border-[var(--border)] p-3">
+                <legend className="px-1 text-xs font-semibold text-[var(--foreground)]">
+                  {channel.key}
+                </legend>
+                <div className="grid gap-3 sm:grid-cols-[1fr_1.5fr_1fr_1fr_auto]">
+                  <input type="hidden" name={`channel_${channel.key}_key`} value={channel.key} />
+                  <input className={inputClass} name={`channel_${channel.key}_label`} defaultValue={channel.label} placeholder="Label" />
+                  <input className={inputClass} name={`channel_${channel.key}_href`} defaultValue={channel.href} placeholder="URL / mailto / tel" />
+                  <input className={inputClass} name={`channel_${channel.key}_icon`} defaultValue={channel.icon} placeholder="Icon" />
+                  <select className={inputClass} name={`channel_${channel.key}_route`} defaultValue={channel.route}>
+                    <option value="contact">Contact</option>
+                    <option value="fab">FAB</option>
+                    <option value="footer">Footer</option>
+                    <option value="all">Alle</option>
+                  </select>
+                  <label className="mt-2 flex cursor-pointer items-center gap-2 text-sm text-[var(--foreground)] sm:mt-6">
+                    <input type="checkbox" name={`channel_${channel.key}_visible`} defaultChecked={channel.visible} className="h-4 w-4 rounded border-[var(--border-strong)]" />
+                    Sichtbar
+                  </label>
+                </div>
+              </fieldset>
+            ))}
+          </div>
           <DashboardSubmitButton size="md" pendingLabel="Gespeichert">
             Kontakt speichern
           </DashboardSubmitButton>
@@ -286,7 +582,10 @@ export function LeistungenIntroForm({ marketing }: MarketingFormsProps) {
             placeholder="Hinweis unter der Karussell"
           />
           <textarea className={`${inputClass} min-h-[60px]`} name="svc_closing" defaultValue={s.closing} />
-          <input className={inputClass} name="svc_ctaLabel" defaultValue={s.ctaLabel} />
+          <div className="grid gap-4 sm:grid-cols-2">
+            <input className={inputClass} name="svc_ctaLabel" defaultValue={s.ctaLabel} placeholder="CTA Text" />
+            <input className={inputClass} name="svc_ctaHref" defaultValue={s.ctaHref ?? "#kontakt"} placeholder="CTA Link" />
+          </div>
           <DashboardSubmitButton size="md" pendingLabel="Gespeichert">
             Leistungen speichern
           </DashboardSubmitButton>

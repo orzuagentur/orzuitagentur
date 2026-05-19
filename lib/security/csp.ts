@@ -28,17 +28,21 @@ function supabaseConnectOrigins(): string[] {
  * Vercel Analytics / Speed Insights use same-origin /_vercel/* in production.
  */
 export function buildContentSecurityPolicy(): string {
-  const scriptSrc = ["'self'", "'unsafe-inline'"];
-  const connectSrc = ["'self'", ...supabaseConnectOrigins()];
+  const scriptSrc = ["'self'", "'unsafe-inline'", "https://va.vercel-scripts.com"];
+  const connectSrc = [
+    "'self'",
+    ...supabaseConnectOrigins(),
+    "https://vitals.vercel-insights.com",
+    "https://va.vercel-scripts.com",
+  ];
 
   if (isDev) {
-    scriptSrc.push("'unsafe-eval'", "https://va.vercel-scripts.com");
+    scriptSrc.push("'unsafe-eval'");
     connectSrc.push(
       "ws:",
       "wss:",
       "http://localhost:*",
       "http://127.0.0.1:*",
-      "https://va.vercel-scripts.com",
     );
   }
 
@@ -55,7 +59,7 @@ export function buildContentSecurityPolicy(): string {
     `connect-src ${connectSrc.join(" ")}`,
     "worker-src 'self' blob:",
     "manifest-src 'self'",
-    "media-src 'self'",
+    "media-src 'self' blob: https://*.supabase.co",
   ];
 
   if (!isDev) {

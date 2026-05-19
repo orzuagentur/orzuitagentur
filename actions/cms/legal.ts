@@ -129,6 +129,10 @@ export async function saveLegalImpressum(formData: FormData): Promise<void> {
         intro: str(formData, "impressum_intro", 4000),
         metaDescription: str(formData, "impressum_metaDescription", 500),
         showUpdatedLabel: bool(formData, "impressum_showUpdatedLabel"),
+        version: str(formData, "impressum_version", 80) || current.impressum.version,
+        updatedAt:
+          str(formData, "impressum_updatedAt", 40) ||
+          new Date().toISOString().slice(0, 10),
         sections,
       },
     };
@@ -159,6 +163,12 @@ export async function saveLegalDatenschutz(formData: FormData): Promise<void> {
         intro: str(formData, "datenschutz_intro", 4000),
         metaDescription: str(formData, "datenschutz_metaDescription", 500),
         showUpdatedLabel: bool(formData, "datenschutz_showUpdatedLabel"),
+        version:
+          str(formData, "datenschutz_version", 80) ||
+          current.datenschutz.version,
+        updatedAt:
+          str(formData, "datenschutz_updatedAt", 40) ||
+          new Date().toISOString().slice(0, 10),
         sections,
       },
     };

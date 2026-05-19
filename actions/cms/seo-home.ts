@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { DashboardAuthError, requireDashboardUser } from "@/lib/auth/dashboard-user";
+import { writeAuditLog } from "@/lib/dashboard/audit";
 import { revalidateSettingsDashboard } from "@/lib/dashboard/revalidate-settings";
 import { redirectWithToast } from "@/lib/dashboard/redirect-with-toast";
 import { isNextRedirectError } from "@/lib/navigation/is-next-redirect";
@@ -20,7 +21,7 @@ function str(fd: FormData, key: string, max: number) {
 
 export async function saveHomeSeo(formData: FormData): Promise<void> {
   try {
-    await requireDashboardUser();
+    const user = await requireDashboardUser();
     if (!hasServiceRoleConfig()) {
       console.warn("[cms:saveHomeSeo] Service-Role nicht konfiguriert.");
       return;
@@ -30,6 +31,22 @@ export async function saveHomeSeo(formData: FormData): Promise<void> {
     const description = str(formData, "seo_description", 320);
     const ogRaw = str(formData, "seo_ogImageUrl", 2000);
     const ogImageUrl = ogRaw === "" ? null : ogRaw;
+    const canonicalUrl = str(formData, "seo_canonicalUrl", 1000) || null;
+    const robotsIndex = formData.get("seo_robotsIndex") === "on";
+    const ogGeneratedPrompt = str(formData, "seo_ogGeneratedPrompt", 1000) || null;
+    const sitemapEnabled = formData.get("seo_sitemapEnabled") === "on";
+    const schemaRaw = str(formData, "seo_schemaJson", 12000);
+    let schemaJson: Record<string, unknown> = {};
+    if (schemaRaw) {
+      try {
+        const parsedSchema = JSON.parse(schemaRaw);
+        if (parsedSchema && typeof parsedSchema === "object" && !Array.isArray(parsedSchema)) {
+          schemaJson = parsedSchema;
+        }
+      } catch {
+        console.warn("[cms:saveHomeSeo] Schema JSON ungültig.");
+      }
+    }
 
     const parsed = homeSeoSchema.safeParse({
       title,
@@ -48,6 +65,11 @@ export async function saveHomeSeo(formData: FormData): Promise<void> {
         title_de: parsed.data.title,
         description_de: parsed.data.description,
         og_image_url: parsed.data.ogImageUrl ?? null,
+        canonical_url: canonicalUrl,
+        robots_index: robotsIndex,
+        schema_json: schemaJson,
+        og_generated_prompt: ogGeneratedPrompt,
+        sitemap_enabled: sitemapEnabled,
         updated_at: new Date().toISOString(),
       },
       { onConflict: "path" },
@@ -59,6 +81,13 @@ export async function saveHomeSeo(formData: FormData): Promise<void> {
 
     revalidatePath("/");
     revalidateSettingsDashboard();
+    await writeAuditLog({
+      actorEmail: user.email,
+      action: "seo.saved",
+      targetType: "site_seo",
+      targetId: "/",
+      metadata: { canonicalUrl, robotsIndex, sitemapEnabled },
+    });
     redirectWithToast("/dashboard/settings/seo", "seo_saved");
   } catch (e) {
     if (isNextRedirectError(e)) throw e;

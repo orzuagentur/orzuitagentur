@@ -285,6 +285,23 @@ export function ContactSection({ contact, serviceOptions }: ContactSectionProps)
               <p className="mt-4 font-mono text-xs uppercase tracking-wider text-[var(--muted)]">
                 {contact.responseTime}
               </p>
+              {contact.channels?.some((channel) => channel.visible && (channel.route === "contact" || channel.route === "all")) ? (
+                <div className="mt-5 flex flex-wrap gap-2">
+                  {contact.channels
+                    .filter((channel) => channel.visible && channel.href && (channel.route === "contact" || channel.route === "all"))
+                    .map((channel) => (
+                      <a
+                        key={channel.key}
+                        href={channel.href}
+                        target={channel.href.startsWith("http") ? "_blank" : undefined}
+                        rel={channel.href.startsWith("http") ? "noreferrer" : undefined}
+                        className="rounded-full border border-[var(--border)] px-3 py-1.5 text-xs font-medium text-[var(--foreground)] transition-colors hover:border-[var(--border-strong)]"
+                      >
+                        {channel.icon} · {channel.label}
+                      </a>
+                    ))}
+                </div>
+              ) : null}
             </div>
             <p className="text-sm leading-relaxed text-[var(--muted)]">
               {contact.privacyNote}

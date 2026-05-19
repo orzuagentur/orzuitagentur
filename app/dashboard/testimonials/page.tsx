@@ -2,6 +2,7 @@ import {
   createTestimonialRow,
   updateTestimonialRow,
 } from "@/actions/cms/tables";
+import { CardSortOrderPanel } from "@/components/dashboard/card-sort-order-panel";
 import { CmsEmptyState } from "@/components/dashboard/cms-empty-state";
 import { DeleteTestimonialButton } from "@/components/dashboard/delete-testimonial-button";
 import { DashboardPageHeader } from "@/components/dashboard/page-header";
@@ -113,6 +114,16 @@ export default async function DashboardTestimonialsPage() {
             </DashboardSubmitButton>
           </form>
         </section>
+
+        <CardSortOrderPanel
+          kind="testimonials"
+          title="Reihenfolge der Warum-OrzuIT-Karten"
+          rows={rows.map((row) => ({
+            id: row.id,
+            title: row.author_de,
+            sort_order: row.sort_order,
+          }))}
+        />
 
         {rows.length === 0 ? (
           <CmsEmptyState

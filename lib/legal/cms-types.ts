@@ -18,6 +18,8 @@ export type LegalPageContent = {
   intro: string;
   metaDescription: string;
   showUpdatedLabel: boolean;
+  version: string;
+  updatedAt: string;
   sections: LegalSection[];
 };
 

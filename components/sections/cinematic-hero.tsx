@@ -11,11 +11,16 @@ type CinematicHeroProps = {
 };
 
 export function CinematicHero({ hero }: CinematicHeroProps) {
+  const heroMedia = hero.mediaUrl?.trim();
+  const isVideo = heroMedia ? /\.(mp4|webm|mov)(\?|$)/i.test(heroMedia) : false;
+
   return (
     <section
       id="start"
       aria-labelledby="hero-heading"
       className="home-section-anchor hero-section relative isolate flex min-h-[min(100vh,1200px)] w-full flex-col justify-end overflow-hidden pb-16 pt-6 sm:pb-20 sm:pt-8 lg:pb-28 lg:pt-8"
+      data-animation-preset={hero.animationPreset ?? "cinematic"}
+      data-animation-intensity={hero.animationIntensity ?? "medium"}
     >
       <GradientMesh className="motion-gradient-mesh pointer-events-none absolute inset-0 -z-[15] opacity-40" />
 
@@ -38,6 +43,28 @@ export function CinematicHero({ hero }: CinematicHeroProps) {
       />
 
       <FloatingShape className="pointer-events-none absolute right-[8%] top-[28%] -z-10 h-36 w-36 rounded-full bg-[radial-gradient(circle,color-mix(in_oklab,var(--accent)_35%,transparent),transparent_65%)] blur-2xl opacity-70 md:right-[12%]" />
+
+      {heroMedia ? (
+        <div className="pointer-events-none absolute right-[6%] top-[18%] -z-10 hidden w-[min(34vw,440px)] overflow-hidden rounded-[2rem] border border-[var(--border)] bg-black/20 opacity-55 shadow-2xl lg:block">
+          {isVideo ? (
+            <video
+              src={heroMedia}
+              className="aspect-[4/3] w-full object-cover"
+              autoPlay
+              muted
+              loop
+              playsInline
+            />
+          ) : (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={heroMedia}
+              alt={hero.mediaAlt ?? ""}
+              className="aspect-[4/3] w-full object-cover"
+            />
+          )}
+        </div>
+      ) : null}
 
       <div
         aria-hidden

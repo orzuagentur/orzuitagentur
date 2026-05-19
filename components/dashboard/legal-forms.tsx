@@ -222,6 +222,41 @@ export function LegalForms({ legal }: LegalFormsProps) {
                 defaultValue={imp.intro}
               />
             </div>
+            <div>
+              <label className={labelClass} htmlFor="impressum_version">
+                Version
+              </label>
+              <input
+                className={inputClass}
+                id="impressum_version"
+                name="impressum_version"
+                defaultValue={imp.version}
+                placeholder="z. B. 1.0"
+              />
+            </div>
+            <div>
+              <label className={labelClass} htmlFor="impressum_updatedAt">
+                Letzte Änderung
+              </label>
+              <input
+                className={inputClass}
+                id="impressum_updatedAt"
+                name="impressum_updatedAt"
+                type="date"
+                defaultValue={imp.updatedAt}
+              />
+            </div>
+            <div className="sm:col-span-2">
+              <label className="flex items-center gap-2 text-xs text-[var(--muted)]">
+                <input
+                  type="checkbox"
+                  name="impressum_showUpdatedLabel"
+                  defaultChecked={imp.showUpdatedLabel}
+                  className="h-4 w-4 rounded border-[var(--border-strong)]"
+                />
+                Version und letzte Änderung öffentlich anzeigen
+              </label>
+            </div>
           </div>
 
           <LegalSectionsEditor name="impressum_sections" initialSections={imp.sections} />
@@ -280,6 +315,30 @@ export function LegalForms({ legal }: LegalFormsProps) {
                 defaultValue={ds.intro}
               />
             </div>
+            <div>
+              <label className={labelClass} htmlFor="datenschutz_version">
+                Version
+              </label>
+              <input
+                className={inputClass}
+                id="datenschutz_version"
+                name="datenschutz_version"
+                defaultValue={ds.version}
+                placeholder="z. B. 1.0"
+              />
+            </div>
+            <div>
+              <label className={labelClass} htmlFor="datenschutz_updatedAt">
+                Letzte Änderung
+              </label>
+              <input
+                className={inputClass}
+                id="datenschutz_updatedAt"
+                name="datenschutz_updatedAt"
+                type="date"
+                defaultValue={ds.updatedAt}
+              />
+            </div>
             <div className="sm:col-span-2">
               <label className="flex items-center gap-2 text-xs text-[var(--muted)]">
                 <input
@@ -288,7 +347,7 @@ export function LegalForms({ legal }: LegalFormsProps) {
                   defaultChecked={ds.showUpdatedLabel}
                   className="h-4 w-4 rounded border-[var(--border-strong)]"
                 />
-                Aktuelles Datum unter der Einleitung anzeigen
+                Version und letzte Änderung öffentlich anzeigen
               </label>
             </div>
           </div>

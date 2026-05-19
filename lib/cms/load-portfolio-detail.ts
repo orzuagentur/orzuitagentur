@@ -61,7 +61,7 @@ export const getPortfolioBySlug = cache(
       const supabase = await createServerSupabaseClient();
       const { data, error } = await supabase
         .from("portfolio_entries")
-        .select("slug,title_de,summary_de,category_de,body_de,image_url,project_url,sort_order")
+        .select("slug,title_de,summary_de,category_de,body_de,image_url,image_alt,video_url,project_url,sort_order")
         .eq("slug", slug)
         .eq("published", true)
         .maybeSingle();
@@ -77,6 +77,14 @@ export const getPortfolioBySlug = cache(
       const imageRaw = row.image_url;
       const imageUrl =
         typeof imageRaw === "string" && imageRaw.trim() ? imageRaw.trim() : null;
+      const imageAltRaw = row.image_alt;
+      const imageAlt =
+        typeof imageAltRaw === "string" && imageAltRaw.trim()
+          ? imageAltRaw.trim()
+          : null;
+      const videoRaw = row.video_url;
+      const videoUrl =
+        typeof videoRaw === "string" && videoRaw.trim() ? videoRaw.trim() : null;
 
       return {
         slug: data.slug,
@@ -86,6 +94,8 @@ export const getPortfolioBySlug = cache(
         body: bodyForSlug(data.slug, summary, data.body_de),
         visualClass: visualClassForSlug(data.slug, index),
         imageUrl,
+        imageAlt,
+        videoUrl,
         projectUrl:
           (data as { project_url?: string | null }).project_url?.trim() || null,
       };

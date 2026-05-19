@@ -1,6 +1,5 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { DashboardAuthError, requireDashboardUser } from "@/lib/auth/dashboard-user";
 import { triggerRedeploy } from "@/lib/vercel/deployments";

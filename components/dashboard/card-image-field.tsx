@@ -11,6 +11,7 @@ type CardImageFieldProps = {
   slug: string;
   title: string;
   imageUrl: string | null;
+  imageAlt?: string | null;
   returnPath: string;
 };
 
@@ -22,9 +23,11 @@ export function CardImageField({
   slug,
   title,
   imageUrl,
+  imageAlt,
   returnPath,
 }: CardImageFieldProps) {
   const hasImage = Boolean(imageUrl?.trim());
+  const previewAlt = imageAlt?.trim() || title;
 
   return (
     <div className="rounded-xl border border-dashed border-[var(--border)] bg-[color-mix(in_oklab,var(--surface)_60%,transparent)] p-4">
@@ -38,7 +41,7 @@ export function CardImageField({
             <div className="relative aspect-[16/10] w-full">
               <Image
                 src={imageUrl}
-                alt={title}
+                alt={previewAlt}
                 fill
                 className="object-cover"
                 sizes="400px"
@@ -48,7 +51,7 @@ export function CardImageField({
             // eslint-disable-next-line @next/next/no-img-element
             <img
               src={imageUrl}
-              alt={title}
+              alt={previewAlt}
               className="aspect-[16/10] w-full object-cover"
             />
           )
@@ -66,13 +69,13 @@ export function CardImageField({
         <input type="hidden" name="return_path" value={returnPath} />
         <div>
           <label className={labelClass} htmlFor={`img-file-${id}`}>
-            Bild hochladen (JPG, PNG, WebP, max. 5 MB)
+            Bild oder Video hochladen (JPG, PNG, WebP, AVIF, SVG, MP4, WebM, max. 25 MB)
           </label>
           <input
             id={`img-file-${id}`}
             name="image"
             type="file"
-            accept="image/jpeg,image/png,image/webp,image/gif"
+            accept="image/jpeg,image/png,image/webp,image/avif,image/svg+xml,image/gif,video/mp4,video/webm,video/quicktime"
             className="mt-1 block w-full text-sm text-[var(--muted)] file:mr-3 file:rounded-lg file:border-0 file:bg-[var(--surface-elevated)] file:px-3 file:py-2 file:text-sm file:font-medium file:text-[var(--foreground)]"
           />
         </div>
@@ -82,7 +85,7 @@ export function CardImageField({
       </form>
 
       <p className="mt-3 text-xs text-[var(--muted)]">
-        Alternativ unten eine Bild-URL eintragen oder „Bild entfernen“ aktivieren.
+        Medien werden im Storage gespeichert. Videos landen im Video-Feld der Karte, Bilder im Bild-Feld.
       </p>
     </div>
   );

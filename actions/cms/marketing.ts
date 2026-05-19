@@ -10,7 +10,7 @@ import { normalizeNavHref } from "@/lib/navigation/section-scroll";
 import { loadMarketingForAdmin, persistMarketing } from "@/lib/cms/persist";
 import { hasServiceRoleConfig } from "@/lib/supabase/service";
 import { marketingContentSchema } from "@/lib/cms/schema";
-import type { HeroStat } from "@/lib/cms/types";
+import type { ContactChannel, HeroStat } from "@/lib/cms/types";
 
 function str(fd: FormData, key: string, max: number) {
   const v = fd.get(key);
@@ -29,6 +29,41 @@ function splitList(raw: string, maxItems: number) {
     .map((x) => x.trim())
     .filter(Boolean)
     .slice(0, maxItems);
+}
+
+function readChecked(fd: FormData, key: string) {
+  const raw = fd.get(key);
+  return raw === "true" || raw === "on";
+}
+
+function readOrder(fd: FormData, key: string, fallback: number) {
+  const raw = str(fd, key, 12);
+  const value = Number.parseInt(raw, 10);
+  return Number.isFinite(value) ? value : fallback;
+}
+
+function readContactChannels(fd: FormData) {
+  const keys = ["telegram", "whatsapp", "instagram", "linkedin", "email", "calendly"];
+  return keys.map((key): ContactChannel => {
+    const routeRaw = str(fd, `channel_${key}_route`, 20);
+    const route: ContactChannel["route"] =
+      routeRaw === "fab"
+        ? "fab"
+        : routeRaw === "footer"
+          ? "footer"
+          : routeRaw === "all"
+            ? "all"
+            : "contact";
+
+    return {
+      key,
+      label: str(fd, `channel_${key}_label`, 120) || key,
+      href: str(fd, `channel_${key}_href`, 1000),
+      icon: str(fd, `channel_${key}_icon`, 80) || key,
+      visible: readChecked(fd, `channel_${key}_visible`),
+      route,
+    };
+  });
 }
 
 async function guard() {
@@ -98,6 +133,10 @@ export async function saveHeroContent(formData: FormData): Promise<void> {
         titleHighlight: str(formData, "titleHighlight", 120),
         titleAfter: str(formData, "titleAfter", 200),
         subtitle: str(formData, "subtitle", 2000),
+        mediaUrl: str(formData, "hero_mediaUrl", 1000),
+        mediaAlt: str(formData, "hero_mediaAlt", 300),
+        animationPreset: str(formData, "hero_animationPreset", 80),
+        animationIntensity: str(formData, "hero_animationIntensity", 40),
         primaryCta: {
           label: str(formData, "primaryCta_label", 120),
           href: str(formData, "primaryCta_href", 200),
@@ -124,17 +163,40 @@ export async function saveNavAndFooter(formData: FormData): Promise<void> {
   try {
     await guard();
     const m = await loadMarketingForAdmin();
-    const links = m.nav.links.map((link, i) => ({
-      href: normalizeNavHref(str(formData, `nav_href_${i}`, 200) || link.href),
-      label: str(formData, `nav_label_${i}`, 120) || link.label,
-    }));
+    const links = m.nav.links
+      .map((link, i) => ({
+        href: normalizeNavHref(str(formData, `nav_href_${i}`, 200) || link.href),
+        label: str(formData, `nav_label_${i}`, 120) || link.label,
+        visible: readChecked(formData, `nav_visible_${i}`),
+        sortOrder: readOrder(formData, `nav_sort_${i}`, i + 1),
+      }))
+      .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
+    const socialLinks = (m.footer.socialLinks ?? [])
+      .map((link, i) => ({
+        label: str(formData, `footer_social_label_${i}`, 120) || link.label,
+        href: str(formData, `footer_social_href_${i}`, 300),
+        visible: readChecked(formData, `footer_social_visible_${i}`),
+      }))
+      .filter((link) => link.label || link.href);
+    const preferredImageFormatRaw = str(formData, "media_preferredImageFormat", 20);
+    const preferredImageFormat: "original" | "webp" | "avif" =
+      preferredImageFormatRaw === "avif"
+        ? "avif"
+        : preferredImageFormatRaw === "original"
+          ? "original"
+          : "webp";
     const next = {
       ...m,
-      nav: { links, ctaLabel: str(formData, "nav_ctaLabel", 120) },
+      nav: {
+        links,
+        ctaLabel: str(formData, "nav_ctaLabel", 120),
+        ctaHref: normalizeNavHref(str(formData, "nav_ctaHref", 200) || "#kontakt"),
+      },
       footer: {
         ...m.footer,
         tagline: str(formData, "footer_tagline", 1200),
         ctaLabel: str(formData, "footer_ctaLabel", 120),
+        ctaHref: normalizeNavHref(str(formData, "footer_ctaHref", 200) || "#kontakt"),
         navHeading: str(formData, "footer_navHeading", 80),
         contactHeading: str(formData, "footer_contactHeading", 80),
         contactLead: str(formData, "footer_contactLead", 600),
@@ -143,6 +205,63 @@ export async function saveNavAndFooter(formData: FormData): Promise<void> {
         impressumLabel: str(formData, "footer_impressumLabel", 80),
         privacyLabel: str(formData, "footer_privacyLabel", 80),
         copyrightName: str(formData, "footer_copyrightName", 120),
+        socialHeading: str(formData, "footer_socialHeading", 80),
+        socialLinks,
+      },
+      designSystem: {
+        accent: str(formData, "design_accent", 40) || m.designSystem.accent,
+        accent2: str(formData, "design_accent2", 40) || m.designSystem.accent2,
+        foreground:
+          str(formData, "design_foreground", 40) || m.designSystem.foreground,
+        background:
+          str(formData, "design_background", 40) || m.designSystem.background,
+        typographyScale:
+          str(formData, "design_typographyScale", 40) ||
+          m.designSystem.typographyScale,
+        radius: str(formData, "design_radius", 40) || m.designSystem.radius,
+        spacingPreset:
+          str(formData, "design_spacingPreset", 40) ||
+          m.designSystem.spacingPreset,
+        sectionPadding:
+          str(formData, "design_sectionPadding", 40) ||
+          m.designSystem.sectionPadding,
+        shadowPreset:
+          str(formData, "design_shadowPreset", 40) ||
+          m.designSystem.shadowPreset ||
+          "soft",
+        borderPreset:
+          str(formData, "design_borderPreset", 40) ||
+          m.designSystem.borderPreset ||
+          "subtle",
+        glassmorphism: readChecked(formData, "design_glassmorphism"),
+        motionPreset:
+          str(formData, "design_motionPreset", 40) ||
+          m.designSystem.motionPreset ||
+          "cinematic",
+        framerPreset:
+          str(formData, "design_framerPreset", 40) ||
+          m.designSystem.framerPreset ||
+          "smooth",
+        parallaxEnabled: readChecked(formData, "design_parallaxEnabled"),
+        tiltEnabled: readChecked(formData, "design_tiltEnabled"),
+        glowEnabled: readChecked(formData, "design_glowEnabled"),
+        reducedMotion: readChecked(formData, "design_reducedMotion"),
+        scrollRevealIntensity:
+          str(formData, "design_scrollRevealIntensity", 40) ||
+          m.designSystem.scrollRevealIntensity ||
+          "medium",
+      },
+      siteAssets: {
+        faviconUrl: str(formData, "assets_faviconUrl", 1000),
+        appleIconUrl: str(formData, "assets_appleIconUrl", 1000),
+        ogFallbackImageUrl: str(formData, "assets_ogFallbackImageUrl", 1000),
+      },
+      mediaPipeline: {
+        autoWebp: readChecked(formData, "media_autoWebp"),
+        autoAvif: readChecked(formData, "media_autoAvif"),
+        preferredImageFormat,
+        videoUploads: readChecked(formData, "media_videoUploads"),
+        maxUploadMb: readOrder(formData, "media_maxUploadMb", 25),
       },
     };
     marketingContentSchema.parse(next);
@@ -153,6 +272,68 @@ export async function saveNavAndFooter(formData: FormData): Promise<void> {
     if (isNextRedirectError(e)) throw e;
     if (e instanceof DashboardAuthError) redirect("/auth/login");
     logCmsError("saveNavAndFooter", e);
+  }
+}
+
+export async function saveDesignSystem(formData: FormData): Promise<void> {
+  try {
+    await guard();
+    const m = await loadMarketingForAdmin();
+    const next = {
+      ...m,
+      designSystem: {
+        accent: str(formData, "design_accent", 40) || m.designSystem.accent,
+        accent2: str(formData, "design_accent2", 40) || m.designSystem.accent2,
+        foreground:
+          str(formData, "design_foreground", 40) || m.designSystem.foreground,
+        background:
+          str(formData, "design_background", 40) || m.designSystem.background,
+        typographyScale:
+          str(formData, "design_typographyScale", 40) ||
+          m.designSystem.typographyScale,
+        radius: str(formData, "design_radius", 40) || m.designSystem.radius,
+        spacingPreset:
+          str(formData, "design_spacingPreset", 40) ||
+          m.designSystem.spacingPreset,
+        sectionPadding:
+          str(formData, "design_sectionPadding", 40) ||
+          m.designSystem.sectionPadding,
+        shadowPreset:
+          str(formData, "design_shadowPreset", 40) ||
+          m.designSystem.shadowPreset ||
+          "soft",
+        borderPreset:
+          str(formData, "design_borderPreset", 40) ||
+          m.designSystem.borderPreset ||
+          "subtle",
+        glassmorphism: readChecked(formData, "design_glassmorphism"),
+        motionPreset:
+          str(formData, "design_motionPreset", 40) ||
+          m.designSystem.motionPreset ||
+          "cinematic",
+        framerPreset:
+          str(formData, "design_framerPreset", 40) ||
+          m.designSystem.framerPreset ||
+          "smooth",
+        parallaxEnabled: readChecked(formData, "design_parallaxEnabled"),
+        tiltEnabled: readChecked(formData, "design_tiltEnabled"),
+        glowEnabled: readChecked(formData, "design_glowEnabled"),
+        reducedMotion: readChecked(formData, "design_reducedMotion"),
+        scrollRevealIntensity:
+          str(formData, "design_scrollRevealIntensity", 40) ||
+          m.designSystem.scrollRevealIntensity ||
+          "medium",
+      },
+    };
+    marketingContentSchema.parse(next);
+    await persistMarketing(next);
+    revalidateMarketingPages();
+    revalidatePath("/dashboard/settings/design");
+    redirectWithToast("/dashboard/settings/design", "design_saved");
+  } catch (e) {
+    if (isNextRedirectError(e)) throw e;
+    if (e instanceof DashboardAuthError) redirect("/auth/login");
+    logCmsError("saveDesignSystem", e);
   }
 }
 
@@ -175,6 +356,8 @@ export async function saveContactBlock(formData: FormData): Promise<void> {
         submittingBody: str(formData, "contact_submittingBody", 2000),
         successTitle: str(formData, "contact_successTitle", 400),
         successBody: str(formData, "contact_successBody", 2000),
+        webhookUrl: str(formData, "contact_webhookUrl", 1000),
+        channels: readContactChannels(formData),
       },
     };
     marketingContentSchema.parse(next);
@@ -202,6 +385,7 @@ export async function saveServicesIntro(formData: FormData): Promise<void> {
         footnote: str(formData, "svc_footnote", 2000),
         closing: str(formData, "svc_closing", 2000),
         ctaLabel: str(formData, "svc_ctaLabel", 120),
+        ctaHref: normalizeNavHref(str(formData, "svc_ctaHref", 200) || "#kontakt"),
       },
     };
     marketingContentSchema.parse(next);

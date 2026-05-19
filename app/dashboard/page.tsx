@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { DASHBOARD_NAV } from "@/components/dashboard/nav-config";
+import { ADMIN_NAV_GROUPS } from "@/components/dashboard/nav-config";
 import { DashboardPageHeader } from "@/components/dashboard/page-header";
 import { StatCard } from "@/components/dashboard/stat-card";
 import { getDashboardStats } from "@/lib/dashboard/stats";
@@ -54,13 +54,14 @@ export default async function DashboardHomePage() {
           />
         </div>
 
-        <section className="mt-14">
-          <h2 className="text-sm font-semibold uppercase tracking-[0.22em] text-[var(--muted)]">
-            Bereiche
-          </h2>
-          <ul className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {DASHBOARD_NAV.filter((item) => item.href !== "/dashboard").map(
-              (item) => (
+        {ADMIN_NAV_GROUPS.filter((g) => g.id !== "overview").map((group) => (
+          <section key={group.id} className="mt-14">
+            <h2 className="text-sm font-semibold uppercase tracking-[0.22em] text-[var(--muted)]">
+              {group.label}
+            </h2>
+            <p className="mt-1 text-xs text-[var(--muted)]">{group.description}</p>
+            <ul className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {group.items.map((item) => (
                 <li key={item.href}>
                   <Link
                     href={item.href}
@@ -74,10 +75,10 @@ export default async function DashboardHomePage() {
                     </span>
                   </Link>
                 </li>
-              ),
-            )}
-          </ul>
-        </section>
+              ))}
+            </ul>
+          </section>
+        ))}
       </div>
     </>
   );

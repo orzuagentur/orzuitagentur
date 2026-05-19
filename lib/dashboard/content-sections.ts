@@ -72,6 +72,14 @@ export function getContentPageMeta(pathname: string): {
     };
   }
 
+  if (pathname === "/dashboard/content") {
+    return {
+      label: "Content-Hub",
+      description:
+        "Alle Textbereiche der Startseite — wählen Sie den Bereich, den Sie bearbeiten möchten.",
+    };
+  }
+
   if (pathname.startsWith("/dashboard/content")) {
     return {
       label: "Content",

@@ -21,6 +21,10 @@ export const DEFAULT_HERO: HeroContent = {
     ", KI-Automatisierung und moderne Weblösungen für wachsende Unternehmen.",
   subtitle:
     "Wir planen, entwickeln und betreiben digitale Lösungen, die Prozesse vereinfachen und messbar Zeit oder Kosten sparen — von der ersten Idee bis zum stabilen Betrieb.",
+  mediaUrl: "",
+  mediaAlt: "Abstrakte OrzuIT Hero-Visualisierung",
+  animationPreset: "cinematic",
+  animationIntensity: "medium",
   primaryCta: { label: "Projekt besprechen", href: "#kontakt" },
   secondaryCta: { label: "Leistungen ansehen", href: "#leistungen" },
   stats: [
@@ -50,19 +54,21 @@ export const DEFAULT_HERO: HeroContent = {
 
 export const DEFAULT_NAV: NavContent = {
   links: [
-    { href: "#start", label: "Start" },
-    { href: "#leistungen", label: "Leistungen" },
-    { href: "#portfolio", label: "Portfolio" },
-    { href: "#warum-orzuit", label: "Warum OrzuIT" },
-    { href: "#kontakt", label: "Kontakt" },
+    { href: "#start", label: "Start", visible: true, sortOrder: 1 },
+    { href: "#leistungen", label: "Leistungen", visible: true, sortOrder: 2 },
+    { href: "#portfolio", label: "Portfolio", visible: true, sortOrder: 3 },
+    { href: "#warum-orzuit", label: "Warum OrzuIT", visible: true, sortOrder: 4 },
+    { href: "#kontakt", label: "Kontakt", visible: true, sortOrder: 5 },
   ],
   ctaLabel: "Projekt anfragen",
+  ctaHref: "#kontakt",
 };
 
 export const DEFAULT_FOOTER: FooterContent = {
   tagline:
     "Individuelle Software, KI-Automatisierung und moderne Weblösungen — verständlich geplant, sauber umgesetzt, zuverlässig betrieben.",
   ctaLabel: "Projekt anfragen",
+  ctaHref: "#kontakt",
   navHeading: "Navigation",
   contactHeading: "Kontakt",
   contactLead:
@@ -72,6 +78,13 @@ export const DEFAULT_FOOTER: FooterContent = {
   impressumLabel: "Impressum",
   privacyLabel: "Datenschutz",
   copyrightName: "OrzuIT",
+  socialHeading: "Social",
+  socialLinks: [
+    { label: "Instagram", href: "", visible: false },
+    { label: "LinkedIn", href: "", visible: false },
+    { label: "WhatsApp", href: "", visible: false },
+    { label: "Telegram", href: "", visible: false },
+  ],
 };
 
 export const DEFAULT_CONTACT: ContactContent = {
@@ -92,6 +105,57 @@ export const DEFAULT_CONTACT: ContactContent = {
   successTitle: "Vielen Dank — Ihre Anfrage ist eingegangen.",
   successBody:
     "Wir melden uns zeitnah bei Ihnen. Bei Rückfragen erreichen Sie uns weiterhin unter ",
+  webhookUrl: "",
+  channels: [
+    {
+      key: "email",
+      label: "E-Mail",
+      href: "mailto:kontakt@orzuit.de",
+      icon: "mail",
+      visible: true,
+      route: "all",
+    },
+    {
+      key: "telegram",
+      label: "Telegram",
+      href: "",
+      icon: "telegram",
+      visible: false,
+      route: "contact",
+    },
+    {
+      key: "whatsapp",
+      label: "WhatsApp",
+      href: "",
+      icon: "whatsapp",
+      visible: false,
+      route: "fab",
+    },
+    {
+      key: "instagram",
+      label: "Instagram",
+      href: "",
+      icon: "instagram",
+      visible: false,
+      route: "footer",
+    },
+    {
+      key: "linkedin",
+      label: "LinkedIn",
+      href: "",
+      icon: "linkedin",
+      visible: false,
+      route: "footer",
+    },
+    {
+      key: "calendly",
+      label: "Termin buchen",
+      href: "",
+      icon: "calendar",
+      visible: false,
+      route: "contact",
+    },
+  ],
 };
 
 export const DEFAULT_SERVICES_SECTION: ServicesSectionContent = {
@@ -106,6 +170,7 @@ export const DEFAULT_SERVICES_SECTION: ServicesSectionContent = {
   closing:
     "Sie haben bereits ein Team oder Partner? Wir ergänzen gezielt — z. B. für Architektur, Umsetzung oder Betrieb.",
   ctaLabel: "Erstgespräch vereinbaren",
+  ctaHref: "#kontakt",
 };
 
 export const DEFAULT_PORTFOLIO_SECTION: PortfolioSectionContent = {
@@ -177,6 +242,38 @@ export const DEFAULT_MARKETING: MarketingContent = {
   portfolioSection: DEFAULT_PORTFOLIO_SECTION,
   testimonialsSection: DEFAULT_TESTIMONIALS_SECTION,
   technologiesSection: DEFAULT_TECHNOLOGIES_SECTION,
+  designSystem: {
+    accent: "#7dd3fc",
+    accent2: "#a78bfa",
+    foreground: "#f8fafc",
+    background: "#030712",
+    typographyScale: "comfortable",
+    radius: "rounded",
+    spacingPreset: "luxury",
+    sectionPadding: "large",
+    shadowPreset: "soft",
+    borderPreset: "subtle",
+    glassmorphism: true,
+    motionPreset: "cinematic",
+    framerPreset: "smooth",
+    parallaxEnabled: true,
+    tiltEnabled: true,
+    glowEnabled: true,
+    reducedMotion: false,
+    scrollRevealIntensity: "medium",
+  },
+  siteAssets: {
+    faviconUrl: "",
+    appleIconUrl: "",
+    ogFallbackImageUrl: "",
+  },
+  mediaPipeline: {
+    autoWebp: true,
+    autoAvif: false,
+    preferredImageFormat: "webp",
+    videoUploads: true,
+    maxUploadMb: 25,
+  },
 };
 
 export const DEFAULT_SERVICES_CARDS: ServiceCard[] = [

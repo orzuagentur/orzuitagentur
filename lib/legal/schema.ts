@@ -39,6 +39,8 @@ const legalPageSchema = z.object({
   intro: z.string().max(4000),
   metaDescription: z.string().max(500),
   showUpdatedLabel: z.boolean(),
+  version: z.string().max(80),
+  updatedAt: z.string().max(40),
   sections: z.array(legalSectionSchema).max(40),
 });
 

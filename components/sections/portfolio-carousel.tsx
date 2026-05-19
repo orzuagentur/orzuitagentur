@@ -446,6 +446,7 @@ function PortfolioStackCard({
       >
           <CardStackVisual
             imageUrl={project.imageUrl}
+            imageAlt={project.imageAlt}
             visualClass={project.visualClass}
             title={project.title}
             category={project.category}

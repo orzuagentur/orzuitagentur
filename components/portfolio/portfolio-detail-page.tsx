@@ -34,6 +34,7 @@ export function PortfolioDetailPage({ project }: PortfolioDetailPageProps) {
         <header className="mt-8 overflow-hidden rounded-2xl border border-[var(--border)] bg-[#08080f]">
           <CardStackVisual
             imageUrl={project.imageUrl}
+            imageAlt={project.imageAlt}
             visualClass={project.visualClass}
             title={project.title}
             category={project.category}

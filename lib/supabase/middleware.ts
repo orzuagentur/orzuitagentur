@@ -1,4 +1,4 @@
-import { isAdminEmail } from "@/lib/auth/roles";
+import { isAdminEmail, isDashboardAdmin } from "@/lib/auth/roles";
 import { hasSupabasePublicConfig } from "@/lib/env/server";
 import { createServerClient } from "@supabase/ssr";
 import { type NextRequest, NextResponse } from "next/server";
@@ -37,6 +37,23 @@ export async function updateSession(request: NextRequest) {
     },
   });
 
+  if (!pathname.startsWith("/dashboard") && !pathname.startsWith("/auth")) {
+    const { data: redirectRule } = await supabase
+      .from("redirect_rules")
+      .select("target_url,status_code")
+      .eq("source_path", pathname.replace(/\/$/, "") || "/")
+      .eq("enabled", true)
+      .maybeSingle();
+
+    if (redirectRule?.target_url) {
+      const redirectUrl = new URL(redirectRule.target_url, request.url);
+      return NextResponse.redirect(
+        redirectUrl,
+        redirectRule.status_code === 302 ? 302 : 301,
+      );
+    }
+  }
+
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -52,7 +69,7 @@ export async function updateSession(request: NextRequest) {
       return NextResponse.redirect(redirectUrl);
     }
 
-    if (!isAdminEmail(user.email)) {
+    if (!(await isDashboardAdmin(user.email))) {
       const denied = request.nextUrl.clone();
       denied.pathname = "/auth/login";
       denied.searchParams.set("error", "forbidden");

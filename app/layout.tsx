@@ -1,21 +1,12 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import type { CSSProperties } from "react";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { SiteAnalyticsTracker } from "@/components/analytics/site-analytics-tracker";
 import { ConditionalSiteChrome } from "@/components/layout/conditional-site-chrome";
 import { getMarketingContent } from "@/lib/cms/load-public";
 import { getSiteUrl } from "@/lib/site/url";
 import "./globals.css";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin", "latin-ext"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin", "latin-ext"],
-});
 
 export const metadata: Metadata = {
   metadataBase: getSiteUrl(),
@@ -38,16 +29,68 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const marketing = await getMarketingContent();
+  const designStyle = {
+    "--accent": marketing.designSystem.accent,
+    "--accent-2": marketing.designSystem.accent2,
+    "--foreground": marketing.designSystem.foreground,
+    "--background": marketing.designSystem.background,
+    "--admin-section-padding": marketing.designSystem.sectionPadding,
+    "--admin-radius-preset": marketing.designSystem.radius,
+    "--site-card-shadow":
+      marketing.designSystem.shadowPreset === "none"
+        ? "none"
+        : marketing.designSystem.shadowPreset === "deep"
+          ? "0 34px 90px -46px rgba(0,0,0,0.96)"
+          : marketing.designSystem.shadowPreset === "neon"
+            ? "0 0 42px -14px var(--accent-glow)"
+            : "0 24px 64px -40px rgba(0,0,0,0.82)",
+    "--site-border-strength":
+      marketing.designSystem.borderPreset === "none"
+        ? "transparent"
+        : marketing.designSystem.borderPreset === "strong"
+          ? "var(--border-strong)"
+          : marketing.designSystem.borderPreset === "accent"
+            ? "color-mix(in oklab, var(--accent) 42%, var(--border))"
+            : "var(--border)",
+  } as CSSProperties;
 
   return (
     <html
       lang="de"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className="h-full antialiased"
     >
-      <body className="flex min-h-full flex-col bg-[var(--background)]">
-        <ConditionalSiteChrome nav={marketing.nav} footer={marketing.footer}>
+      <head>
+        {marketing.siteAssets.faviconUrl ? (
+          <link rel="icon" href={marketing.siteAssets.faviconUrl} />
+        ) : null}
+        {marketing.siteAssets.appleIconUrl ? (
+          <link rel="apple-touch-icon" href={marketing.siteAssets.appleIconUrl} />
+        ) : null}
+      </head>
+      <body
+        className="flex min-h-full flex-col bg-[var(--background)]"
+        data-typography-scale={marketing.designSystem.typographyScale}
+        data-spacing-preset={marketing.designSystem.spacingPreset}
+        data-shadow-preset={marketing.designSystem.shadowPreset}
+        data-border-preset={marketing.designSystem.borderPreset}
+        data-glassmorphism={marketing.designSystem.glassmorphism ? "on" : "off"}
+        data-motion-preset={marketing.designSystem.motionPreset}
+        data-framer-preset={marketing.designSystem.framerPreset}
+        data-parallax={marketing.designSystem.parallaxEnabled ? "on" : "off"}
+        data-tilt={marketing.designSystem.tiltEnabled ? "on" : "off"}
+        data-glow={marketing.designSystem.glowEnabled ? "on" : "off"}
+        data-reduced-motion={marketing.designSystem.reducedMotion ? "on" : "off"}
+        data-scroll-reveal={marketing.designSystem.scrollRevealIntensity}
+        style={designStyle}
+      >
+        <ConditionalSiteChrome
+          nav={marketing.nav}
+          footer={marketing.footer}
+          contact={marketing.contact}
+        >
           {children}
         </ConditionalSiteChrome>
+        <SiteAnalyticsTracker />
         <Analytics />
         <SpeedInsights />
       </body>

@@ -24,7 +24,7 @@ export default async function DatenschutzPage() {
       sections={page.sections}
       updatedLabel={
         page.showUpdatedLabel
-          ? `Stand: ${new Date().toLocaleDateString("de-DE", {
+          ? `Version ${page.version} · Stand: ${new Date(page.updatedAt).toLocaleDateString("de-DE", {
               year: "numeric",
               month: "long",
               day: "numeric",

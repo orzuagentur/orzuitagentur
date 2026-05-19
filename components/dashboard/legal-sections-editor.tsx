@@ -96,8 +96,11 @@ export function LegalSectionsEditor({ name, initialSections }: LegalSectionsEdit
   }, []);
 
   useEffect(() => {
-    setSections(initialSections);
-    setJson(JSON.stringify(initialSections));
+    const frame = window.requestAnimationFrame(() => {
+      setSections(initialSections);
+      setJson(JSON.stringify(initialSections));
+    });
+    return () => window.cancelAnimationFrame(frame);
   }, [initialSections]);
 
   const updateSection = (index: number, patch: Partial<LegalSection>) => {

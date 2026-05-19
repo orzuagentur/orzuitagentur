@@ -128,7 +128,7 @@ function FlipBackContent({
               window.open(visitUrl, "_blank", "noopener,noreferrer");
             }}
           >
-            Besuchen
+            {service.ctaLabel?.trim() || "Besuchen"}
             <span aria-hidden>↗</span>
           </a>
         ) : (
@@ -139,7 +139,7 @@ function FlipBackContent({
             onPointerDown={(e) => e.stopPropagation()}
             onClick={(e) => e.stopPropagation()}
           >
-            Projekt anfragen
+            {service.ctaLabel?.trim() || "Projekt anfragen"}
           </a>
         )}
         <button
@@ -222,6 +222,7 @@ export function ServiceFlipCard({
           <div className="portfolio-stack-card-inner">
             <CardStackVisual
               imageUrl={service.imageUrl}
+            imageAlt={service.imageAlt}
               visualClass={service.visualClass}
               title={service.title}
               category={service.category}
@@ -292,6 +293,7 @@ export function ServiceFlipCard({
         >
           <CardStackVisual
             imageUrl={service.imageUrl}
+            imageAlt={service.imageAlt}
             visualClass={service.visualClass}
             title={service.title}
             category={service.category}

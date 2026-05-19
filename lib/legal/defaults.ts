@@ -30,6 +30,8 @@ function buildDefaultLegalContent(): LegalContent {
       metaDescription:
         "Impressum und Anbieterkennzeichnung gemäß § 5 TMG — OrzuIT.",
       showUpdatedLabel: false,
+      version: "1.0",
+      updatedAt: "2026-05-19",
       sections: buildImpressumSections(info),
     },
     datenschutz: {
@@ -38,6 +40,8 @@ function buildDefaultLegalContent(): LegalContent {
       metaDescription:
         "Datenschutzerklärung gemäß DSGVO — Informationen zur Verarbeitung personenbezogener Daten auf der Website von OrzuIT.",
       showUpdatedLabel: true,
+      version: "1.0",
+      updatedAt: "2026-05-19",
       sections: buildDatenschutzSections(info),
     },
   };

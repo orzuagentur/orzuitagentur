@@ -6,6 +6,7 @@ import { CardStackImage } from "@/components/sections/card-stack-image";
 
 type CardStackVisualProps = {
   imageUrl?: string | null;
+  imageAlt?: string | null;
   visualClass: string;
   title: string;
   category: string;
@@ -19,6 +20,7 @@ type CardStackVisualProps = {
 
 export function CardStackVisual({
   imageUrl,
+  imageAlt,
   visualClass,
   title,
   category,
@@ -46,7 +48,7 @@ export function CardStackVisual({
       ) : null}
 
       {hasImage && imageSrc ? (
-        <CardStackImage src={imageSrc} alt={title} />
+        <CardStackImage src={imageSrc} alt={imageAlt?.trim() || title} />
       ) : (
         <>
           <span className="portfolio-visual-grid" aria-hidden />

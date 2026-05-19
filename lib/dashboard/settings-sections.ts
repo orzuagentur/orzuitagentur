@@ -17,6 +17,11 @@ export const SETTINGS_SECTIONS: SettingsSection[] = [
     description: "Meta & Open Graph für die Startseite und weitere Pfade.",
   },
   {
+    href: "/dashboard/settings/design",
+    label: "Design",
+    description: "Typografie, Farben, Motion, Glassmorphism und Live-Vorschau.",
+  },
+  {
     href: "/dashboard/settings/domains",
     label: "Domains",
     description: "Custom Domain, DNS-Einträge und Verbindungsstatus.",
@@ -25,6 +30,21 @@ export const SETTINGS_SECTIONS: SettingsSection[] = [
     href: "/dashboard/settings/integrations",
     label: "Integrationen",
     description: "Supabase, Resend, Telegram und Vercel — Konfigurations-Check.",
+  },
+  {
+    href: "/dashboard/settings/secrets",
+    label: "Secrets",
+    description: "API-Keys maskiert und verschlüsselt verwalten.",
+  },
+  {
+    href: "/dashboard/settings/security",
+    label: "Sicherheit",
+    description: "Rollen, Rechte, 2FA, Admin-Alias und Rate-Limit.",
+  },
+  {
+    href: "/dashboard/settings/scaling",
+    label: "Skalierung",
+    description: "Datenbank-Architektur, Multi-Site, CRM, Billing und SaaS-Fundament.",
   },
   {
     href: "/dashboard/settings/deploy",
@@ -58,6 +78,14 @@ export function getSettingsPageMeta(pathname: string): {
     return {
       label: `Einstellungen · ${section.label}`,
       description: section.description,
+    };
+  }
+
+  if (pathname === "/dashboard/settings") {
+    return {
+      label: "Einstellungen-Hub",
+      description:
+        "System, SEO, Domains, Integrationen und Deploy — mit Produktions-Checkliste.",
     };
   }
 

@@ -19,7 +19,7 @@ export function enrichPortfolioCard(
   return {
     ...card,
     body,
-    technologies: meta.technologies,
+    technologies: card.tags?.length ? card.tags : meta.technologies,
     highlights: meta.highlights,
   };
 }

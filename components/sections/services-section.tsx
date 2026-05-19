@@ -62,7 +62,7 @@ export function ServicesSection({ section, services }: ServicesSectionProps) {
             {section.closing}
           </p>
           <MotionNavLink
-            href="#kontakt"
+            href={section.ctaHref ?? "#kontakt"}
             className="inline-flex h-12 shrink-0 items-center justify-center rounded-full border border-[var(--border-strong)] bg-[var(--surface-elevated)] px-6 text-sm font-semibold text-[var(--foreground)] shadow-[0_0_0_1px_rgba(255,255,255,0.04)_inset] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]"
             hoverLift={4}
           >

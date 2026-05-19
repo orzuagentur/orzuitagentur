@@ -128,7 +128,7 @@ function FlipBackContent({
               window.open(visitUrl, "_blank", "noopener,noreferrer");
             }}
           >
-            Besuchen
+            {project.ctaLabel?.trim() || "Besuchen"}
             <span aria-hidden>↗</span>
           </a>
         ) : null}
@@ -212,6 +212,7 @@ export function PortfolioFlipCard({
           <div className="portfolio-stack-card-inner">
             <CardStackVisual
               imageUrl={project.imageUrl}
+            imageAlt={project.imageAlt}
               visualClass={project.visualClass}
               title={project.title}
               category={project.category}
@@ -280,6 +281,7 @@ export function PortfolioFlipCard({
         >
           <CardStackVisual
             imageUrl={project.imageUrl}
+            imageAlt={project.imageAlt}
             visualClass={project.visualClass}
             title={project.title}
             category={project.category}

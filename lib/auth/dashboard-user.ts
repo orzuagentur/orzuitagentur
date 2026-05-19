@@ -1,4 +1,4 @@
-import { isAdminEmail } from "@/lib/auth/roles";
+import { isDashboardAdmin } from "@/lib/auth/roles";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
 export class DashboardAuthError extends Error {
@@ -19,7 +19,7 @@ export async function requireDashboardUser() {
     throw new DashboardAuthError("Unauthorized");
   }
 
-  if (!isAdminEmail(user.email)) {
+  if (!(await isDashboardAdmin(user.email))) {
     throw new DashboardAuthError("Forbidden");
   }
 

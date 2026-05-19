@@ -1,15 +1,25 @@
 import { MotionNavLink } from "@/components/motion";
-import type { FooterContent, NavContent } from "@/lib/cms/types";
+import type { ContactContent, FooterContent, NavContent } from "@/lib/cms/types";
 import Link from "next/link";
 
 type LuxuryFooterProps = {
   footer: FooterContent;
   /** Meist identisch zu `nav.links` — wird für die Fußzeilen-Navigation verwendet */
   navLinks: NavContent["links"];
+  contact: ContactContent;
 };
 
-export function LuxuryFooter({ footer, navLinks }: LuxuryFooterProps) {
+export function LuxuryFooter({ footer, navLinks, contact }: LuxuryFooterProps) {
   const year = new Date().getFullYear();
+  const contactFooterLinks = (contact.channels ?? []).filter(
+    (link) =>
+      link.visible &&
+      link.href.trim() &&
+      (link.route === "footer" || link.route === "all"),
+  );
+  const socialLinks = contactFooterLinks.length > 0 ? contactFooterLinks : (footer.socialLinks ?? []).filter(
+    (link) => link.visible !== false && link.href.trim(),
+  );
 
   return (
     <footer
@@ -48,7 +58,7 @@ export function LuxuryFooter({ footer, navLinks }: LuxuryFooterProps) {
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <MotionNavLink
-                href="#kontakt"
+                href={footer.ctaHref ?? "#kontakt"}
                 className="cta-shine relative inline-flex h-11 items-center justify-center overflow-hidden rounded-full border border-[var(--border-strong)] bg-[var(--surface-elevated)] px-6 text-sm font-semibold text-[var(--foreground)] shadow-[0_0_0_1px_rgba(255,255,255,0.04)_inset] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]"
                 hoverLift={4}
               >
@@ -95,6 +105,26 @@ export function LuxuryFooter({ footer, navLinks }: LuxuryFooterProps) {
             <p className="mt-3 font-mono text-[11px] uppercase tracking-wider text-[var(--muted)]">
               {footer.locationLine}
             </p>
+            {socialLinks.length > 0 ? (
+              <div className="mt-6">
+                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[var(--muted)]">
+                  {footer.socialHeading ?? "Social"}
+                </p>
+                <div className="mt-3 flex flex-wrap gap-3">
+                  {socialLinks.map((link) => (
+                    <Link
+                      key={`${link.label}-${link.href}`}
+                      href={link.href}
+                      target={link.href.startsWith("http") ? "_blank" : undefined}
+                      rel={link.href.startsWith("http") ? "noreferrer" : undefined}
+                      className="rounded-full border border-[var(--border)] px-3 py-1.5 text-xs font-medium text-[var(--muted)] transition-colors hover:border-[var(--border-strong)] hover:text-[var(--foreground)]"
+                    >
+                      {link.label}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            ) : null}
           </div>
         </div>
 

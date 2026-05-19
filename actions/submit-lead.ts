@@ -14,6 +14,7 @@ import { sendLeadTelegram } from "@/services/telegram/notify";
 
 async function notifyLead(data: LeadInput) {
   const { contact } = await getMarketingContent();
+  const webhookUrl = contact.webhookUrl?.trim();
   await Promise.allSettled([
     sendLeadEmail(data),
     sendLeadConfirmationEmail(data, {
@@ -23,6 +24,17 @@ async function notifyLead(data: LeadInput) {
       responseTime: contact.responseTime,
     }),
     sendLeadTelegram(data),
+    webhookUrl
+      ? fetch(webhookUrl, {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({
+            event: "lead.created",
+            createdAt: new Date().toISOString(),
+            lead: data,
+          }),
+        })
+      : Promise.resolve(),
   ]);
 }
 

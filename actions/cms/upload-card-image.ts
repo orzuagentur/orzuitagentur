@@ -11,12 +11,17 @@ import {
 } from "@/lib/supabase/service";
 
 const BUCKET = "cms-media";
-const MAX_BYTES = 5 * 1024 * 1024;
+const MAX_BYTES = 25 * 1024 * 1024;
 const ALLOWED = new Set([
   "image/jpeg",
   "image/png",
   "image/webp",
+  "image/avif",
+  "image/svg+xml",
   "image/gif",
+  "video/mp4",
+  "video/webm",
+  "video/quicktime",
 ]);
 
 function str(fd: FormData, key: string, max: number) {
@@ -29,7 +34,12 @@ function extForMime(mime: string) {
   if (mime === "image/jpeg") return "jpg";
   if (mime === "image/png") return "png";
   if (mime === "image/webp") return "webp";
+  if (mime === "image/avif") return "avif";
+  if (mime === "image/svg+xml") return "svg";
   if (mime === "image/gif") return "gif";
+  if (mime === "video/mp4") return "mp4";
+  if (mime === "video/webm") return "webm";
+  if (mime === "video/quicktime") return "mov";
   return "bin";
 }
 
@@ -66,7 +76,8 @@ export async function uploadCardImage(formData: FormData): Promise<void> {
       return;
     }
 
-    const folder = table === "services" ? "services" : "portfolio";
+    const isVideo = file.type.startsWith("video/");
+    const folder = `${isVideo ? "videos" : "images"}/${table === "services" ? "services" : "portfolio"}`;
     const path = `${folder}/${slug}-${id}.${extForMime(file.type)}`;
     const buffer = Buffer.from(await file.arrayBuffer());
 
@@ -85,12 +96,12 @@ export async function uploadCardImage(formData: FormData): Promise<void> {
     }
 
     const { data: publicData } = supabase.storage.from(BUCKET).getPublicUrl(path);
-    const imageUrl = publicData.publicUrl;
+    const mediaUrl = publicData.publicUrl;
 
     const { error: updateError } = await supabase
       .from(table)
       .update({
-        image_url: imageUrl,
+        ...(isVideo ? { video_url: mediaUrl } : { image_url: mediaUrl }),
         updated_at: new Date().toISOString(),
       })
       .eq("id", id);

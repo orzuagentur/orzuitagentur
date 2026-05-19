@@ -30,9 +30,18 @@ export const serviceRowSchema = z.object({
   category_de: z.string().max(200).nullable(),
   project_url: projectUrlField,
   image_url: imageUrlField,
+  image_alt: z.string().max(300).nullable(),
+  icon_name: z.string().max(120).nullable(),
+  tags: z.array(z.string().max(80)).max(20),
+  cta_label: z.string().max(120).nullable(),
+  animation_preset: z.string().max(80).nullable(),
+  enable_3d: z.boolean(),
+  video_url: imageUrlField,
   sort_order: z.number().int().min(-9999).max(9999),
   published: z.boolean(),
 });
+
+export const serviceCreateSchema = serviceRowSchema.omit({ id: true });
 
 export const portfolioRowSchema = z.object({
   id: uuidLike,
@@ -43,9 +52,18 @@ export const portfolioRowSchema = z.object({
   category_de: z.string().max(200).nullable(),
   project_url: projectUrlField,
   image_url: imageUrlField,
+  image_alt: z.string().max(300).nullable(),
+  icon_name: z.string().max(120).nullable(),
+  tags: z.array(z.string().max(80)).max(20),
+  cta_label: z.string().max(120).nullable(),
+  animation_preset: z.string().max(80).nullable(),
+  enable_3d: z.boolean(),
+  video_url: imageUrlField,
   sort_order: z.number().int().min(-9999).max(9999),
   published: z.boolean(),
 });
+
+export const portfolioCreateSchema = portfolioRowSchema.omit({ id: true });
 
 export const testimonialRowSchema = z.object({
   id: uuidLike,
