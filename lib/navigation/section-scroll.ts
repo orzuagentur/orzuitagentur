@@ -39,18 +39,14 @@ export function normalizeNavHref(href: string): string {
 }
 
 export function getNavScrollOffset(): number {
-  if (typeof document === "undefined") return 92;
-  const header = document.querySelector("header.navbar-surface");
-  const headerHeight = header?.getBoundingClientRect().height ?? 0;
-  if (headerHeight > 0) return headerHeight + 16;
-
+  if (typeof document === "undefined") return 24;
   const mobileMenu = document.querySelector(".navbar-menu-toggle--fixed");
-  if (mobileMenu) {
+  if (mobileMenu && mobileMenu.getBoundingClientRect().height > 0) {
     const { bottom } = mobileMenu.getBoundingClientRect();
     return bottom + 12;
   }
 
-  return 56;
+  return 16;
 }
 
 export function scrollToSectionId(

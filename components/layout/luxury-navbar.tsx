@@ -67,7 +67,6 @@ function ProjectFabIcon() {
 
 export function LuxuryNavbar({ nav }: LuxuryNavbarProps) {
   const menuId = useId();
-  const [scrolled, setScrolled] = useState(false);
   const [activeHash, setActiveHash] = useState("#start");
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -93,13 +92,6 @@ export function LuxuryNavbar({ nav }: LuxuryNavbarProps) {
     const id = pickActiveSectionId(sectionIds);
     setActiveHash(`#${id}`);
   }, [sectionIds]);
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 10);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
 
   useEffect(() => {
     updateActiveFromScroll();
@@ -168,44 +160,8 @@ export function LuxuryNavbar({ nav }: LuxuryNavbarProps) {
     if (closeMenu) setMenuOpen(false);
   };
 
-  const headerClass = scrolled
-    ? "border-[var(--border-strong)] bg-[color-mix(in_oklab,var(--surface-elevated)_78%,transparent)] shadow-[0_8px_40px_-20px_rgba(0,0,0,0.65)] backdrop-blur-xl"
-    : "border-[var(--border)] bg-[color-mix(in_oklab,var(--surface)_55%,transparent)] backdrop-blur-md";
-
   return (
     <>
-      <header
-        className={`navbar-surface sticky top-0 z-50 hidden w-full border-b transition-[backdrop-filter,background-color,box-shadow] duration-500 motion-reduce:transition-none lg:block ${headerClass}`}
-      >
-        <div
-          aria-hidden
-          className="navbar-glow pointer-events-none absolute inset-x-0 top-full h-px bg-gradient-to-r from-transparent via-[var(--accent)]/40 to-transparent opacity-80 motion-reduce:hidden"
-        />
-        <div className="navbar-bar navbar-bar--desktop mx-auto flex max-w-7xl items-center justify-center px-6 py-3 lg:px-8 lg:py-3.5">
-          <nav
-            className="navbar-nav-pill"
-            aria-label="Hauptnavigation"
-          >
-            {navLinks.map((link) => {
-              const isActive = activeHash === link.href;
-              return (
-                <Link
-                  key={`${link.href}-${link.label}`}
-                  href={link.href}
-                  scroll={false}
-                  aria-current={isActive ? "location" : undefined}
-                  onClick={(e) => handleSectionClick(e, link.href)}
-                  className={`navbar-nav-pill-link${isActive ? " is-active" : ""}`}
-                >
-                  {link.label}
-                </Link>
-              );
-            })}
-          </nav>
-
-        </div>
-      </header>
-
       <button
         type="button"
         className="navbar-menu-toggle navbar-menu-toggle--fixed lg:hidden"
