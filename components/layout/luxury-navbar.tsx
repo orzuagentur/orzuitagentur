@@ -72,10 +72,12 @@ export function LuxuryNavbar({ nav }: LuxuryNavbarProps) {
 
   const navLinks = useMemo(
     () =>
-      nav.links.map((link) => ({
-        ...link,
-        href: normalizeNavHref(link.href),
-      })),
+      nav.links
+        .map((link) => ({
+          ...link,
+          href: normalizeNavHref(link.href),
+        }))
+        .filter((link) => link.href !== "#technologien"),
     [nav.links],
   );
 
@@ -162,6 +164,28 @@ export function LuxuryNavbar({ nav }: LuxuryNavbarProps) {
 
   return (
     <>
+      <header className="navbar-desktop-nav pointer-events-none fixed inset-x-0 top-4 z-50 hidden w-full lg:block">
+        <div className="navbar-bar navbar-bar--desktop pointer-events-auto mx-auto flex max-w-7xl items-center justify-center px-6 lg:px-8">
+          <nav className="navbar-nav-pill" aria-label="Hauptnavigation">
+            {navLinks.map((link) => {
+              const isActive = activeHash === link.href;
+              return (
+                <Link
+                  key={`${link.href}-${link.label}`}
+                  href={link.href}
+                  scroll={false}
+                  aria-current={isActive ? "location" : undefined}
+                  onClick={(e) => handleSectionClick(e, link.href)}
+                  className={`navbar-nav-pill-link${isActive ? " is-active" : ""}`}
+                >
+                  {link.label}
+                </Link>
+              );
+            })}
+          </nav>
+        </div>
+      </header>
+
       <button
         type="button"
         className="navbar-menu-toggle navbar-menu-toggle--fixed lg:hidden"

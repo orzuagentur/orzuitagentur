@@ -11,6 +11,8 @@ export async function sendLeadTelegram(data: LeadInput) {
     "",
     `Name: ${data.name}`,
     `E-Mail: ${data.email}`,
+    `Telefon: ${data.phone}`,
+    `Leistung: ${data.serviceInterest}`,
     `Unternehmen: ${companyLine}`,
     "",
     data.message.length > 3500

@@ -39,10 +39,24 @@ function normalizeLeadInput(raw: unknown): unknown {
       ? companyRaw.trim()
       : undefined;
 
+  const phoneRaw = o.phone;
+  const phone =
+    typeof phoneRaw === "string" && phoneRaw.trim() !== ""
+      ? phoneRaw.trim()
+      : undefined;
+
+  const serviceRaw = o.serviceInterest;
+  const serviceInterest =
+    typeof serviceRaw === "string" && serviceRaw.trim() !== ""
+      ? serviceRaw.trim()
+      : undefined;
+
   return {
     name: o.name,
     email: o.email,
+    phone,
     company,
+    serviceInterest,
     message: o.message,
     privacyAccepted: o.privacyAccepted,
     source: o.source ?? "website",
@@ -66,7 +80,9 @@ export async function submitLead(raw: unknown): Promise<SubmitLeadResult> {
   const { error } = await supabase.from("leads").insert({
     name: data.name,
     email: data.email,
+    phone: data.phone,
     company: data.company ?? null,
+    service_interest: data.serviceInterest,
     message: data.message,
     privacy_accepted: data.privacyAccepted,
     source: data.source,

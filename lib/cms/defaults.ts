@@ -53,7 +53,6 @@ export const DEFAULT_NAV: NavContent = {
     { href: "#start", label: "Start" },
     { href: "#leistungen", label: "Leistungen" },
     { href: "#portfolio", label: "Portfolio" },
-    { href: "#technologien", label: "Technologien" },
     { href: "#warum-orzuit", label: "Warum OrzuIT" },
     { href: "#kontakt", label: "Kontakt" },
   ],
@@ -87,6 +86,9 @@ export const DEFAULT_CONTACT: ContactContent = {
   responseTime: "Antwort innerhalb von 1–2 Werktagen",
   privacyNote:
     "Ihre Angaben werden verschlüsselt übermittelt, serverseitig validiert und in der Datenbank gespeichert (sobald Supabase konfiguriert ist). Zusätzlich können E-Mail-, SMS- und Telegram-Benachrichtigungen aktiv sein.",
+  submittingTitle: "Ihre Anfrage wird übermittelt",
+  submittingBody:
+    "Bitte einen Moment — wir prüfen Ihre Angaben und senden die Anfrage sicher an unser Team.",
   successTitle: "Vielen Dank — Ihre Anfrage ist eingegangen.",
   successBody:
     "Wir melden uns zeitnah bei Ihnen. Bei Rückfragen erreichen Sie uns weiterhin unter ",
@@ -110,16 +112,16 @@ export const DEFAULT_PORTFOLIO_SECTION: PortfolioSectionContent = {
   kicker: "Portfolio",
   title: "Beispielhafte Projektideen.",
   subtitleRight:
-    "Typische Szenarien, die wir umsetzen — als Orientierung, nicht als Liste echter Kundenreferenzen.",
+    "Typische Szenarien, die wir umsetzen — als Orientierung für mögliche digitale Produkte.",
   footnote:
-    "Konkrete Referenzen und Details teilen wir im persönlichen Gespräch, sofern vorhanden und freigegeben.",
+    "Konkrete Details zu passenden Projektansätzen klären wir im persönlichen Gespräch.",
 };
 
 export const DEFAULT_TESTIMONIALS_SECTION: TestimonialsSectionContent = {
   kicker: "Arbeitsweise",
   title: "Warum Unternehmen mit OrzuIT arbeiten.",
   subtitle:
-    "Keine erfundenen Kundenstimmen — stattdessen transparent, wie wir Projekte angehen und was Sie davon haben.",
+    "Transparent, wie wir Projekte angehen und welchen Nutzen Sie davon haben.",
   footnote:
     "Passt das zu Ihrem Vorhaben? Im Erstgespräch klären wir Scope, Budget-Rahmen und den sinnvollsten nächsten Schritt.",
 };

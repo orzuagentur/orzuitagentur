@@ -32,12 +32,6 @@ export const CONTENT_SECTIONS: ContentSection[] = [
     siteAnchor: "#warum-orzuit",
   },
   {
-    href: "/dashboard/content/technologien",
-    label: "Technologien",
-    description: "Tech-Stack, Spalten und Lauftext (#technologien).",
-    siteAnchor: "#technologien",
-  },
-  {
     href: "/dashboard/content/kontakt",
     label: "Kontakt",
     description: "Kontaktformular und Erfolgsmeldungen (#kontakt).",
@@ -62,7 +56,8 @@ export const CONTENT_LEGACY_REDIRECTS: Record<string, string> = {
   "/dashboard/content/sections": "/dashboard/content/leistungen",
   "/dashboard/content/nav-footer": "/dashboard/content/menu",
   "/dashboard/content/contact": "/dashboard/content/kontakt",
-  "/dashboard/content/technologies": "/dashboard/content/technologien",
+  "/dashboard/content/technologies": "/dashboard/content",
+  "/dashboard/content/technologien": "/dashboard/content",
 };
 
 export function getContentPageMeta(pathname: string): {

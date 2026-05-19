@@ -23,7 +23,7 @@ export default async function DashboardTestimonialsPage() {
     <>
       <DashboardPageHeader
         title="Warum OrzuIT"
-        description="Karten für den Abschnitt #warum-orzuit auf der Startseite (Überschrift + Text, keine Kundenstimmen). Feld „Autor“ = Überschrift, „Zitat“ = Beschreibung. Alte Demo-Referenzen bitte löschen oder deaktivieren."
+        description="Karten für den Abschnitt #warum-orzuit auf der Startseite. Feld „Überschrift“ = Kartentitel, Feld „Text“ = Beschreibung."
       />
 
       <div className="space-y-8 px-4 pb-16 pt-2 sm:px-8 lg:px-10">
@@ -117,7 +117,7 @@ export default async function DashboardTestimonialsPage() {
         {rows.length === 0 ? (
           <CmsEmptyState
             returnTo="/dashboard/testimonials"
-            tableLabel="testimonials"
+            tableLabel="Warum-OrzuIT-Karten"
           />
         ) : (
           rows.map((t) => (
@@ -133,7 +133,7 @@ export default async function DashboardTestimonialsPage() {
                 <input type="hidden" name="id" value={t.id} />
                 <div>
                   <label className={labelClass} htmlFor={`q-${t.id}`}>
-                    Zitat
+                    Text
                   </label>
                   <textarea
                     className={`${inputClass} min-h-[120px]`}
@@ -146,7 +146,7 @@ export default async function DashboardTestimonialsPage() {
                 <div className="grid gap-3 sm:grid-cols-2">
                   <div>
                     <label className={labelClass} htmlFor={`a-${t.id}`}>
-                      Name
+                      Überschrift
                     </label>
                     <input
                       className={inputClass}
@@ -158,7 +158,7 @@ export default async function DashboardTestimonialsPage() {
                   </div>
                   <div>
                     <label className={labelClass} htmlFor={`r-${t.id}`}>
-                      Rolle
+                      Zusatz
                     </label>
                     <input
                       className={inputClass}
@@ -170,7 +170,7 @@ export default async function DashboardTestimonialsPage() {
                 </div>
                 <div>
                   <label className={labelClass} htmlFor={`o-${t.id}`}>
-                    Organisation
+                    Zusatz Zeile 2
                   </label>
                   <input
                     className={inputClass}

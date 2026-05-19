@@ -171,6 +171,8 @@ export async function saveContactBlock(formData: FormData): Promise<void> {
         email: str(formData, "contact_email", 200),
         responseTime: str(formData, "contact_responseTime", 200),
         privacyNote: str(formData, "contact_privacyNote", 2000),
+        submittingTitle: str(formData, "contact_submittingTitle", 400),
+        submittingBody: str(formData, "contact_submittingBody", 2000),
         successTitle: str(formData, "contact_successTitle", 400),
         successBody: str(formData, "contact_successBody", 2000),
       },

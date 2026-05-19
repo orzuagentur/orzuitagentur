@@ -18,6 +18,9 @@ export function ConditionalSiteChrome({
   footer,
 }: ConditionalSiteChromeProps) {
   const pathname = usePathname();
+  const visibleNavLinks = nav.links.filter(
+    (link) => link.href.trim().toLowerCase() !== "#technologien",
+  );
   const isAdminShell =
     pathname.startsWith("/dashboard") || pathname.startsWith("/auth");
 
@@ -31,7 +34,7 @@ export function ConditionalSiteChrome({
       <main className="site-main-with-contact-fab flex flex-1 flex-col">
         {children}
       </main>
-      <LuxuryFooter footer={footer} navLinks={nav.links} />
+      <LuxuryFooter footer={footer} navLinks={visibleNavLinks} />
     </>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useRef, useState, type PointerEvent } from "react";
+import { useCallback, useEffect, useRef, useState, type PointerEvent } from "react";
 import { PortfolioFlipCard } from "@/components/sections/portfolio-flip-card";
 import { motion, useReducedMotion, useSpring } from "framer-motion";
 import type { PortfolioCard } from "@/lib/cms/types";
@@ -207,17 +207,38 @@ export function PortfolioCarousel({ projects }: PortfolioCarouselProps) {
   const reduced = useReducedMotion();
   const [active, setActive] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
+  const [settlingIndex, setSettlingIndex] = useState<number | null>(null);
+  const [promotingIndex, setPromotingIndex] = useState<number | null>(null);
   const count = projects.length;
+
+  useEffect(() => {
+    if (settlingIndex === null && promotingIndex === null) return;
+    const timer = window.setTimeout(() => {
+      setSettlingIndex(null);
+      setPromotingIndex(null);
+    }, 560);
+    return () => window.clearTimeout(timer);
+  }, [promotingIndex, settlingIndex]);
 
   const changeActive = useCallback((next: number) => {
     setIsFlipped(false);
-    setActive(next);
+    setActive((current) => {
+      if (next === current) return current;
+      setSettlingIndex(current);
+      setPromotingIndex(next);
+      return next;
+    });
   }, []);
 
   const go = useCallback(
     (dir: -1 | 1) => {
       setIsFlipped(false);
-      setActive((i) => (i + dir + count) % count);
+      setActive((i) => {
+        const next = (i + dir + count) % count;
+        setSettlingIndex(i);
+        setPromotingIndex(next);
+        return next;
+      });
     },
     [count],
   );
@@ -258,6 +279,8 @@ export function PortfolioCarousel({ projects }: PortfolioCarouselProps) {
                 transform={tf}
                 accent={accent}
                 reduced={!!reduced}
+                isSettling={settlingIndex === index}
+                isPromoting={promotingIndex === index}
                 isFlipped={isFlipped}
                 onFlipChange={setIsFlipped}
                 onActivate={() => changeActive(index)}
@@ -310,6 +333,8 @@ type StackCardProps = {
   transform: ReturnType<typeof stackTransform>;
   accent: { glow: string; cta: string; border: string };
   reduced: boolean;
+  isSettling: boolean;
+  isPromoting: boolean;
   isFlipped: boolean;
   onFlipChange: (flipped: boolean) => void;
   onActivate: () => void;
@@ -321,6 +346,8 @@ function PortfolioStackCard({
   accent,
   offset,
   reduced,
+  isSettling,
+  isPromoting,
   isFlipped,
   onFlipChange,
   onActivate,
@@ -361,6 +388,8 @@ function PortfolioStackCard({
         isFeatured ? "is-active is-featured" : "",
         isPreview ? "is-next is-preview" : "",
         isSlim ? `is-deep is-slim is-slim-${offset}` : "",
+        isSettling ? "is-settling" : "",
+        isPromoting ? "is-promoting" : "",
         isFeatured && isFlipped ? "is-card-flipped" : "",
         offset < 0 ? "is-exiting" : "",
       ].join(" ")}
@@ -372,12 +401,12 @@ function PortfolioStackCard({
       initial={false}
       animate={{
         x: transform.x,
-        y: transform.y,
-        z: transform.z,
-        scale: transform.scale,
+        y: isSettling ? 22 : transform.y,
+        z: isSettling ? -96 : transform.z,
+        scale: isSettling ? 0.84 : transform.scale,
         rotateY: transform.rotateY,
-        opacity: transform.opacity,
-        filter: transform.filter,
+        opacity: isSettling ? 0 : transform.opacity,
+        filter: isSettling ? "blur(3px)" : transform.filter,
       }}
       transition={stackTransition(offset, reduced)}
       onClick={(e) => {

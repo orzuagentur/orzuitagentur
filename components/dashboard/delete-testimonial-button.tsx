@@ -16,7 +16,7 @@ export function DeleteTestimonialButton({
   function onSubmit(e: FormEvent<HTMLFormElement>) {
     if (
       !confirm(
-        `Referenz von „${authorLabel}“ endgültig löschen? Sie verschwindet auch von der Startseite.`,
+        `Karte „${authorLabel}“ endgültig löschen? Sie verschwindet auch von der Startseite.`,
       )
     ) {
       e.preventDefault();

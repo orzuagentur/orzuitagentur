@@ -18,12 +18,6 @@ const PortfolioSection = dynamic(() =>
   ),
 );
 
-const TechnologiesSection = dynamic(() =>
-  import("@/components/sections/technologies-section").then(
-    (mod) => mod.TechnologiesSection,
-  ),
-);
-
 const TestimonialsSection = dynamic(() =>
   import("@/components/sections/testimonials-section").then(
     (mod) => mod.TestimonialsSection,
@@ -67,12 +61,14 @@ export default async function Home() {
           section={marketing.portfolioSection}
           projects={portfolio}
         />
-        <TechnologiesSection section={marketing.technologiesSection} />
         <TestimonialsSection
           section={marketing.testimonialsSection}
           items={testimonials}
         />
-        <ContactSection contact={marketing.contact} />
+        <ContactSection
+          contact={marketing.contact}
+          serviceOptions={services.map((s) => s.title)}
+        />
       </div>
     </div>
   );

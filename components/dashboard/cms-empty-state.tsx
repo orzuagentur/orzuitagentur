@@ -34,7 +34,7 @@ export function CmsEmptyState({ returnTo, tableLabel }: CmsEmptyStateProps) {
         <>
           <p>
             Die Tabelle <strong className="text-[var(--foreground)]">{tableLabel}</strong>{" "}
-            ist leer. Laden Sie die Standard-Leistungen, Portfolio- und Referenz-Texte
+            ist leer. Laden Sie die Standard-Leistungen, Portfolio- und Content-Texte
             aus dem Projekt (ein Klick).
           </p>
           <form action={seedCmsContent}>

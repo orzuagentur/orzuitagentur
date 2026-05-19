@@ -34,10 +34,12 @@ export async function sendLeadEmail(data: LeadInput): Promise<SendResult> {
   const { error } = await config.resend.emails.send({
     from: config.from,
     to: [to],
-    subject: `Neue Anfrage: ${data.name}`,
+    subject: `Neue Anfrage: ${data.name} — ${data.serviceInterest}`,
     text: [
       `Name: ${data.name}`,
       `E-Mail: ${data.email}`,
+      `Telefon: ${data.phone}`,
+      `Leistung: ${data.serviceInterest}`,
       `Unternehmen: ${companyLine}`,
       "",
       data.message,

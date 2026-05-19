@@ -2,12 +2,34 @@
 
 import { submitLead } from "@/actions/submit-lead";
 import type { ContactContent } from "@/lib/cms/types";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import Link from "next/link";
-import { type FormEvent, useId, useMemo, useState, useTransition } from "react";
+import {
+  type FormEvent,
+  type ReactNode,
+  useId,
+  useMemo,
+  useState,
+  useTransition,
+} from "react";
 
-type FieldKey = "name" | "email" | "company" | "message" | "privacy";
+type FieldKey =
+  | "name"
+  | "email"
+  | "phone"
+  | "company"
+  | "serviceInterest"
+  | "message"
+  | "privacy";
+
+type FormPhase = "form" | "submitting" | "success";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const PHONE_RE = /^[\d\s+\-()./]{8,28}$/;
+
+function phoneHasEnoughDigits(value: string) {
+  return value.replace(/\D/g, "").length >= 8;
+}
 
 function validate(
   data: Record<FieldKey, string>,
@@ -16,6 +38,8 @@ function validate(
   const errors: Partial<Record<FieldKey, string>> = {};
   const name = data.name.trim();
   const email = data.email.trim();
+  const phone = data.phone.trim();
+  const serviceInterest = data.serviceInterest.trim();
   const message = data.message.trim();
 
   if (name.length < 2) {
@@ -25,6 +49,14 @@ function validate(
     errors.email = "E-Mail ist erforderlich.";
   } else if (!EMAIL_RE.test(email)) {
     errors.email = "Bitte geben Sie eine gültige E-Mail-Adresse ein.";
+  }
+  if (!phone) {
+    errors.phone = "Telefonnummer ist erforderlich.";
+  } else if (!PHONE_RE.test(phone) || !phoneHasEnoughDigits(phone)) {
+    errors.phone = "Bitte geben Sie eine gültige Telefonnummer ein.";
+  }
+  if (!serviceInterest) {
+    errors.serviceInterest = "Bitte wählen Sie eine Leistung oder ein Thema.";
   }
   if (message.length < 20) {
     errors.message =
@@ -36,30 +68,87 @@ function validate(
   return errors;
 }
 
-const fieldBaseClass =
-  "w-full rounded-xl border bg-[color-mix(in_oklab,var(--surface)_92%,black)] px-4 py-3 text-sm text-[var(--foreground)] placeholder:text-[var(--muted)] shadow-[0_0_0_1px_rgba(255,255,255,0.03)_inset] transition-[border-color,box-shadow] duration-300 outline-none focus:border-[color-mix(in_oklab,var(--accent)_45%,var(--border))] focus:shadow-[0_0_0_1px_color-mix(in_oklab,var(--accent)_35%,transparent),0_0_24px_-10px_var(--accent-glow)]";
+type ContactField3DProps = {
+  id: string;
+  label: string;
+  required?: boolean;
+  error?: string;
+  errorId?: string;
+  children: ReactNode;
+};
+
+function ContactField3D({
+  id,
+  label,
+  required,
+  error,
+  errorId,
+  children,
+}: ContactField3DProps) {
+  return (
+    <motion.div
+      className="contact-field-3d group flex flex-col gap-2"
+      whileHover={{ y: -2 }}
+      transition={{ type: "spring", stiffness: 420, damping: 28 }}
+    >
+      <label htmlFor={id} className="text-sm font-medium text-[var(--foreground)]">
+        {label}
+        {required ? <span className="text-[var(--accent)]"> *</span> : null}
+      </label>
+      <motion.div
+        className={`contact-field-shell ${error ? "contact-field-shell-invalid" : ""}`}
+        whileHover={{ rotateX: 2, rotateY: -2 }}
+        transition={{ type: "spring", stiffness: 380, damping: 26 }}
+      >
+        <span className="contact-field-depth" aria-hidden />
+        <span className="contact-field-sheen" aria-hidden />
+        <motion.div className="contact-field-inner">{children}</motion.div>
+      </motion.div>
+      {error ? (
+        <p id={errorId} className="text-xs text-red-400/90" role="alert">
+          {error}
+        </p>
+      ) : null}
+    </motion.div>
+  );
+}
+
+const fieldControlClass =
+  "contact-field-control w-full border-0 bg-transparent px-4 py-3.5 text-sm outline-none";
 
 type ContactSectionProps = {
   contact: ContactContent;
+  serviceOptions: string[];
 };
 
-export function ContactSection({ contact }: ContactSectionProps) {
+export function ContactSection({ contact, serviceOptions }: ContactSectionProps) {
   const baseId = useId();
+  const reduceMotion = useReducedMotion();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [company, setCompany] = useState("");
+  const [serviceInterest, setServiceInterest] = useState("");
   const [message, setMessage] = useState("");
   const [privacy, setPrivacy] = useState(false);
   const [errors, setErrors] = useState<Partial<Record<FieldKey, string>>>({});
-  const [submitted, setSubmitted] = useState(false);
+  const [phase, setPhase] = useState<FormPhase>("form");
   const [serverError, setServerError] = useState<string | null>(null);
-  const [isPending, startTransition] = useTransition();
+  const [, startTransition] = useTransition();
+
+  const serviceChoices = useMemo(() => {
+    const fromCms = serviceOptions.filter(Boolean);
+    const unique = Array.from(new Set(fromCms));
+    return [...unique, "Erstberatung / noch unklar", "Sonstiges"];
+  }, [serviceOptions]);
 
   const ids = useMemo(
     () => ({
       name: `${baseId}-name`,
       email: `${baseId}-email`,
+      phone: `${baseId}-phone`,
       company: `${baseId}-company`,
+      serviceInterest: `${baseId}-service`,
       message: `${baseId}-message`,
       privacy: `${baseId}-privacy`,
     }),
@@ -68,12 +157,13 @@ export function ContactSection({ contact }: ContactSectionProps) {
 
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setSubmitted(false);
     setServerError(null);
     const data: Record<FieldKey, string> = {
       name,
       email,
+      phone,
       company,
+      serviceInterest,
       message,
       privacy: privacy ? "1" : "",
     };
@@ -81,19 +171,24 @@ export function ContactSection({ contact }: ContactSectionProps) {
     setErrors(next);
     if (Object.keys(next).length > 0) return;
 
+    setPhase("submitting");
+
     startTransition(async () => {
       const result = await submitLead({
         name: name.trim(),
         email: email.trim(),
+        phone: phone.trim(),
         company: company.trim() ? company.trim() : undefined,
+        serviceInterest: serviceInterest.trim(),
         message: message.trim(),
         privacyAccepted: true,
         source: "website",
       });
 
       if (result.ok) {
-        setSubmitted(true);
+        setPhase("success");
       } else {
+        setPhase("form");
         setServerError(result.error);
       }
     });
@@ -102,13 +197,33 @@ export function ContactSection({ contact }: ContactSectionProps) {
   function resetForm() {
     setName("");
     setEmail("");
+    setPhone("");
     setCompany("");
+    setServiceInterest("");
     setMessage("");
     setPrivacy(false);
     setErrors({});
-    setSubmitted(false);
+    setPhase("form");
     setServerError(null);
   }
+
+  const formCardMotion = reduceMotion
+    ? { initial: false, animate: { opacity: 1 }, exit: { opacity: 0 } }
+    : {
+        initial: { opacity: 0, y: 18, rotateX: 8, scale: 0.98 },
+        animate: { opacity: 1, y: 0, rotateX: 0, scale: 1 },
+        exit: { opacity: 0, y: -12, rotateX: -6, scale: 0.98 },
+        transition: { duration: 0.42, ease: [0.22, 1, 0.36, 1] as const },
+      };
+
+  const statusCardMotion = reduceMotion
+    ? { initial: false, animate: { opacity: 1 }, exit: { opacity: 0 } }
+    : {
+        initial: { opacity: 0, y: 10 },
+        animate: { opacity: 1, y: 0 },
+        exit: { opacity: 0, y: -6 },
+        transition: { duration: 0.32, ease: [0.22, 1, 0.36, 1] as const },
+      };
 
   return (
     <section
@@ -116,17 +231,27 @@ export function ContactSection({ contact }: ContactSectionProps) {
       aria-labelledby="contact-heading"
       className="home-section-anchor home-section-deferred relative isolate overflow-hidden border-t border-[var(--border)] py-20 sm:py-28 lg:py-32"
     >
-      <div
+      <motion.div
         aria-hidden
         className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_55%_45%_at_80%_20%,color-mix(in_oklab,var(--accent)_12%,transparent),transparent_60%)]"
+        animate={reduceMotion ? undefined : { opacity: [0.85, 1, 0.85] }}
+        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
       />
-      <div
+      <motion.div
         aria-hidden
         className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-1/2 bg-gradient-to-t from-[color-mix(in_oklab,var(--surface)_40%,black)] to-transparent"
+        animate={reduceMotion ? undefined : { opacity: [0.7, 0.95, 0.7] }}
+        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
       />
       <div className="contact-orb pointer-events-none absolute -bottom-32 left-10 -z-10 h-[400px] w-[400px] rounded-full bg-[radial-gradient(circle,color-mix(in_oklab,var(--accent-2)_20%,transparent),transparent_70%)] blur-3xl opacity-75" />
 
-      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <motion.div
+        className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8"
+        initial={reduceMotion ? false : { opacity: 0, y: 24 }}
+        whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-8% 0px" }}
+        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+      >
         <header className="contact-reveal contact-reveal-h max-w-3xl">
           <p className="text-xs font-medium uppercase tracking-[0.28em] text-[var(--muted)]">
             {contact.kicker}
@@ -166,169 +291,329 @@ export function ContactSection({ contact }: ContactSectionProps) {
             </p>
           </div>
 
-          <div className="contact-reveal contact-reveal-form lg:col-span-7">
-            <div className="contact-panel rounded-2xl border border-[var(--border-strong)] bg-[color-mix(in_oklab,var(--surface-elevated)_88%,transparent)] p-6 shadow-[0_0_0_1px_rgba(255,255,255,0.05)_inset,0_24px_80px_-48px_rgba(0,0,0,0.75)] backdrop-blur-xl sm:p-8">
-              {submitted ? (
-                <div
-                  className="flex flex-col gap-4 py-2"
-                  role="status"
-                  aria-live="polite"
-                >
-                  <p className="text-lg font-semibold text-[var(--foreground)]">
-                    {contact.successTitle}
-                  </p>
-                  <p className="text-sm leading-relaxed text-[var(--muted)]">
-                    {contact.successBody}
-                    <a
-                      href={`mailto:${contact.email}`}
-                      className="font-medium text-[var(--accent)] underline-offset-2 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]"
-                    >
-                      {contact.email}
-                    </a>
-                    .
-                  </p>
-                  <button
-                    type="button"
-                    className="inline-flex h-11 max-w-xs items-center justify-center rounded-full border border-[var(--border)] bg-[var(--surface)] px-5 text-sm font-semibold text-[var(--foreground)] transition-[border-color,transform] duration-300 hover:border-[var(--border-strong)] hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)] motion-reduce:hover:translate-y-0"
-                    onClick={resetForm}
+          <motion.div className="contact-reveal contact-reveal-form lg:col-span-7">
+            <div
+              className={`contact-form-scene contact-panel rounded-2xl border border-[var(--border-strong)] bg-[color-mix(in_oklab,var(--surface-elevated)_88%,transparent)] p-6 shadow-[0_0_0_1px_rgba(255,255,255,0.05)_inset,0_24px_80px_-48px_rgba(0,0,0,0.75)] backdrop-blur-xl sm:p-8${phase === "form" ? "" : " contact-panel-status"}`}
+            >
+              <AnimatePresence mode="wait">
+                {phase === "submitting" ? (
+                  <motion.div
+                    key="submitting"
+                    className="contact-status-card contact-status-card-submitting"
+                    role="status"
+                    aria-live="polite"
+                    aria-busy="true"
+                    {...statusCardMotion}
                   >
-                    Neue Nachricht
-                  </button>
-                </div>
-              ) : (
-                <form className="flex flex-col gap-5" onSubmit={handleSubmit} noValidate>
-                  <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-                    <div className="flex flex-col gap-2">
-                      <label htmlFor={ids.name} className="text-sm font-medium text-[var(--foreground)]">
-                        Name <span className="text-[var(--accent)]">*</span>
-                      </label>
-                      <input
-                        id={ids.name}
-                        name="name"
-                        type="text"
-                        autoComplete="name"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        aria-invalid={errors.name ? "true" : "false"}
-                        aria-describedby={errors.name ? `${ids.name}-err` : undefined}
-                        className={`${fieldBaseClass} border-[var(--border)] ${errors.name ? "border-red-400/60" : ""}`}
-                      />
-                      {errors.name ? (
-                        <p id={`${ids.name}-err`} className="text-xs text-red-400/90" role="alert">
-                          {errors.name}
-                        </p>
-                      ) : null}
-                    </div>
-                    <div className="flex flex-col gap-2">
-                      <label htmlFor={ids.email} className="text-sm font-medium text-[var(--foreground)]">
-                        E-Mail <span className="text-[var(--accent)]">*</span>
-                      </label>
-                      <input
-                        id={ids.email}
-                        name="email"
-                        type="email"
-                        autoComplete="email"
-                        inputMode="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        aria-invalid={errors.email ? "true" : "false"}
-                        aria-describedby={errors.email ? `${ids.email}-err` : undefined}
-                        className={`${fieldBaseClass} border-[var(--border)] ${errors.email ? "border-red-400/60" : ""}`}
-                      />
-                      {errors.email ? (
-                        <p id={`${ids.email}-err`} className="text-xs text-red-400/90" role="alert">
-                          {errors.email}
-                        </p>
-                      ) : null}
-                    </div>
-                  </div>
-
-                  <div className="flex flex-col gap-2">
-                    <label htmlFor={ids.company} className="text-sm font-medium text-[var(--foreground)]">
-                      Unternehmen
-                    </label>
-                    <input
-                      id={ids.company}
-                      name="company"
-                      type="text"
-                      autoComplete="organization"
-                      value={company}
-                      onChange={(e) => setCompany(e.target.value)}
-                      className={`${fieldBaseClass} border-[var(--border)]`}
+                    <span className="contact-status-card-depth" aria-hidden />
+                    <span className="contact-status-card-sheen" aria-hidden />
+                    <motion.div
+                      className="contact-status-spinner"
+                      aria-hidden
+                      animate={reduceMotion ? undefined : { rotate: 360 }}
+                      transition={{
+                        duration: 1.1,
+                        repeat: Infinity,
+                        ease: "linear",
+                      }}
                     />
-                  </div>
-
-                  <div className="flex flex-col gap-2">
-                    <label htmlFor={ids.message} className="text-sm font-medium text-[var(--foreground)]">
-                      Nachricht <span className="text-[var(--accent)]">*</span>
-                    </label>
-                    <textarea
-                      id={ids.message}
-                      name="message"
-                      rows={5}
-                      value={message}
-                      onChange={(e) => setMessage(e.target.value)}
-                      aria-invalid={errors.message ? "true" : "false"}
-                      aria-describedby={errors.message ? `${ids.message}-err` : undefined}
-                      className={`${fieldBaseClass} min-h-[140px] resize-y border-[var(--border)] ${errors.message ? "border-red-400/60" : ""}`}
-                    />
-                    {errors.message ? (
-                      <p id={`${ids.message}-err`} className="text-xs text-red-400/90" role="alert">
-                        {errors.message}
-                      </p>
-                    ) : null}
-                  </div>
-
-                  <div className="flex flex-col gap-2">
-                    <label className="flex cursor-pointer items-start gap-3 text-sm text-[var(--muted)]">
-                      <input
-                        id={ids.privacy}
-                        name="privacy"
-                        type="checkbox"
-                        checked={privacy}
-                        onChange={(e) => setPrivacy(e.target.checked)}
-                        aria-invalid={errors.privacy ? "true" : "false"}
-                        aria-describedby={errors.privacy ? `${ids.privacy}-err` : undefined}
-                        className="mt-1 h-4 w-4 shrink-0 rounded border-[var(--border-strong)] bg-[var(--surface)] text-[var(--accent)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]"
-                      />
-                      <span>
-                        Ich habe die{" "}
-                        <Link
-                          href="/datenschutz"
-                          className="font-medium text-[var(--foreground)] underline decoration-[var(--muted)] underline-offset-4 hover:decoration-[var(--accent)]"
-                        >
-                          Datenschutzhinweise
-                        </Link>{" "}
-                        zur Kenntnis genommen.{" "}
-                        <span className="text-[var(--accent)]">*</span>
-                      </span>
-                    </label>
-                    {errors.privacy ? (
-                      <p id={`${ids.privacy}-err`} className="text-xs text-red-400/90" role="alert">
-                        {errors.privacy}
-                      </p>
-                    ) : null}
-                  </div>
-
-                  {serverError ? (
-                    <p className="text-sm text-red-400/90" role="alert">
-                      {serverError}
+                    <p className="text-lg font-semibold text-[var(--foreground)]">
+                      {contact.submittingTitle}
                     </p>
-                  ) : null}
-
-                  <button
-                    type="submit"
-                    disabled={isPending}
-                    className="cta-shine group relative mt-1 inline-flex h-12 items-center justify-center overflow-hidden rounded-full border border-[var(--border-strong)] bg-[var(--surface-elevated)] px-8 text-sm font-semibold text-[var(--foreground)] shadow-[0_0_0_1px_rgba(255,255,255,0.05)_inset] transition-[transform,box-shadow] duration-300 hover:-translate-y-0.5 hover:border-[color-mix(in_oklab,var(--accent)_40%,var(--border-strong))] hover:shadow-[0_0_36px_-12px_var(--accent-glow)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)] motion-reduce:hover:translate-y-0 sm:w-fit"
+                    <p className="mt-3 text-sm leading-relaxed text-[var(--muted)]">
+                      {contact.submittingBody}
+                    </p>
+                    <ol className="contact-submit-steps mt-8 space-y-3">
+                      <li className="contact-submit-step is-active">
+                        <span className="contact-submit-step-dot" aria-hidden />
+                        <span>Angaben werden geprüft</span>
+                      </li>
+                      <li className="contact-submit-step is-active is-pulse">
+                        <span className="contact-submit-step-dot" aria-hidden />
+                        <span>Anfrage wird an unser Team gesendet</span>
+                      </li>
+                      <li className="contact-submit-step">
+                        <span className="contact-submit-step-dot" aria-hidden />
+                        <span>Bestätigung wird vorbereitet</span>
+                      </li>
+                    </ol>
+                  </motion.div>
+                ) : phase === "success" ? (
+                  <motion.div
+                    key="success"
+                    className="contact-status-card contact-status-card-success"
+                    role="status"
+                    aria-live="polite"
+                    {...statusCardMotion}
                   >
-                    {isPending ? "Wird gesendet…" : "Anfrage senden"}
-                  </button>
-                </form>
-              )}
+                    <span className="contact-status-card-depth" aria-hidden />
+                    <span className="contact-status-card-sheen" aria-hidden />
+                    <div className="contact-success-icon" aria-hidden>
+                      <svg viewBox="0 0 24 24" fill="none" className="h-7 w-7">
+                        <path
+                          d="M5 12.5l4.2 4.2L19 6.8"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </div>
+                    <p className="text-lg font-semibold text-[var(--foreground)]">
+                      {contact.successTitle}
+                    </p>
+                    <p className="mt-3 text-sm leading-relaxed text-[var(--muted)]">
+                      {contact.successBody}
+                      <a
+                        href={`mailto:${contact.email}`}
+                        className="font-medium text-[var(--accent)] underline-offset-2 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]"
+                      >
+                        {contact.email}
+                      </a>
+                      .
+                    </p>
+                    <p className="mt-2 font-mono text-xs uppercase tracking-wider text-[var(--muted)]">
+                      {contact.responseTime}
+                    </p>
+                    <button
+                      type="button"
+                      className="cta-shine mt-8 inline-flex h-11 max-w-xs items-center justify-center rounded-full border border-[var(--border)] bg-[var(--surface)] px-5 text-sm font-semibold text-[var(--foreground)] transition-[border-color,transform] duration-300 hover:border-[var(--border-strong)] hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)] motion-reduce:hover:translate-y-0"
+                      onClick={resetForm}
+                    >
+                      Neue Anfrage
+                    </button>
+                  </motion.div>
+                ) : (
+                  <motion.form
+                    key="form"
+                    className="flex flex-col gap-5"
+                    onSubmit={handleSubmit}
+                    noValidate
+                    {...formCardMotion}
+                  >
+                    <motion.div
+                      className="grid grid-cols-1 gap-5 sm:grid-cols-2"
+                      initial={reduceMotion ? false : { opacity: 0, y: 12 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.05, duration: 0.45 }}
+                    >
+                      <ContactField3D
+                        id={ids.name}
+                        label="Name"
+                        required
+                        error={errors.name}
+                        errorId={`${ids.name}-err`}
+                      >
+                        <input
+                          id={ids.name}
+                          name="name"
+                          type="text"
+                          autoComplete="name"
+                          value={name}
+                          onChange={(e) => setName(e.target.value)}
+                          aria-invalid={errors.name ? "true" : "false"}
+                          aria-describedby={
+                            errors.name ? `${ids.name}-err` : undefined
+                          }
+                          className={fieldControlClass}
+                          placeholder="Vor- und Nachname"
+                        />
+                      </ContactField3D>
+
+                      <ContactField3D
+                        id={ids.email}
+                        label="E-Mail"
+                        required
+                        error={errors.email}
+                        errorId={`${ids.email}-err`}
+                      >
+                        <input
+                          id={ids.email}
+                          name="email"
+                          type="email"
+                          autoComplete="email"
+                          inputMode="email"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          aria-invalid={errors.email ? "true" : "false"}
+                          aria-describedby={
+                            errors.email ? `${ids.email}-err` : undefined
+                          }
+                          className={fieldControlClass}
+                          placeholder="name@unternehmen.de"
+                        />
+                      </ContactField3D>
+                    </motion.div>
+
+                    <motion.div
+                      className="grid grid-cols-1 gap-5 sm:grid-cols-2"
+                      initial={reduceMotion ? false : { opacity: 0, y: 12 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.1, duration: 0.45 }}
+                    >
+                      <ContactField3D
+                        id={ids.phone}
+                        label="Telefon"
+                        required
+                        error={errors.phone}
+                        errorId={`${ids.phone}-err`}
+                      >
+                        <input
+                          id={ids.phone}
+                          name="phone"
+                          type="tel"
+                          autoComplete="tel"
+                          inputMode="tel"
+                          value={phone}
+                          onChange={(e) => setPhone(e.target.value)}
+                          aria-invalid={errors.phone ? "true" : "false"}
+                          aria-describedby={
+                            errors.phone ? `${ids.phone}-err` : undefined
+                          }
+                          className={fieldControlClass}
+                          placeholder="+49 …"
+                        />
+                      </ContactField3D>
+
+                      <ContactField3D id={ids.company} label="Unternehmen">
+                        <input
+                          id={ids.company}
+                          name="company"
+                          type="text"
+                          autoComplete="organization"
+                          value={company}
+                          onChange={(e) => setCompany(e.target.value)}
+                          className={fieldControlClass}
+                          placeholder="Firma (optional)"
+                        />
+                      </ContactField3D>
+                    </motion.div>
+
+                    <motion.div
+                      initial={reduceMotion ? false : { opacity: 0, y: 12 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.14, duration: 0.45 }}
+                    >
+                      <ContactField3D
+                        id={ids.serviceInterest}
+                        label="Gewünschte Leistung"
+                        required
+                        error={errors.serviceInterest}
+                        errorId={`${ids.serviceInterest}-err`}
+                      >
+                        <div className="contact-field-select-wrap">
+                          <select
+                            id={ids.serviceInterest}
+                            name="serviceInterest"
+                            value={serviceInterest}
+                            onChange={(e) => setServiceInterest(e.target.value)}
+                            aria-invalid={errors.serviceInterest ? "true" : "false"}
+                            aria-describedby={
+                              errors.serviceInterest
+                                ? `${ids.serviceInterest}-err`
+                                : undefined
+                            }
+                            className={`${fieldControlClass} cursor-pointer appearance-none pr-10`}
+                          >
+                            <option value="" disabled>
+                              Bitte auswählen …
+                            </option>
+                            {serviceChoices.map((option) => (
+                              <option key={option} value={option}>
+                                {option}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                      </ContactField3D>
+                    </motion.div>
+
+                    <motion.div
+                      initial={reduceMotion ? false : { opacity: 0, y: 12 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.18, duration: 0.45 }}
+                    >
+                      <ContactField3D
+                        id={ids.message}
+                        label="Ihr Anliegen"
+                        required
+                        error={errors.message}
+                        errorId={`${ids.message}-err`}
+                      >
+                        <textarea
+                          id={ids.message}
+                          name="message"
+                          rows={5}
+                          value={message}
+                          onChange={(e) => setMessage(e.target.value)}
+                          aria-invalid={errors.message ? "true" : "false"}
+                          aria-describedby={
+                            errors.message ? `${ids.message}-err` : undefined
+                          }
+                          className={`${fieldControlClass} min-h-[148px] resize-y`}
+                          placeholder="Ziel, Zeitrahmen, Budget-Rahmen oder aktuelle Situation …"
+                        />
+                      </ContactField3D>
+                    </motion.div>
+
+                    <div className="flex flex-col gap-2">
+                      <label className="flex cursor-pointer items-start gap-3 text-sm text-[var(--muted)]">
+                        <input
+                          id={ids.privacy}
+                          name="privacy"
+                          type="checkbox"
+                          checked={privacy}
+                          onChange={(e) => setPrivacy(e.target.checked)}
+                          aria-invalid={errors.privacy ? "true" : "false"}
+                          aria-describedby={
+                            errors.privacy ? `${ids.privacy}-err` : undefined
+                          }
+                          className="mt-1 h-4 w-4 shrink-0 rounded border-[var(--border-strong)] bg-[var(--surface)] text-[var(--accent)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]"
+                        />
+                        <span>
+                          Ich habe die{" "}
+                          <Link
+                            href="/datenschutz"
+                            className="font-medium text-[var(--foreground)] underline decoration-[var(--muted)] underline-offset-4 hover:decoration-[var(--accent)]"
+                          >
+                            Datenschutzhinweise
+                          </Link>{" "}
+                          zur Kenntnis genommen.{" "}
+                          <span className="text-[var(--accent)]">*</span>
+                        </span>
+                      </label>
+                      {errors.privacy ? (
+                        <p
+                          id={`${ids.privacy}-err`}
+                          className="text-xs text-red-400/90"
+                          role="alert"
+                        >
+                          {errors.privacy}
+                        </p>
+                      ) : null}
+                    </div>
+
+                    {serverError ? (
+                      <p className="text-sm text-red-400/90" role="alert">
+                        {serverError}
+                      </p>
+                    ) : null}
+
+                    <motion.button
+                      type="submit"
+                      className="cta-shine group relative mt-1 inline-flex h-12 items-center justify-center overflow-hidden rounded-full border border-[var(--border-strong)] bg-[var(--surface-elevated)] px-8 text-sm font-semibold text-[var(--foreground)] shadow-[0_0_0_1px_rgba(255,255,255,0.05)_inset] transition-[transform,box-shadow] duration-300 hover:-translate-y-0.5 hover:border-[color-mix(in_oklab,var(--accent)_40%,var(--border-strong))] hover:shadow-[0_0_36px_-12px_var(--accent-glow)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)] motion-reduce:hover:translate-y-0 sm:w-fit"
+                      whileHover={reduceMotion ? undefined : { scale: 1.02 }}
+                      whileTap={reduceMotion ? undefined : { scale: 0.98 }}
+                    >
+                      Anfrage senden
+                    </motion.button>
+                  </motion.form>
+                )}
+              </AnimatePresence>
             </div>
-          </div>
+          </motion.div>
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 }

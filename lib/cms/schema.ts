@@ -59,6 +59,8 @@ const contactSchema = z.object({
   email: z.string().max(200),
   responseTime: z.string().max(200),
   privacyNote: z.string().max(2000),
+  submittingTitle: z.string().max(400),
+  submittingBody: z.string().max(2000),
   successTitle: z.string().max(400),
   successBody: z.string().max(2000),
 });

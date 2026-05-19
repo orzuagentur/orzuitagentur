@@ -49,7 +49,7 @@ export function TestimonialsSection({
         </header>
 
         {items.length > 0 ? (
-        <ul className="mt-14 grid list-none grid-cols-1 gap-5 lg:mt-16 lg:grid-cols-3 lg:gap-6">
+        <ul className="testimonial-grid mt-14 grid list-none grid-cols-1 gap-5 lg:mt-16 lg:grid-cols-3 lg:gap-6">
           {items.map((item, index) => {
             const revealClass = REVEAL[Math.min(index, REVEAL.length - 1)];
             const meta = [item.role, item.org].filter(Boolean).join(" · ");
@@ -58,6 +58,11 @@ export function TestimonialsSection({
                 key={item.key}
                 className={`testimonial-reveal ${revealClass} testimonial-card group relative flex flex-col rounded-2xl border border-[var(--border)] bg-[color-mix(in_oklab,var(--surface-elevated)_80%,transparent)] p-7 shadow-[0_0_0_1px_rgba(255,255,255,0.04)_inset] backdrop-blur-md sm:p-8`}
               >
+                <span className="testimonial-card-depth" aria-hidden />
+                <span className="testimonial-card-sheen" aria-hidden />
+                <span className="testimonial-card-index" aria-hidden>
+                  {String(index + 1).padStart(2, "0")}
+                </span>
                 <div
                   aria-hidden
                   className="pointer-events-none absolute -right-1 -top-1 h-24 w-24 rounded-full bg-[radial-gradient(circle,color-mix(in_oklab,var(--accent-2)_18%,transparent),transparent_68%)] opacity-0 blur-2xl transition-opacity duration-500 group-hover:opacity-100 motion-reduce:transition-none"

@@ -31,12 +31,14 @@ export default async function DashboardLeadsPage() {
           </p>
         ) : (
           <div className="overflow-x-auto rounded-2xl border border-[var(--border)]">
-            <table className="w-full min-w-[720px] text-left text-sm">
+            <table className="w-full min-w-[960px] text-left text-sm">
               <thead>
                 <tr className="border-b border-[var(--border)] bg-white/[0.02] text-xs uppercase tracking-wider text-[var(--muted)]">
                   <th className="px-4 py-3 font-medium">Zeit</th>
                   <th className="px-4 py-3 font-medium">Name</th>
                   <th className="px-4 py-3 font-medium">E-Mail</th>
+                  <th className="px-4 py-3 font-medium">Telefon</th>
+                  <th className="px-4 py-3 font-medium">Leistung</th>
                   <th className="px-4 py-3 font-medium">Firma</th>
                   <th className="px-4 py-3 font-medium">Quelle</th>
                   <th className="px-4 py-3 font-medium">DSGVO</th>
@@ -57,6 +59,12 @@ export default async function DashboardLeadsPage() {
                     </td>
                     <td className="max-w-[180px] truncate px-4 py-3 text-[var(--accent)]">
                       <a href={`mailto:${lead.email}`}>{lead.email}</a>
+                    </td>
+                    <td className="whitespace-nowrap px-4 py-3 text-[var(--muted)]">
+                      {lead.phone ?? "—"}
+                    </td>
+                    <td className="max-w-[160px] truncate px-4 py-3 text-[var(--foreground)]">
+                      {lead.service_interest ?? "—"}
                     </td>
                     <td className="max-w-[140px] truncate px-4 py-3 text-[var(--muted)]">
                       {lead.company ?? "—"}

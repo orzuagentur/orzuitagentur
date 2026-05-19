@@ -44,6 +44,8 @@ export type ContactContent = {
   email: string;
   responseTime: string;
   privacyNote: string;
+  submittingTitle: string;
+  submittingBody: string;
   successTitle: string;
   successBody: string;
 };

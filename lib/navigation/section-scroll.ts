@@ -3,7 +3,6 @@ export const SITE_SECTION_IDS = [
   "start",
   "leistungen",
   "portfolio",
-  "technologien",
   "warum-orzuit",
   "kontakt",
 ] as const;
@@ -40,6 +39,10 @@ export function normalizeNavHref(href: string): string {
 
 export function getNavScrollOffset(): number {
   if (typeof document === "undefined") return 24;
+  const header = document.querySelector("header.navbar-desktop-nav");
+  const headerBounds = header?.getBoundingClientRect();
+  if (headerBounds && headerBounds.height > 0) return headerBounds.bottom + 16;
+
   const mobileMenu = document.querySelector(".navbar-menu-toggle--fixed");
   if (mobileMenu && mobileMenu.getBoundingClientRect().height > 0) {
     const { bottom } = mobileMenu.getBoundingClientRect();

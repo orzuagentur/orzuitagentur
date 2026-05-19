@@ -7,7 +7,9 @@ export type LeadRow = {
   id: string;
   name: string;
   email: string;
+  phone: string | null;
   company: string | null;
+  service_interest: string | null;
   message: string;
   privacy_accepted: boolean;
   source: string;
@@ -21,7 +23,7 @@ export async function getRecentLeads(limit = 80): Promise<LeadRow[]> {
   const { data, error } = await supabase
     .from("leads")
     .select(
-      "id,name,email,company,message,privacy_accepted,source,created_at",
+      "id,name,email,phone,company,service_interest,message,privacy_accepted,source,created_at",
     )
     .order("created_at", { ascending: false })
     .limit(limit);

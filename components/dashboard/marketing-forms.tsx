@@ -234,6 +234,14 @@ export function ContactForm({ marketing }: MarketingFormsProps) {
             <textarea className={`${inputClass} min-h-[100px]`} id="contact_privacyNote" name="contact_privacyNote" defaultValue={marketing.contact.privacyNote} />
           </div>
           <div>
+            <label className={labelClass} htmlFor="contact_submittingTitle">Senden · Titel</label>
+            <input className={inputClass} id="contact_submittingTitle" name="contact_submittingTitle" defaultValue={marketing.contact.submittingTitle} />
+          </div>
+          <div>
+            <label className={labelClass} htmlFor="contact_submittingBody">Senden · Text</label>
+            <textarea className={`${inputClass} min-h-[80px]`} id="contact_submittingBody" name="contact_submittingBody" defaultValue={marketing.contact.submittingBody} />
+          </div>
+          <div>
             <label className={labelClass} htmlFor="contact_successTitle">Erfolg · Titel</label>
             <input className={inputClass} id="contact_successTitle" name="contact_successTitle" defaultValue={marketing.contact.successTitle} />
           </div>
