@@ -28,7 +28,9 @@ export function ConditionalSiteChrome({
   return (
     <>
       <LuxuryNavbar nav={nav} />
-      <main className="flex flex-1 flex-col">{children}</main>
+      <main className="site-main-with-mobile-fab flex flex-1 flex-col lg:pb-0">
+        {children}
+      </main>
       <LuxuryFooter footer={footer} navLinks={nav.links} />
     </>
   );
