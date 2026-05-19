@@ -11,7 +11,6 @@ import Link from "next/link";
 import {
   useCallback,
   useEffect,
-  useId,
   useMemo,
   useState,
   type MouseEvent,
@@ -20,32 +19,6 @@ import {
 type LuxuryNavbarProps = {
   nav: NavContent;
 };
-
-function MenuIcon({ open }: { open: boolean }) {
-  if (open) {
-    return (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden>
-        <path
-          d="M6 6l12 12M18 6L6 18"
-          stroke="currentColor"
-          strokeWidth="1.75"
-          strokeLinecap="round"
-        />
-      </svg>
-    );
-  }
-
-  return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden>
-      <path
-        d="M4 7h16M4 12h16M4 17h16"
-        stroke="currentColor"
-        strokeWidth="1.75"
-        strokeLinecap="round"
-      />
-    </svg>
-  );
-}
 
 function ProjectFabIcon() {
   return (
@@ -67,10 +40,8 @@ function ProjectFabIcon() {
 }
 
 export function LuxuryNavbar({ nav }: LuxuryNavbarProps) {
-  const menuId = useId();
   const [scrolled, setScrolled] = useState(false);
   const [activeHash, setActiveHash] = useState("#start");
-  const [menuOpen, setMenuOpen] = useState(false);
 
   const navLinks = useMemo(
     () =>
@@ -126,35 +97,9 @@ export function LuxuryNavbar({ nav }: LuxuryNavbarProps) {
     return () => window.clearTimeout(timer);
   }, [sectionIds]);
 
-  useEffect(() => {
-    if (!menuOpen) return;
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = prev;
-    };
-  }, [menuOpen]);
-
-  useEffect(() => {
-    if (!menuOpen) return;
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setMenuOpen(false);
-    };
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, [menuOpen]);
-
-  useEffect(() => {
-    const mq = window.matchMedia("(min-width: 1024px)");
-    const close = () => setMenuOpen(false);
-    mq.addEventListener("change", close);
-    return () => mq.removeEventListener("change", close);
-  }, []);
-
   const handleSectionClick = (
     event: MouseEvent<HTMLAnchorElement>,
     href: string,
-    closeMenu = false,
   ) => {
     if (!href.startsWith("#")) return;
 
@@ -166,7 +111,6 @@ export function LuxuryNavbar({ nav }: LuxuryNavbarProps) {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     scrollToSectionId(id, reduced ? "auto" : "smooth");
     setActiveHash(`#${id}`);
-    if (closeMenu) setMenuOpen(false);
   };
 
   const headerClass = scrolled
@@ -182,11 +126,11 @@ export function LuxuryNavbar({ nav }: LuxuryNavbarProps) {
           aria-hidden
           className="navbar-glow pointer-events-none absolute inset-x-0 top-full h-px bg-gradient-to-r from-transparent via-[var(--accent)]/40 to-transparent opacity-80 motion-reduce:hidden"
         />
-        <div className="navbar-bar mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-2.5 sm:px-6 lg:h-[72px] lg:grid lg:px-8 lg:py-0">
+        <div className="navbar-bar mx-auto max-w-7xl px-4 py-2.5 sm:px-6 lg:h-[72px] lg:px-8 lg:py-0">
           <Link
             href="#start"
             scroll={false}
-            onClick={(e) => handleSectionClick(e, "#start", menuOpen)}
+            onClick={(e) => handleSectionClick(e, "#start")}
             className="navbar-logo group relative flex w-fit shrink-0 items-center gap-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--accent)]"
           >
             <span
@@ -201,19 +145,8 @@ export function LuxuryNavbar({ nav }: LuxuryNavbarProps) {
             </span>
           </Link>
 
-          <button
-            type="button"
-            className="navbar-menu-toggle lg:hidden"
-            aria-expanded={menuOpen}
-            aria-controls={menuId}
-            onClick={() => setMenuOpen((open) => !open)}
-          >
-            <MenuIcon open={menuOpen} />
-            <span className="sr-only">{menuOpen ? "Menü schließen" : "Menü öffnen"}</span>
-          </button>
-
           <nav
-            className="navbar-nav-pill hidden lg:inline-flex"
+            className="navbar-nav-pill navbar-nav-pill--scroll"
             aria-label="Hauptnavigation"
           >
             {navLinks.map((link) => {
@@ -244,39 +177,6 @@ export function LuxuryNavbar({ nav }: LuxuryNavbarProps) {
           </MotionNavLink>
         </div>
       </header>
-
-      <div
-        className={`navbar-mobile-backdrop lg:hidden${menuOpen ? " is-open" : ""}`}
-        aria-hidden={!menuOpen}
-        onClick={() => setMenuOpen(false)}
-      />
-
-      <nav
-        id={menuId}
-        className={`navbar-mobile-panel lg:hidden${menuOpen ? " is-open" : ""}`}
-        aria-label="Mobile Navigation"
-        aria-hidden={!menuOpen}
-      >
-        <ul className="navbar-mobile-list">
-          {navLinks.map((link) => {
-            const isActive = activeHash === link.href;
-            return (
-              <li key={`${link.href}-${link.label}`}>
-                <Link
-                  href={link.href}
-                  scroll={false}
-                  aria-current={isActive ? "location" : undefined}
-                  tabIndex={menuOpen ? undefined : -1}
-                  onClick={(e) => handleSectionClick(e, link.href, true)}
-                  className={`navbar-mobile-link${isActive ? " is-active" : ""}`}
-                >
-                  {link.label}
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
-      </nav>
 
       <Link
         href="#kontakt"
