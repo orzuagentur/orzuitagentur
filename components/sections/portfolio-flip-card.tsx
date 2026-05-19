@@ -8,6 +8,7 @@ import {
   useReducedMotion,
   useSpring,
 } from "framer-motion";
+import { CardStackVisual } from "@/components/sections/card-stack-visual";
 import type { PortfolioCard } from "@/lib/cms/types";
 
 const FLIP_SPRING = {
@@ -209,9 +210,13 @@ export function PortfolioFlipCard({
       <div className="portfolio-flip-scene portfolio-flip-scene--reduced">
         {!isFlipped ? (
           <div className="portfolio-stack-card-inner">
-            <div className={`portfolio-stack-visual ${project.visualClass}`}>
-              <span className="portfolio-stack-badge">{project.category}</span>
-            </div>
+            <CardStackVisual
+              imageUrl={project.imageUrl}
+              visualClass={project.visualClass}
+              title={project.title}
+              category={project.category}
+              showWave={false}
+            />
             <div className="portfolio-stack-body">
               <h3 className="portfolio-stack-title">{project.title}</h3>
               <p className="portfolio-stack-desc">{project.description}</p>
@@ -273,18 +278,13 @@ export function PortfolioFlipCard({
             transformStyle: "preserve-3d",
           }}
         >
-          <div className={`portfolio-stack-visual ${project.visualClass}`}>
-            <motion.div
-              aria-hidden
-              className="portfolio-stack-glow"
-              style={{ background: glowBg }}
-            />
-            <span className="portfolio-visual-grid" aria-hidden />
-            <span className="portfolio-stack-wave" aria-hidden />
-            <span className="portfolio-stack-visual-shade" aria-hidden />
-            <span className="portfolio-stack-badge">{project.category}</span>
-            <span className="portfolio-stack-case-label">Case Study</span>
-          </div>
+          <CardStackVisual
+            imageUrl={project.imageUrl}
+            visualClass={project.visualClass}
+            title={project.title}
+            category={project.category}
+            glowBg={glowBg}
+          />
 
           <div className="portfolio-stack-body">
             <h3 className="portfolio-stack-title">{project.title}</h3>

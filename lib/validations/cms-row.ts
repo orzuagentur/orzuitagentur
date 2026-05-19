@@ -15,6 +15,12 @@ const projectUrlField = z
   .transform((value) => normalizeProjectUrl(value))
   .pipe(z.union([z.string().url(), z.null()]));
 
+const imageUrlField = z
+  .string()
+  .max(500)
+  .transform((value) => normalizeProjectUrl(value))
+  .pipe(z.union([z.string().url(), z.null()]));
+
 export const serviceRowSchema = z.object({
   id: uuidLike,
   slug: z.string().min(1).max(120),
@@ -23,6 +29,7 @@ export const serviceRowSchema = z.object({
   body_de: z.string().max(20000).nullable(),
   category_de: z.string().max(200).nullable(),
   project_url: projectUrlField,
+  image_url: imageUrlField,
   sort_order: z.number().int().min(-9999).max(9999),
   published: z.boolean(),
 });
@@ -35,6 +42,7 @@ export const portfolioRowSchema = z.object({
   body_de: z.string().max(20000).nullable(),
   category_de: z.string().max(200).nullable(),
   project_url: projectUrlField,
+  image_url: imageUrlField,
   sort_order: z.number().int().min(-9999).max(9999),
   published: z.boolean(),
 });

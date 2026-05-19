@@ -32,6 +32,11 @@ function readPublished(fd: FormData) {
   return publishedRaw === "true" || publishedRaw === "on";
 }
 
+function readClearImage(fd: FormData) {
+  const raw = fd.get("clear_image");
+  return raw === "true" || raw === "on";
+}
+
 async function guard() {
   await requireDashboardUser();
   if (!hasServiceRoleConfig()) {
@@ -59,6 +64,7 @@ export async function updateServiceRow(formData: FormData): Promise<void> {
       body_de: str(formData, "body_de", 20000) || null,
       category_de: str(formData, "category_de", 200) || null,
       project_url: str(formData, "project_url", 500),
+      image_url: str(formData, "image_url", 500),
       sort_order: parseIntSafe(str(formData, "sort_order", 12), 0),
       published: readPublished(formData),
     });
@@ -77,6 +83,7 @@ export async function updateServiceRow(formData: FormData): Promise<void> {
         body_de: row.body_de,
         category_de: row.category_de,
         project_url: row.project_url,
+        image_url: readClearImage(formData) ? null : row.image_url,
         sort_order: row.sort_order,
         published: row.published,
         updated_at: new Date().toISOString(),
@@ -109,6 +116,7 @@ export async function updatePortfolioRow(formData: FormData): Promise<void> {
       body_de: str(formData, "body_de", 20000) || null,
       category_de: str(formData, "category_de", 200) || null,
       project_url: str(formData, "project_url", 500),
+      image_url: str(formData, "image_url", 500),
       sort_order: parseIntSafe(str(formData, "sort_order", 12), 0),
       published: readPublished(formData),
     });
@@ -127,6 +135,7 @@ export async function updatePortfolioRow(formData: FormData): Promise<void> {
         body_de: row.body_de,
         category_de: row.category_de,
         project_url: row.project_url,
+        image_url: readClearImage(formData) ? null : row.image_url,
         sort_order: row.sort_order,
         published: row.published,
         updated_at: new Date().toISOString(),

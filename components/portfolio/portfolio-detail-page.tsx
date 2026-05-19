@@ -1,3 +1,4 @@
+import { CardStackVisual } from "@/components/sections/card-stack-visual";
 import Link from "next/link";
 import type { PortfolioDetail } from "@/lib/cms/types";
 
@@ -31,15 +32,13 @@ export function PortfolioDetailPage({ project }: PortfolioDetailPageProps) {
         </Link>
 
         <header className="mt-8 overflow-hidden rounded-2xl border border-[var(--border)] bg-[#08080f]">
-          <div
-            className={`portfolio-stack-visual relative h-48 sm:h-56 ${project.visualClass}`}
-          >
-            <span className="portfolio-visual-grid" aria-hidden />
-            <span className="portfolio-stack-wave" aria-hidden />
-            <span className="portfolio-stack-visual-shade" aria-hidden />
-            <span className="portfolio-stack-badge">{project.category}</span>
-            <span className="portfolio-stack-case-label">Case Study</span>
-          </div>
+          <CardStackVisual
+            imageUrl={project.imageUrl}
+            visualClass={project.visualClass}
+            title={project.title}
+            category={project.category}
+            className="relative h-48 sm:h-56"
+          />
           <div className="border-t border-[var(--border)] px-5 py-6 sm:px-7 sm:py-8">
             <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[var(--accent)]">
               Portfolio

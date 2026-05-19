@@ -116,6 +116,7 @@ export type ServiceCard = {
   category: string;
   description: string;
   visualClass: string;
+  imageUrl?: string | null;
   body?: string;
   technologies?: string[];
   highlights?: string[];
@@ -128,6 +129,7 @@ export type PortfolioCard = {
   category: string;
   description: string;
   visualClass: string;
+  imageUrl?: string | null;
   size: "featured" | "compact";
   /** Full case-study copy for flip-card back */
   body?: string;
@@ -144,6 +146,7 @@ export type PortfolioDetail = {
   summary: string;
   body: string;
   visualClass: string;
+  imageUrl?: string | null;
   projectUrl?: string | null;
 };
 

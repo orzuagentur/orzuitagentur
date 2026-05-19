@@ -28,6 +28,7 @@ function detailFromDefaults(slug: string): PortfolioDetail | null {
     summary: card.description,
     body: bodyForSlug(slug, card.description, null),
     visualClass: visualClassForSlug(slug, index),
+    imageUrl: card.imageUrl ?? null,
   };
 }
 
@@ -60,7 +61,7 @@ export const getPortfolioBySlug = cache(
       const supabase = await createServerSupabaseClient();
       const { data, error } = await supabase
         .from("portfolio_entries")
-        .select("slug,title_de,summary_de,category_de,body_de,sort_order")
+        .select("slug,title_de,summary_de,category_de,body_de,image_url,project_url,sort_order")
         .eq("slug", slug)
         .eq("published", true)
         .maybeSingle();
@@ -72,6 +73,11 @@ export const getPortfolioBySlug = cache(
       const index = Math.max(0, (data.sort_order ?? 1) - 1);
       const summary = data.summary_de ?? "";
 
+      const row = data as Record<string, unknown>;
+      const imageRaw = row.image_url;
+      const imageUrl =
+        typeof imageRaw === "string" && imageRaw.trim() ? imageRaw.trim() : null;
+
       return {
         slug: data.slug,
         title: data.title_de,
@@ -79,6 +85,7 @@ export const getPortfolioBySlug = cache(
         summary,
         body: bodyForSlug(data.slug, summary, data.body_de),
         visualClass: visualClassForSlug(data.slug, index),
+        imageUrl,
         projectUrl:
           (data as { project_url?: string | null }).project_url?.trim() || null,
       };

@@ -1,4 +1,5 @@
 import { updatePortfolioRow } from "@/actions/cms/tables";
+import { CardImageField } from "@/components/dashboard/card-image-field";
 import { CmsEmptyState } from "@/components/dashboard/cms-empty-state";
 import { DashboardPageHeader } from "@/components/dashboard/page-header";
 import { DashboardSubmitButton } from "@/components/dashboard/dashboard-submit-button";
@@ -41,6 +42,14 @@ export default async function DashboardPortfolioPage() {
                   /portfolio/{p.slug}
                 </a>
               </p>
+              <CardImageField
+                table="portfolio_entries"
+                id={p.id}
+                slug={p.slug}
+                title={p.title_de}
+                imageUrl={p.image_url}
+                returnPath="/dashboard/portfolio"
+              />
               <form action={updatePortfolioRow} className="mt-4 space-y-3">
                 <input type="hidden" name="id" value={p.id} />
                 <input type="hidden" name="slug" value={p.slug} />
@@ -78,6 +87,29 @@ export default async function DashboardPortfolioPage() {
                     defaultValue={p.body_de ?? ""}
                     placeholder="Mehrere Absätze durch eine Leerzeile trennen."
                   />
+                </div>
+                <div>
+                  <label className={labelClass} htmlFor={`pimg-${p.id}`}>
+                    Bild-URL (optional)
+                  </label>
+                  <input
+                    className={inputClass}
+                    id={`pimg-${p.id}`}
+                    name="image_url"
+                    type="url"
+                    inputMode="url"
+                    defaultValue={p.image_url ?? ""}
+                    placeholder="https://… oder Upload oben"
+                  />
+                  <label className="mt-2 flex cursor-pointer items-center gap-2 text-xs text-[var(--muted)]">
+                    <input
+                      type="checkbox"
+                      name="clear_image"
+                      value="true"
+                      className="h-4 w-4 rounded border-[var(--border-strong)]"
+                    />
+                    Bild entfernen (Theme-Farben anzeigen)
+                  </label>
                 </div>
                 <div>
                   <label className={labelClass} htmlFor={`purl-${p.id}`}>

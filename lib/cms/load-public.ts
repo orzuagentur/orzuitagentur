@@ -24,6 +24,14 @@ function hasPublicSupabaseEnv() {
   );
 }
 
+function imageUrlFromRow(row: Record<string, unknown>): string | null {
+  if (!("image_url" in row)) return null;
+  const url = row.image_url;
+  if (typeof url !== "string") return null;
+  const trimmed = url.trim();
+  return trimmed || null;
+}
+
 import { enrichDefaultPortfolioCards, enrichPortfolioCard } from "@/lib/cms/enrich-portfolio";
 import { enrichDefaultServiceCards, enrichServiceCard } from "@/lib/cms/enrich-services";
 import { visualClassForSlug } from "@/lib/cms/portfolio-visuals";
@@ -118,13 +126,25 @@ export const getServiceCards = cache(async (): Promise<ServiceCard[]> => {
   if (!hasPublicSupabaseEnv()) return enrichDefaultServiceCards();
   try {
     const supabase = await createServerSupabaseClient();
-    const withUrl = await supabase
+    const withImage = await supabase
       .from("services")
-      .select("slug,title_de,description_de,body_de,category_de,project_url,sort_order")
+      .select(
+        "slug,title_de,description_de,body_de,category_de,project_url,image_url,sort_order",
+      )
       .eq("published", true)
       .order("sort_order", { ascending: true });
 
-    const fallback = withUrl.error
+    const withUrl = withImage.error
+      ? await supabase
+          .from("services")
+          .select(
+            "slug,title_de,description_de,body_de,category_de,project_url,sort_order",
+          )
+          .eq("published", true)
+          .order("sort_order", { ascending: true })
+      : null;
+
+    const fallback = withImage.error && withUrl?.error
       ? await supabase
           .from("services")
           .select("slug,title_de,description_de,body_de,category_de,sort_order")
@@ -132,8 +152,16 @@ export const getServiceCards = cache(async (): Promise<ServiceCard[]> => {
           .order("sort_order", { ascending: true })
       : null;
 
-    const data = withUrl.error ? fallback?.data : withUrl.data;
-    const error = withUrl.error ? fallback?.error : withUrl.error;
+    const data = withImage.error
+      ? withUrl?.error
+        ? fallback?.data
+        : withUrl?.data
+      : withImage.data;
+    const error = withImage.error
+      ? withUrl?.error
+        ? fallback?.error
+        : withUrl?.error
+      : withImage.error;
     if (error || !data?.length) return enrichDefaultServiceCards();
 
     return data.map((row, index) => {
@@ -147,6 +175,7 @@ export const getServiceCards = cache(async (): Promise<ServiceCard[]> => {
         category: row.category_de ?? defaults?.category ?? "",
         description: row.description_de ?? "",
         visualClass: visual,
+        imageUrl: imageUrlFromRow(row as Record<string, unknown>),
         projectUrl:
           "project_url" in row
             ? String((row as { project_url?: string | null }).project_url ?? "").trim() ||
@@ -164,13 +193,25 @@ export const getPortfolioCards = cache(async (): Promise<PortfolioCard[]> => {
   if (!hasPublicSupabaseEnv()) return enrichDefaultPortfolioCards();
   try {
     const supabase = await createServerSupabaseClient();
-    const withUrl = await supabase
+    const withImage = await supabase
       .from("portfolio_entries")
-      .select("slug,title_de,summary_de,body_de,category_de,project_url,sort_order")
+      .select(
+        "slug,title_de,summary_de,body_de,category_de,project_url,image_url,sort_order",
+      )
       .eq("published", true)
       .order("sort_order", { ascending: true });
 
-    const fallback = withUrl.error
+    const withUrl = withImage.error
+      ? await supabase
+          .from("portfolio_entries")
+          .select(
+            "slug,title_de,summary_de,body_de,category_de,project_url,sort_order",
+          )
+          .eq("published", true)
+          .order("sort_order", { ascending: true })
+      : null;
+
+    const fallback = withImage.error && withUrl?.error
       ? await supabase
           .from("portfolio_entries")
           .select("slug,title_de,summary_de,body_de,category_de,sort_order")
@@ -178,8 +219,16 @@ export const getPortfolioCards = cache(async (): Promise<PortfolioCard[]> => {
           .order("sort_order", { ascending: true })
       : null;
 
-    const data = withUrl.error ? fallback?.data : withUrl.data;
-    const error = withUrl.error ? fallback?.error : withUrl.error;
+    const data = withImage.error
+      ? withUrl?.error
+        ? fallback?.data
+        : withUrl?.data
+      : withImage.data;
+    const error = withImage.error
+      ? withUrl?.error
+        ? fallback?.error
+        : withUrl?.error
+      : withImage.error;
     if (error || !data?.length) return enrichDefaultPortfolioCards();
     return data.map((row, index) => {
       const slug = row.slug;
@@ -190,6 +239,7 @@ export const getPortfolioCards = cache(async (): Promise<PortfolioCard[]> => {
         category: row.category_de ?? "",
         description: row.summary_de ?? "",
         visualClass: visual,
+        imageUrl: imageUrlFromRow(row as Record<string, unknown>),
         size: index === 0 ? ("featured" as const) : ("compact" as const),
         projectUrl:
           "project_url" in row

@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState, type PointerEvent } from "react";
+import { CardStackVisual } from "@/components/sections/card-stack-visual";
 import { PortfolioFlipCard } from "@/components/sections/portfolio-flip-card";
 import { motion, useReducedMotion, useSpring } from "framer-motion";
 import type { PortfolioCard } from "@/lib/cms/types";
@@ -443,18 +444,21 @@ function PortfolioStackCard({
               }
         }
       >
-          <div className={`portfolio-stack-visual ${project.visualClass}`}>
-          <span className="portfolio-visual-grid" aria-hidden />
-          <span className="portfolio-stack-wave" aria-hidden />
-          <span className="portfolio-stack-visual-shade" aria-hidden />
-          {isSlim ? (
-            <span className="portfolio-stack-icon" aria-hidden>
-              {stackIcon}
-            </span>
-          ) : (
-            <span className="portfolio-stack-badge">{project.category}</span>
-          )}
-        </div>
+          <CardStackVisual
+            imageUrl={project.imageUrl}
+            visualClass={project.visualClass}
+            title={project.title}
+            category={project.category}
+            slimIcon={
+              isSlim ? (
+                <span className="portfolio-stack-icon" aria-hidden>
+                  {stackIcon}
+                </span>
+              ) : undefined
+            }
+            badgeText={isSlim ? undefined : project.category}
+            showWave={!project.imageUrl}
+          />
 
           {isPreview ? (
             <div className="portfolio-stack-body portfolio-stack-body--preview">

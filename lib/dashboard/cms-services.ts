@@ -24,6 +24,8 @@ export type ServiceRow = {
 
   project_url: string | null;
 
+  image_url: string | null;
+
   sort_order: number;
 
   published: boolean;
@@ -46,7 +48,7 @@ export async function getServices(): Promise<ServiceRow[]> {
 
     .select(
 
-      "id,slug,title_de,description_de,body_de,category_de,project_url,sort_order,published,updated_at",
+      "id,slug,title_de,description_de,body_de,category_de,project_url,image_url,sort_order,published,updated_at",
 
     )
 
@@ -84,9 +86,11 @@ export async function getServices(): Promise<ServiceRow[]> {
 
   return (fallback.data ?? []).map((row) => ({
 
-    ...(row as Omit<ServiceRow, "project_url">),
+    ...(row as Omit<ServiceRow, "project_url" | "image_url">),
 
     project_url: null,
+
+    image_url: null,
 
   }));
 

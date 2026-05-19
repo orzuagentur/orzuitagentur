@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState, type PointerEvent } from "react";
+import { CardStackVisual } from "@/components/sections/card-stack-visual";
 import { ServiceFlipCard } from "@/components/sections/service-flip-card";
 import { motion, useReducedMotion, useSpring } from "framer-motion";
 import type { ServiceCard } from "@/lib/cms/types";
@@ -443,18 +444,22 @@ function ServiceStackCard({
                 }
           }
         >
-          <div className={`portfolio-stack-visual ${service.visualClass}`}>
-            <span className="portfolio-visual-grid" aria-hidden />
-            <span className="portfolio-stack-wave" aria-hidden />
-            <span className="portfolio-stack-visual-shade" aria-hidden />
-            {isSlim ? (
-              <span className="portfolio-stack-icon" aria-hidden>
-                {stackIcon}
-              </span>
-            ) : (
-              <span className="portfolio-stack-badge">{service.category}</span>
-            )}
-          </div>
+          <CardStackVisual
+            imageUrl={service.imageUrl}
+            visualClass={service.visualClass}
+            title={service.title}
+            category={service.category}
+            caseLabel="Leistung"
+            slimIcon={
+              isSlim ? (
+                <span className="portfolio-stack-icon" aria-hidden>
+                  {stackIcon}
+                </span>
+              ) : undefined
+            }
+            badgeText={isSlim ? undefined : service.category}
+            showWave={!service.imageUrl}
+          />
 
           {isPreview ? (
             <div className="portfolio-stack-body portfolio-stack-body--preview">
