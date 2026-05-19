@@ -1101,10 +1101,16 @@ body {
 }
 
 .portfolio-flip-face .portfolio-stack-footer,
-.portfolio-flip-trigger {
+.portfolio-flip-trigger,
+.portfolio-flip-back-foot,
+.portfolio-flip-cta-visit {
   position: relative;
   z-index: 4;
   pointer-events: auto;
+}
+
+.portfolio-flip-back-foot {
+  cursor: default;
 }
 
 .portfolio-flip-back-head {

@@ -48,6 +48,8 @@ function FlipBackContent({
   highlights: string[];
   onFlipChange: (flipped: boolean) => void;
 }) {
+  const visitUrl = project.projectUrl?.trim() || null;
+
   return (
     <>
       <div className="portfolio-flip-back-head">
@@ -112,15 +114,18 @@ function FlipBackContent({
       </div>
 
       <div className="portfolio-flip-back-foot">
-        {project.projectUrl ? (
+        {visitUrl ? (
           <a
-            href={project.projectUrl}
+            href={visitUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="portfolio-flip-cta-primary"
+            className="portfolio-flip-cta-primary portfolio-flip-cta-visit"
             style={{ borderColor: accent.border, color: accent.cta }}
-            onClick={(e) => e.stopPropagation()}
             onPointerDown={(e) => e.stopPropagation()}
+            onClick={(e) => {
+              e.stopPropagation();
+              window.open(visitUrl, "_blank", "noopener,noreferrer");
+            }}
           >
             Besuchen
             <span aria-hidden>↗</span>

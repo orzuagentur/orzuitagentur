@@ -101,6 +101,7 @@ export async function updatePortfolioRow(formData: FormData): Promise<void> {
       summary_de: str(formData, "summary_de", 4000) || null,
       body_de: str(formData, "body_de", 20000) || null,
       category_de: str(formData, "category_de", 200) || null,
+      project_url: str(formData, "project_url", 500),
       sort_order: parseIntSafe(str(formData, "sort_order", 12), 0),
       published: readPublished(formData),
     });

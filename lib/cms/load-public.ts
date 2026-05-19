@@ -137,11 +137,22 @@ export const getPortfolioCards = cache(async (): Promise<PortfolioCard[]> => {
   if (!hasPublicSupabaseEnv()) return enrichDefaultPortfolioCards();
   try {
     const supabase = await createServerSupabaseClient();
-    const { data, error } = await supabase
+    const withUrl = await supabase
       .from("portfolio_entries")
       .select("slug,title_de,summary_de,body_de,category_de,project_url,sort_order")
       .eq("published", true)
       .order("sort_order", { ascending: true });
+
+    const fallback = withUrl.error
+      ? await supabase
+          .from("portfolio_entries")
+          .select("slug,title_de,summary_de,body_de,category_de,sort_order")
+          .eq("published", true)
+          .order("sort_order", { ascending: true })
+      : null;
+
+    const data = withUrl.error ? fallback?.data : withUrl.data;
+    const error = withUrl.error ? fallback?.error : withUrl.error;
     if (error || !data?.length) return enrichDefaultPortfolioCards();
     return data.map((row, index) => {
       const slug = row.slug;
@@ -154,7 +165,10 @@ export const getPortfolioCards = cache(async (): Promise<PortfolioCard[]> => {
         visualClass: visual,
         size: index === 0 ? ("featured" as const) : ("compact" as const),
         projectUrl:
-          (row as { project_url?: string | null }).project_url?.trim() || null,
+          "project_url" in row
+            ? String((row as { project_url?: string | null }).project_url ?? "").trim() ||
+              null
+            : null,
       };
       return enrichPortfolioCard(base, row.body_de);
     });
