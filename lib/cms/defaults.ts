@@ -98,9 +98,9 @@ export const DEFAULT_SERVICES_SECTION: ServicesSectionContent = {
   subtitle:
     "Klare Leistungen, verständliche Ergebnisse — für Teams, die digitale Prozesse verbessern wollen.",
   subtitleRight:
-    "Wählen Sie eine Leistung — Details auf der Rückseite der Karte, Hauptfokus rechts.",
+    "Wählen Sie eine Leistung — Details auf der Rückseite der Karte, Hauptfokus links.",
   footnote:
-    "Klicken Sie die gestapelten Karten links oder nutzen Sie die Navigation — die aktive Leistung steht rechts.",
+    "Klicken Sie die gestapelten Karten rechts oder nutzen Sie die Navigation — die aktive Leistung steht links.",
   closing:
     "Sie haben bereits ein Team oder Partner? Wir ergänzen gezielt — z. B. für Architektur, Umsetzung oder Betrieb.",
   ctaLabel: "Erstgespräch vereinbaren",

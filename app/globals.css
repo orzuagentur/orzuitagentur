@@ -1373,35 +1373,6 @@ body {
   box-shadow: 0 0 16px color-mix(in oklab, var(--accent) 55%, transparent);
 }
 
-/* Leistungen: gleiche Track-Breite wie Portfolio, links ausgerichtet, kein Overflow rechts */
-.services-showcase .portfolio-showcase-stage {
-  overflow: visible;
-}
-
-.services-showcase .portfolio-showcase-track--mirror {
-  /* Shift only the left stack right (featured X unchanged) */
-  --services-stack-nudge: calc(var(--portfolio-stack-peek) * 2 + var(--portfolio-stack-inset));
-  margin-inline: 0;
-  width: 100%;
-  max-width: 100%;
-}
-
-.services-showcase .portfolio-stack-card.is-featured {
-  transform-origin: right center;
-}
-
-@media (min-width: 768px) {
-  .services-showcase .portfolio-showcase-track--mirror {
-    width: min(
-      100%,
-      calc(
-        var(--portfolio-card-w) + var(--portfolio-stack-gap) + var(--portfolio-preview-w) +
-          var(--portfolio-stack-inset) + var(--portfolio-stack-peek) * 2.15
-      )
-    );
-  }
-}
-
 .services-showcase-ambient--cyan {
   left: 4%;
   right: auto;

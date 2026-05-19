@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState, type PointerEvent } from "react";
+import { useCallback, useRef, useState, type PointerEvent } from "react";
 import { ServiceFlipCard } from "@/components/sections/service-flip-card";
 import { motion, useReducedMotion, useSpring } from "framer-motion";
 import type { ServiceCard } from "@/lib/cms/types";
@@ -48,6 +48,7 @@ const ACCENT_BY_VISUAL: Record<string, { glow: string; cta: string; border: stri
     },
   };
 
+/** Soft landing, quick travel - overdamped spring, short fades. */
 const EASE_SOFT = [0.25, 1, 0.4, 1] as const;
 
 const SPRING_LAYOUT = {
@@ -78,45 +79,23 @@ function stackTransition(offset: number, reduced: boolean) {
   };
 }
 
-/** Cards in the left stack (featured card sits on the right). */
-const LEFT_STACK_COUNT = 4;
+/** Cards in the right stack (excluding the featured card on the left). */
+const RIGHT_STACK_COUNT = 4;
 
 const HIDDEN_OFFSET = 99;
 
-/** 0 = featured right, 1–4 = left stack, -1 = exit right, 99 = hidden */
+/** 0 = featured, 1-4 = right stack, 99 = hidden */
 function stackOffset(index: number, active: number, count: number) {
   const forward = (index - active + count) % count;
   if (forward === 0) return 0;
-  if (forward >= 1 && forward <= LEFT_STACK_COUNT) return forward;
-  const prev = (active - 1 + count) % count;
-  if (index === prev) return -1;
+  if (forward >= 1 && forward <= RIGHT_STACK_COUNT) return forward;
   return HIDDEN_OFFSET;
 }
 
-/** Same total width as portfolio; featured right edge = end of the slim stack. */
-const FEATURED_X =
-  "calc(var(--portfolio-stack-anchor) + var(--portfolio-stack-inset) + var(--portfolio-stack-peek) * 2 + var(--portfolio-preview-w) - var(--portfolio-card-w))";
-
-/** Preview left of featured — portfolio `stack-gap`, plus nudge for the stack fan. */
-const STACK_1_X =
-  "calc(var(--portfolio-stack-anchor) + var(--portfolio-stack-inset) + var(--portfolio-stack-peek) * 2 - var(--portfolio-card-w) - var(--portfolio-stack-gap) - var(--portfolio-preview-w) + var(--services-stack-nudge, 0px))";
-
-const STACK_2_X =
-  "calc(var(--portfolio-stack-anchor) + var(--portfolio-stack-inset) + var(--portfolio-stack-peek) * 2 - var(--portfolio-card-w) - var(--portfolio-stack-gap) - var(--portfolio-preview-w) - var(--portfolio-stack-inset) + var(--services-stack-nudge, 0px))";
-
-const STACK_3_X =
-  "calc(var(--portfolio-stack-anchor) + var(--portfolio-stack-inset) + var(--portfolio-stack-peek) * 2 - var(--portfolio-card-w) - var(--portfolio-stack-gap) - var(--portfolio-preview-w) - var(--portfolio-stack-inset) - var(--portfolio-stack-peek) + var(--services-stack-nudge, 0px))";
-
-const STACK_4_X =
-  "calc(var(--portfolio-stack-anchor) + var(--portfolio-stack-inset) + var(--portfolio-stack-peek) * 2 - var(--portfolio-card-w) - var(--portfolio-stack-gap) - var(--portfolio-preview-w) - var(--portfolio-stack-inset) - var(--portfolio-stack-peek) * 2 + var(--services-stack-nudge, 0px))";
-
-/**
- * Main card right; offsets 1–4 step left (preview + slim stack), same peek/inset as portfolio.
- */
 function stackTransform(offset: number, reduced: boolean) {
   if (reduced) {
     return {
-      x: offset === 0 ? FEATURED_X : 0,
+      x: 0,
       y: 0,
       z: 0,
       scale: offset === 0 ? 1 : 0.96,
@@ -131,12 +110,12 @@ function stackTransform(offset: number, reduced: boolean) {
     return {
       x:
         offset < 0
-          ? "calc(var(--portfolio-stack-anchor) + var(--portfolio-stack-inset) + var(--portfolio-stack-peek) * 2 + var(--portfolio-preview-w) + var(--portfolio-stack-gap) * 0.35)"
-          : "calc(var(--portfolio-card-w) * -1.05)",
+          ? "calc(var(--portfolio-card-w) * -1.05)"
+          : "calc(var(--portfolio-stack-anchor) + var(--portfolio-stack-inset) + var(--portfolio-stack-peek) * 3.5)",
       y: 0,
       z: -88,
       scale: 0.86,
-      rotateY: offset < 0 ? -10 : 10,
+      rotateY: -10,
       opacity: 0,
       zIndex: 5,
       filter: "blur(0px)",
@@ -145,11 +124,11 @@ function stackTransform(offset: number, reduced: boolean) {
 
   if (offset === -1) {
     return {
-      x: "calc(var(--portfolio-stack-anchor) + var(--portfolio-stack-inset) + var(--portfolio-stack-peek) * 2 + var(--portfolio-preview-w) + var(--portfolio-stack-gap) * 0.35)",
+      x: "calc(var(--portfolio-card-w) * -0.88)",
       y: 0,
       z: 20,
       scale: 0.98,
-      rotateY: -2,
+      rotateY: 2,
       opacity: 0,
       zIndex: 60,
       filter: "blur(2px)",
@@ -158,7 +137,7 @@ function stackTransform(offset: number, reduced: boolean) {
 
   if (offset === 0) {
     return {
-      x: FEATURED_X,
+      x: 0,
       y: 0,
       z: 0,
       scale: 1,
@@ -171,11 +150,11 @@ function stackTransform(offset: number, reduced: boolean) {
 
   if (offset === 1) {
     return {
-      x: STACK_1_X,
+      x: "var(--portfolio-stack-anchor)",
       y: 0,
       z: -26,
       scale: 0.97,
-      rotateY: 7,
+      rotateY: -7,
       opacity: 1,
       zIndex: 42,
       filter: "blur(0px)",
@@ -184,11 +163,11 @@ function stackTransform(offset: number, reduced: boolean) {
 
   if (offset === 2) {
     return {
-      x: STACK_2_X,
+      x: "calc(var(--portfolio-stack-anchor) + var(--portfolio-stack-inset))",
       y: 0,
       z: -46,
       scale: 0.94,
-      rotateY: 9,
+      rotateY: -9,
       opacity: 1,
       zIndex: 34,
       filter: "blur(0px)",
@@ -197,11 +176,11 @@ function stackTransform(offset: number, reduced: boolean) {
 
   if (offset === 3) {
     return {
-      x: STACK_3_X,
+      x: "calc(var(--portfolio-stack-anchor) + var(--portfolio-stack-inset) + var(--portfolio-stack-peek))",
       y: 0,
       z: -62,
       scale: 0.91,
-      rotateY: 10,
+      rotateY: -10,
       opacity: 1,
       zIndex: 28,
       filter: "blur(0px)",
@@ -209,11 +188,11 @@ function stackTransform(offset: number, reduced: boolean) {
   }
 
   return {
-    x: STACK_4_X,
+    x: "calc(var(--portfolio-stack-anchor) + var(--portfolio-stack-inset) + var(--portfolio-stack-peek) * 2)",
     y: 0,
     z: -76,
     scale: 0.88,
-    rotateY: 11,
+    rotateY: -11,
     opacity: 1,
     zIndex: 20,
     filter: "blur(0px)",
@@ -230,12 +209,14 @@ export function ServicesCarousel({ services }: ServicesCarouselProps) {
   const [isFlipped, setIsFlipped] = useState(false);
   const count = services.length;
 
-  useEffect(() => {
+  const changeActive = useCallback((next: number) => {
     setIsFlipped(false);
-  }, [active]);
+    setActive(next);
+  }, []);
 
   const go = useCallback(
     (dir: -1 | 1) => {
+      setIsFlipped(false);
       setActive((i) => (i + dir + count) % count);
     },
     [count],
@@ -261,7 +242,7 @@ export function ServicesCarousel({ services }: ServicesCarouselProps) {
           className="portfolio-showcase-ambient portfolio-showcase-ambient--violet services-showcase-ambient--violet"
         />
 
-        <div className="portfolio-showcase-track portfolio-showcase-track--mirror">
+        <div className="portfolio-showcase-track">
           {services.map((service, index) => {
             const offset = stackOffset(index, active, count);
             const tf = stackTransform(offset, !!reduced);
@@ -276,11 +257,10 @@ export function ServicesCarousel({ services }: ServicesCarouselProps) {
                 offset={offset}
                 transform={tf}
                 accent={accent}
-                isFront={offset === 0}
                 reduced={!!reduced}
                 isFlipped={isFlipped}
                 onFlipChange={setIsFlipped}
-                onActivate={() => setActive(index)}
+                onActivate={() => changeActive(index)}
               />
             );
           })}
@@ -306,7 +286,7 @@ export function ServicesCarousel({ services }: ServicesCarouselProps) {
               aria-selected={i === active}
               aria-label={`Leistung ${i + 1}: ${s.title}`}
               className={`portfolio-showcase-dot${i === active ? " is-active" : ""}`}
-              onClick={() => setActive(i)}
+              onClick={() => changeActive(i)}
             />
           ))}
         </div>
@@ -329,7 +309,6 @@ type StackCardProps = {
   offset: number;
   transform: ReturnType<typeof stackTransform>;
   accent: { glow: string; cta: string; border: string };
-  isFront: boolean;
   reduced: boolean;
   isFlipped: boolean;
   onFlipChange: (flipped: boolean) => void;
@@ -340,7 +319,6 @@ function ServiceStackCard({
   service,
   transform,
   accent,
-  isFront,
   offset,
   reduced,
   isFlipped,
@@ -349,7 +327,7 @@ function ServiceStackCard({
 }: StackCardProps) {
   const isFeatured = offset === 0;
   const isPreview = offset === 1 && !reduced;
-  const isSlim = offset >= 2 && offset <= LEFT_STACK_COUNT && !reduced;
+  const isSlim = offset >= 2 && offset <= RIGHT_STACK_COUNT && !reduced;
   const stackIcon =
     STACK_ICON[service.visualClass] ?? STACK_ICON["portfolio-visual-finsight"];
   const cardRef = useRef<HTMLElement>(null);

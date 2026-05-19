@@ -15,7 +15,7 @@ export default async function DashboardServicesPage() {
     <>
       <DashboardPageHeader
         title="Leistungen"
-        description="Einträge aus services. Erstes sort_order wird rechts als Hauptkarte dargestellt — Stapel links."
+        description="Einträge aus services. Erstes sort_order wird links als Hauptkarte dargestellt — Stapel rechts."
       />
 
       <div className="space-y-8 px-4 pb-16 pt-2 sm:px-8 lg:px-10">

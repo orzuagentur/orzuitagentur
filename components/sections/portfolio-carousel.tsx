@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState, type PointerEvent } from "react";
+import { useCallback, useRef, useState, type PointerEvent } from "react";
 import { PortfolioFlipCard } from "@/components/sections/portfolio-flip-card";
 import { motion, useReducedMotion, useSpring } from "framer-motion";
 import type { PortfolioCard } from "@/lib/cms/types";
@@ -84,13 +84,11 @@ const RIGHT_STACK_COUNT = 4;
 
 const HIDDEN_OFFSET = 99;
 
-/** 0 = featured, 1–4 = right stack, -1 = exit left, 99 = hidden */
+/** 0 = featured, 1-4 = right stack, 99 = hidden */
 function stackOffset(index: number, active: number, count: number) {
   const forward = (index - active + count) % count;
   if (forward === 0) return 0;
   if (forward >= 1 && forward <= RIGHT_STACK_COUNT) return forward;
-  const prev = (active - 1 + count) % count;
-  if (index === prev) return -1;
   return HIDDEN_OFFSET;
 }
 
@@ -211,12 +209,14 @@ export function PortfolioCarousel({ projects }: PortfolioCarouselProps) {
   const [isFlipped, setIsFlipped] = useState(false);
   const count = projects.length;
 
-  useEffect(() => {
+  const changeActive = useCallback((next: number) => {
     setIsFlipped(false);
-  }, [active]);
+    setActive(next);
+  }, []);
 
   const go = useCallback(
     (dir: -1 | 1) => {
+      setIsFlipped(false);
       setActive((i) => (i + dir + count) % count);
     },
     [count],
@@ -257,11 +257,10 @@ export function PortfolioCarousel({ projects }: PortfolioCarouselProps) {
                 offset={offset}
                 transform={tf}
                 accent={accent}
-                isFront={offset === 0}
                 reduced={!!reduced}
                 isFlipped={isFlipped}
                 onFlipChange={setIsFlipped}
-                onActivate={() => setActive(index)}
+                onActivate={() => changeActive(index)}
               />
             );
           })}
@@ -287,7 +286,7 @@ export function PortfolioCarousel({ projects }: PortfolioCarouselProps) {
               aria-selected={i === active}
               aria-label={`Projekt ${i + 1}: ${p.title}`}
               className={`portfolio-showcase-dot${i === active ? " is-active" : ""}`}
-              onClick={() => setActive(i)}
+              onClick={() => changeActive(i)}
             />
           ))}
         </div>
@@ -310,7 +309,6 @@ type StackCardProps = {
   offset: number;
   transform: ReturnType<typeof stackTransform>;
   accent: { glow: string; cta: string; border: string };
-  isFront: boolean;
   reduced: boolean;
   isFlipped: boolean;
   onFlipChange: (flipped: boolean) => void;
@@ -321,7 +319,6 @@ function PortfolioStackCard({
   project,
   transform,
   accent,
-  isFront,
   offset,
   reduced,
   isFlipped,
