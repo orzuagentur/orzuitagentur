@@ -80,6 +80,23 @@ export default async function DashboardPortfolioPage() {
                   />
                 </div>
                 <div>
+                  <label className={labelClass} htmlFor={`purl-${p.id}`}>
+                    Projekt-URL (Besuchen)
+                  </label>
+                  <input
+                    className={inputClass}
+                    id={`purl-${p.id}`}
+                    name="project_url"
+                    type="url"
+                    inputMode="url"
+                    defaultValue={p.project_url ?? ""}
+                    placeholder="https://beispiel.de"
+                  />
+                  <p className="mt-1 text-xs text-[var(--muted)]">
+                    Öffnet sich in neuem Tab auf der Rückseite der Portfolio-Karte.
+                  </p>
+                </div>
+                <div>
                   <label className={labelClass} htmlFor={`pcat-${p.id}`}>
                     Kategorie
                   </label>

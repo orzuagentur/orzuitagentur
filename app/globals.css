@@ -1258,6 +1258,8 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 0.35rem;
+  text-decoration: none;
   border-radius: 9999px;
   border: 1px solid;
   background: color-mix(in oklab, var(--surface-elevated) 92%, transparent);

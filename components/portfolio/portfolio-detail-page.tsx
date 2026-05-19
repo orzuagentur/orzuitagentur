@@ -65,13 +65,17 @@ export function PortfolioDetailPage({ project }: PortfolioDetailPageProps) {
         </article>
 
         <footer className="mt-14 flex flex-wrap items-center gap-4 border-t border-[var(--border)] pt-8">
-          <Link
-            href="/#kontakt"
-            className="inline-flex items-center gap-2 rounded-full border border-[color-mix(in_oklab,var(--accent)_35%,var(--border))] bg-[color-mix(in_oklab,var(--surface-elevated)_90%,transparent)] px-5 py-2.5 text-sm font-semibold text-[var(--foreground)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
-          >
-            Projekt anfragen
-            <span aria-hidden>→</span>
-          </Link>
+          {project.projectUrl ? (
+            <a
+              href={project.projectUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 rounded-full border border-[color-mix(in_oklab,var(--accent)_35%,var(--border))] bg-[color-mix(in_oklab,var(--surface-elevated)_90%,transparent)] px-5 py-2.5 text-sm font-semibold text-[var(--foreground)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
+            >
+              Besuchen
+              <span aria-hidden>↗</span>
+            </a>
+          ) : null}
           <Link
             href="/"
             className="text-sm text-[var(--muted)] transition-colors hover:text-[var(--foreground)]"

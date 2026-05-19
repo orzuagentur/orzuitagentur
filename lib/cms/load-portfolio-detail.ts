@@ -79,6 +79,8 @@ export const getPortfolioBySlug = cache(
         summary,
         body: bodyForSlug(data.slug, summary, data.body_de),
         visualClass: visualClassForSlug(data.slug, index),
+        projectUrl:
+          (data as { project_url?: string | null }).project_url?.trim() || null,
       };
     } catch {
       return detailFromDefaults(slug);

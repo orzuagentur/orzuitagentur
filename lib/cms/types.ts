@@ -120,6 +120,8 @@ export type PortfolioCard = {
   body?: string;
   technologies?: string[];
   highlights?: string[];
+  /** Live project URL for the Besuchen CTA */
+  projectUrl?: string | null;
 };
 
 export type PortfolioDetail = {
@@ -129,6 +131,7 @@ export type PortfolioDetail = {
   summary: string;
   body: string;
   visualClass: string;
+  projectUrl?: string | null;
 };
 
 export type TestimonialCard = {

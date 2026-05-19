@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useId, type PointerEvent } from "react";
 import {
   motion,
@@ -17,13 +16,6 @@ const FLIP_SPRING = {
   damping: 26,
   mass: 1.1,
 };
-
-const SITE_LINKS = [
-  { href: "#kontakt", label: "Projekt anfragen" },
-  { href: "#leistungen", label: "Leistungen" },
-  { href: "#technologien", label: "Technologien" },
-  { href: "#portfolio", label: "Portfolio" },
-] as const;
 
 type PortfolioFlipCardProps = {
   project: PortfolioCard;
@@ -117,33 +109,23 @@ function FlipBackContent({
             </div>
           </section>
         ) : null}
-
-        <section className="portfolio-flip-section">
-          <h4 className="portfolio-flip-section-title">Weiter auf der Seite</h4>
-          <nav className="portfolio-flip-nav" aria-label="Seitenbereiche">
-            {SITE_LINKS.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="portfolio-flip-nav-link"
-                onClick={() => onFlipChange(false)}
-              >
-                {link.label}
-              </Link>
-            ))}
-          </nav>
-        </section>
       </div>
 
       <div className="portfolio-flip-back-foot">
-        <Link
-          href="#kontakt"
-          className="portfolio-flip-cta-primary"
-          style={{ borderColor: accent.border, color: accent.cta }}
-          onClick={() => onFlipChange(false)}
-        >
-          Projekt anfragen
-        </Link>
+        {project.projectUrl ? (
+          <a
+            href={project.projectUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="portfolio-flip-cta-primary"
+            style={{ borderColor: accent.border, color: accent.cta }}
+            onClick={(e) => e.stopPropagation()}
+            onPointerDown={(e) => e.stopPropagation()}
+          >
+            Besuchen
+            <span aria-hidden>↗</span>
+          </a>
+        ) : null}
         <button
           type="button"
           className="portfolio-flip-cta-ghost"

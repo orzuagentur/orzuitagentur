@@ -10,6 +10,19 @@ export const serviceRowSchema = z.object({
   published: z.boolean(),
 });
 
+function normalizeProjectUrl(raw: string): string | null {
+  const trimmed = raw.trim();
+  if (!trimmed) return null;
+  const withScheme = /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
+  return withScheme;
+}
+
+const projectUrlField = z
+  .string()
+  .max(500)
+  .transform((value) => normalizeProjectUrl(value))
+  .pipe(z.union([z.string().url(), z.null()]));
+
 export const portfolioRowSchema = z.object({
   id: uuidLike,
   slug: z.string().min(1).max(120),
@@ -17,6 +30,7 @@ export const portfolioRowSchema = z.object({
   summary_de: z.string().max(4000).nullable(),
   body_de: z.string().max(20000).nullable(),
   category_de: z.string().max(200).nullable(),
+  project_url: projectUrlField,
   sort_order: z.number().int().min(-9999).max(9999),
   published: z.boolean(),
 });

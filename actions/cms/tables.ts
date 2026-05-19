@@ -118,6 +118,7 @@ export async function updatePortfolioRow(formData: FormData): Promise<void> {
         summary_de: row.summary_de,
         body_de: row.body_de,
         category_de: row.category_de,
+        project_url: row.project_url,
         sort_order: row.sort_order,
         published: row.published,
         updated_at: new Date().toISOString(),
