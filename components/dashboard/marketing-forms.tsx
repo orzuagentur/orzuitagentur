@@ -265,6 +265,18 @@ export function LeistungenIntroForm({ marketing }: MarketingFormsProps) {
           <input className={inputClass} name="svc_kicker" defaultValue={s.kicker} placeholder="Kicker" />
           <input className={inputClass} name="svc_title" defaultValue={s.title} placeholder="Titel" />
           <textarea className={`${inputClass} min-h-[70px]`} name="svc_subtitle" defaultValue={s.subtitle} />
+          <textarea
+            className={`${inputClass} min-h-[70px]`}
+            name="svc_subtitleRight"
+            defaultValue={s.subtitleRight}
+            placeholder="Text rechts neben der Überschrift (Desktop)"
+          />
+          <textarea
+            className={`${inputClass} min-h-[50px]`}
+            name="svc_footnote"
+            defaultValue={s.footnote}
+            placeholder="Hinweis unter der Karussell"
+          />
           <textarea className={`${inputClass} min-h-[60px]`} name="svc_closing" defaultValue={s.closing} />
           <input className={inputClass} name="svc_ctaLabel" defaultValue={s.ctaLabel} />
           <DashboardSubmitButton size="md" pendingLabel="Gespeichert">

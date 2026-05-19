@@ -53,8 +53,12 @@ export async function updateServiceRow(formData: FormData): Promise<void> {
 
     const parsed = serviceRowSchema.safeParse({
       id: str(formData, "id", 64),
+      slug: str(formData, "slug", 120),
       title_de: str(formData, "title_de", 400),
       description_de: str(formData, "description_de", 4000) || null,
+      body_de: str(formData, "body_de", 20000) || null,
+      category_de: str(formData, "category_de", 200) || null,
+      project_url: str(formData, "project_url", 500),
       sort_order: parseIntSafe(str(formData, "sort_order", 12), 0),
       published: readPublished(formData),
     });
@@ -70,6 +74,9 @@ export async function updateServiceRow(formData: FormData): Promise<void> {
       .update({
         title_de: row.title_de,
         description_de: row.description_de,
+        body_de: row.body_de,
+        category_de: row.category_de,
+        project_url: row.project_url,
         sort_order: row.sort_order,
         published: row.published,
         updated_at: new Date().toISOString(),

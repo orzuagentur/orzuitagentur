@@ -2,14 +2,6 @@ import { z } from "zod";
 
 const uuidLike = z.string().min(1).max(64);
 
-export const serviceRowSchema = z.object({
-  id: uuidLike,
-  title_de: z.string().min(1).max(400),
-  description_de: z.string().max(4000).nullable(),
-  sort_order: z.number().int().min(-9999).max(9999),
-  published: z.boolean(),
-});
-
 function normalizeProjectUrl(raw: string): string | null {
   const trimmed = raw.trim();
   if (!trimmed) return null;
@@ -22,6 +14,18 @@ const projectUrlField = z
   .max(500)
   .transform((value) => normalizeProjectUrl(value))
   .pipe(z.union([z.string().url(), z.null()]));
+
+export const serviceRowSchema = z.object({
+  id: uuidLike,
+  slug: z.string().min(1).max(120),
+  title_de: z.string().min(1).max(400),
+  description_de: z.string().max(4000).nullable(),
+  body_de: z.string().max(20000).nullable(),
+  category_de: z.string().max(200).nullable(),
+  project_url: projectUrlField,
+  sort_order: z.number().int().min(-9999).max(9999),
+  published: z.boolean(),
+});
 
 export const portfolioRowSchema = z.object({
   id: uuidLike,

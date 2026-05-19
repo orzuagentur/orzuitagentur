@@ -70,6 +70,8 @@ const sectionIntroSchema = z.object({
 });
 
 const servicesSectionSchema = sectionIntroSchema.extend({
+  subtitleRight: z.string().max(2000),
+  footnote: z.string().max(2000),
   closing: z.string().max(2000),
   ctaLabel: z.string().max(120),
 });

@@ -196,6 +196,8 @@ export async function saveServicesIntro(formData: FormData): Promise<void> {
         kicker: str(formData, "svc_kicker", 120),
         title: str(formData, "svc_title", 400),
         subtitle: str(formData, "svc_subtitle", 2000),
+        subtitleRight: str(formData, "svc_subtitleRight", 2000),
+        footnote: str(formData, "svc_footnote", 2000),
         closing: str(formData, "svc_closing", 2000),
         ctaLabel: str(formData, "svc_ctaLabel", 120),
       },

@@ -96,7 +96,11 @@ export const DEFAULT_SERVICES_SECTION: ServicesSectionContent = {
   kicker: "Leistungen",
   title: "Was wir für Ihr Unternehmen umsetzen.",
   subtitle:
-    "Klare Leistungen, verständliche Ergebnisse — für Teams, die digitale Prozesse verbessern oder neue Produkte auf den Markt bringen wollen.",
+    "Klare Leistungen, verständliche Ergebnisse — für Teams, die digitale Prozesse verbessern wollen.",
+  subtitleRight:
+    "Wählen Sie eine Leistung — Details auf der Rückseite der Karte, Hauptfokus rechts.",
+  footnote:
+    "Klicken Sie die gestapelten Karten links oder nutzen Sie die Navigation — die aktive Leistung steht rechts.",
   closing:
     "Sie haben bereits ein Team oder Partner? Wir ergänzen gezielt — z. B. für Architektur, Umsetzung oder Betrieb.",
   ctaLabel: "Erstgespräch vereinbaren",
@@ -178,29 +182,46 @@ export const DEFAULT_SERVICES_CARDS: ServiceCard[] = [
     key: "s1",
     label: "01",
     title: "Individuelle Software",
+    category: "Software • Prozesse",
     description:
       "Web-Apps und interne Tools für wachsende Unternehmen — z. B. Kundenportale, Verwaltung oder Prozessunterstützung. Ergebnis: weniger manuelle Arbeit, klarere Abläufe.",
+    visualClass: "portfolio-visual-finsight",
   },
   {
     key: "s2",
     label: "02",
     title: "KI & Automatisierung",
+    category: "KI • Workflows",
     description:
       "Assistenten, Dokumentenverarbeitung und Schnittstellen, die repetitive Aufgaben übernehmen. Für Teams mit viel Routine in Support, Backoffice oder Datenpflege.",
+    visualClass: "portfolio-visual-velo",
   },
   {
     key: "s3",
     label: "03",
     title: "Websites & Webshops",
+    category: "Web • Commerce",
     description:
       "Moderne, schnelle Websites und Shops, die Sie selbst pflegen können. Fokus: verständliche Struktur, gute Performance und saubere Anbindung an CRM oder Buchhaltung.",
+    visualClass: "portfolio-visual-aura",
   },
   {
     key: "s4",
     label: "04",
     title: "Betrieb & Sicherheit",
+    category: "Betrieb • DevOps",
     description:
       "Hosting, Updates, Backups und Monitoring — damit Ihre Lösung im Alltag stabil läuft. Inklusive klarer Zuständigkeiten und dokumentierter Übergabe.",
+    visualClass: "portfolio-visual-nexus",
+  },
+  {
+    key: "s5",
+    label: "05",
+    title: "Schnittstellen & Integration",
+    category: "Integration • APIs",
+    description:
+      "APIs, ERP-Anbindungen und Datenflüsse zwischen bestehenden Systemen — stabil, dokumentiert und wartbar.",
+    visualClass: "portfolio-visual-vault",
   },
 ];
 

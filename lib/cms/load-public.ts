@@ -25,7 +25,9 @@ function hasPublicSupabaseEnv() {
 }
 
 import { enrichDefaultPortfolioCards, enrichPortfolioCard } from "@/lib/cms/enrich-portfolio";
+import { enrichDefaultServiceCards, enrichServiceCard } from "@/lib/cms/enrich-services";
 import { visualClassForSlug } from "@/lib/cms/portfolio-visuals";
+import { visualClassForService } from "@/lib/cms/service-visuals";
 import { normalizeNavHref } from "@/lib/navigation/section-scroll";
 function normalizeNavContent(nav: NavContent): NavContent {
   return {
@@ -113,23 +115,48 @@ export const getHomeSeo = cache(async (): Promise<HomeSeo> => {
 });
 
 export const getServiceCards = cache(async (): Promise<ServiceCard[]> => {
-  if (!hasPublicSupabaseEnv()) return DEFAULT_SERVICES_CARDS;
+  if (!hasPublicSupabaseEnv()) return enrichDefaultServiceCards();
   try {
     const supabase = await createServerSupabaseClient();
-    const { data, error } = await supabase
+    const withUrl = await supabase
       .from("services")
-      .select("slug,title_de,description_de,sort_order")
+      .select("slug,title_de,description_de,body_de,category_de,project_url,sort_order")
       .eq("published", true)
       .order("sort_order", { ascending: true });
-    if (error || !data?.length) return DEFAULT_SERVICES_CARDS;
-    return data.map((row, i) => ({
-      key: row.slug,
-      label: String(row.sort_order ?? i + 1).padStart(2, "0"),
-      title: row.title_de,
-      description: row.description_de ?? "",
-    }));
+
+    const fallback = withUrl.error
+      ? await supabase
+          .from("services")
+          .select("slug,title_de,description_de,body_de,category_de,sort_order")
+          .eq("published", true)
+          .order("sort_order", { ascending: true })
+      : null;
+
+    const data = withUrl.error ? fallback?.data : withUrl.data;
+    const error = withUrl.error ? fallback?.error : withUrl.error;
+    if (error || !data?.length) return enrichDefaultServiceCards();
+
+    return data.map((row, index) => {
+      const slug = row.slug;
+      const visual = visualClassForService(slug, index);
+      const defaults = DEFAULT_SERVICES_CARDS.find((c) => c.key === slug);
+      const base: ServiceCard = {
+        key: slug,
+        label: defaults?.label ?? String(row.sort_order ?? index + 1).padStart(2, "0"),
+        title: row.title_de,
+        category: row.category_de ?? defaults?.category ?? "",
+        description: row.description_de ?? "",
+        visualClass: visual,
+        projectUrl:
+          "project_url" in row
+            ? String((row as { project_url?: string | null }).project_url ?? "").trim() ||
+              null
+            : null,
+      };
+      return enrichServiceCard(base, row.body_de);
+    });
   } catch {
-    return DEFAULT_SERVICES_CARDS;
+    return enrichDefaultServiceCards();
   }
 });
 

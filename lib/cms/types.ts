@@ -54,7 +54,12 @@ export type SectionIntro = {
   subtitle: string;
 };
 
-export type ServicesSectionContent = SectionIntro & {
+export type ServicesSectionContent = {
+  kicker: string;
+  title: string;
+  subtitle: string;
+  subtitleRight: string;
+  footnote: string;
   closing: string;
   ctaLabel: string;
 };
@@ -106,7 +111,13 @@ export type ServiceCard = {
   key: string;
   label: string;
   title: string;
+  category: string;
   description: string;
+  visualClass: string;
+  body?: string;
+  technologies?: string[];
+  highlights?: string[];
+  projectUrl?: string | null;
 };
 
 export type PortfolioCard = {
