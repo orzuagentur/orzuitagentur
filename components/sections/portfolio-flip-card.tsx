@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, type PointerEvent } from "react";
+import { useEffect, useId, type CSSProperties, type PointerEvent } from "react";
 import {
   motion,
   useMotionTemplate,
@@ -218,8 +218,8 @@ export function PortfolioFlipCard({
               <div className="portfolio-stack-footer">
                 <button
                   type="button"
-                  className="portfolio-stack-cta"
-                  style={{ color: accent.cta }}
+                  className="portfolio-flip-trigger"
+                  style={{ "--card-cta": accent.cta } as CSSProperties}
                   onClick={() => onFlipChange(true)}
                 >
                   Projekt ansehen
@@ -292,8 +292,8 @@ export function PortfolioFlipCard({
             <div className="portfolio-stack-footer">
               <button
                 type="button"
-                className="portfolio-stack-cta portfolio-flip-trigger"
-                style={{ color: accent.cta }}
+                className="portfolio-flip-trigger"
+                style={{ "--card-cta": accent.cta } as CSSProperties}
                 onPointerDown={(e) => e.stopPropagation()}
                 onClick={(e) => {
                   e.preventDefault();
@@ -304,9 +304,6 @@ export function PortfolioFlipCard({
                 aria-controls={backTitleId}
               >
                 Projekt ansehen
-                <span aria-hidden className="portfolio-stack-cta-arrow">
-                  ↻
-                </span>
               </button>
               <span className="portfolio-stack-brand">OrzuIT</span>
             </div>
