@@ -242,7 +242,7 @@ export function LuxuryNavbar({ nav }: LuxuryNavbarProps) {
           >
             <span className="relative z-10">{nav.ctaLabel}</span>
           </MotionNavLink>
-        </motion.div>
+        </div>
       </header>
 
       <div
