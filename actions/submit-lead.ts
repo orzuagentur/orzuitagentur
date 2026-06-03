@@ -11,6 +11,20 @@ import {
   sendLeadEmail,
 } from "@/services/email/resend";
 import { sendLeadTelegram } from "@/services/telegram/notify";
+import { sendWebsiteFormsWebhook } from "@/services/orzuai/website-forms-webhook";
+
+const CONTACT_FORM_NAME = "Kontaktformular";
+
+function buildWebsiteFormMessage(data: LeadInput): string {
+  const parts = [data.message];
+  if (data.company?.trim()) {
+    parts.push(`\n\nUnternehmen: ${data.company.trim()}`);
+  }
+  if (data.serviceInterest?.trim()) {
+    parts.push(`\nGewünschte Leistung: ${data.serviceInterest.trim()}`);
+  }
+  return parts.join("");
+}
 
 async function notifyLead(data: LeadInput) {
   const { contact } = await getMarketingContent();
@@ -24,6 +38,13 @@ async function notifyLead(data: LeadInput) {
       responseTime: contact.responseTime,
     }),
     sendLeadTelegram(data),
+    sendWebsiteFormsWebhook({
+      name: data.name,
+      email: data.email,
+      phone: data.phone,
+      message: buildWebsiteFormMessage(data),
+      form_name: CONTACT_FORM_NAME,
+    }),
     webhookUrl
       ? fetch(webhookUrl, {
           method: "POST",
