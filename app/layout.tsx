@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import type { CSSProperties } from "react";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
@@ -93,6 +94,11 @@ export default async function RootLayout({
         <SiteAnalyticsTracker />
         <Analytics />
         <SpeedInsights />
+        <Script
+          src="https://www.orzux.com/widget/orzu-chat.js"
+          data-widget-token="ff4ab3a82c3f77a309c4b84333279bbc23c977bc24348a6c"
+          strategy="lazyOnload"
+        />
       </body>
     </html>
   );
