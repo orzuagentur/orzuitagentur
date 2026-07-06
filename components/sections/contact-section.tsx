@@ -183,6 +183,7 @@ export function ContactSection({ contact, serviceOptions }: ContactSectionProps)
         message: message.trim(),
         privacyAccepted: true,
         source: "website",
+        sourceUrl: window.location.href,
       });
 
       if (result.ok) {

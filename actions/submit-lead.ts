@@ -26,7 +26,7 @@ function buildWebsiteFormMessage(data: LeadInput): string {
   return parts.join("");
 }
 
-async function notifyLead(data: LeadInput) {
+async function notifyLead(data: LeadInput, sourceUrl?: string) {
   const { contact } = await getMarketingContent();
   const webhookUrl = contact.webhookUrl?.trim();
   await Promise.allSettled([
@@ -43,6 +43,7 @@ async function notifyLead(data: LeadInput) {
       email: data.email,
       phone: data.phone,
       message: buildWebsiteFormMessage(data),
+      source_url: sourceUrl,
       form_name: CONTACT_FORM_NAME,
     }),
     webhookUrl
@@ -96,7 +97,16 @@ function normalizeLeadInput(raw: unknown): unknown {
   };
 }
 
+function extractSourceUrl(raw: unknown): string | undefined {
+  if (!raw || typeof raw !== "object") return undefined;
+  const sourceUrl = (raw as Record<string, unknown>).sourceUrl;
+  return typeof sourceUrl === "string" && sourceUrl.trim() !== ""
+    ? sourceUrl.trim()
+    : undefined;
+}
+
 export async function submitLead(raw: unknown): Promise<SubmitLeadResult> {
+  const sourceUrl = extractSourceUrl(raw);
   const parsed = leadSchema.safeParse(normalizeLeadInput(raw));
   if (!parsed.success) {
     return { ok: false, error: "Bitte alle Pflichtfelder korrekt ausfüllen." };
@@ -105,7 +115,7 @@ export async function submitLead(raw: unknown): Promise<SubmitLeadResult> {
   const data: LeadInput = parsed.data;
 
   if (!hasServiceRoleConfig()) {
-    await notifyLead(data);
+    await notifyLead(data, sourceUrl);
     return { ok: true };
   }
 
@@ -130,7 +140,7 @@ export async function submitLead(raw: unknown): Promise<SubmitLeadResult> {
     };
   }
 
-  await notifyLead(data);
+  await notifyLead(data, sourceUrl);
 
   return { ok: true };
 }
