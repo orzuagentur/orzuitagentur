@@ -28,12 +28,18 @@ function supabaseConnectOrigins(): string[] {
  * Vercel Analytics / Speed Insights use same-origin /_vercel/* in production.
  */
 export function buildContentSecurityPolicy(): string {
-  const scriptSrc = ["'self'", "'unsafe-inline'", "https://va.vercel-scripts.com"];
+  const scriptSrc = [
+    "'self'",
+    "'unsafe-inline'",
+    "https://va.vercel-scripts.com",
+    "https://www.orzux.com",
+  ];
   const connectSrc = [
     "'self'",
     ...supabaseConnectOrigins(),
     "https://vitals.vercel-insights.com",
     "https://va.vercel-scripts.com",
+    "https://www.orzux.com",
   ];
 
   if (isDev) {
