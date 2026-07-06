@@ -97,6 +97,7 @@ export default async function RootLayout({
         <Script
           src="https://www.orzux.com/widget/orzu-chat.js"
           data-widget-token="ff4ab3a82c3f77a309c4b84333279bbc23c977bc24348a6c"
+          data-site-key="orzu_live_06626623ae309fa9a0ca3c25457212eb567aa045b4af69b7"
           strategy="lazyOnload"
         />
       </body>
